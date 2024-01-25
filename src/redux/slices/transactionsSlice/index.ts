@@ -33,6 +33,7 @@ import {
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
 import { TokenSymbol } from 'screens/home/TokenImage'
+import { formatLongNumbers, rbtcMap } from 'shared/utils'
 
 export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
@@ -86,9 +87,7 @@ export const activityDeserializer: (
         ? TokenSymbol.RBTC
         : TokenSymbol.TRBTC
     const rbtcAddress = constants.AddressZero
-    const feeRbtc = BigNumber.from(tx.gasPrice).mul(
-      BigNumber.from(tx.receipt?.gasUsed || 1),
-    )
+    const feeRbtc = BigNumber.from(tx.receipt?.gasUsed || 0)
 
     // Token
     const tokenValue = etx?.value || balanceToDisplay(tx.value, 18)
@@ -98,7 +97,7 @@ export const activityDeserializer: (
       tokenContract =
         etx?.symbol === rbtcSymbol
           ? rbtcAddress
-          : getTokenAddress(tokenSymbol, chainTypesById[chainId])
+          : getTokenAddress(tokenSymbol as TokenSymbol, chainId)
     } catch {}
     const tokenQuote = prices[tokenContract.toLowerCase()]?.price || 0
     const tokenUsd = convertTokenToUSD(Number(tokenValue), tokenQuote)
@@ -106,12 +105,15 @@ export const activityDeserializer: (
     // Fee
     const feeValue = etx?.feeValue || balanceToDisplay(feeRbtc, 18)
     const feeSymbol = etx?.feeSymbol || rbtcSymbol
+    const feeTokenValue = rbtcMap.get(feeSymbol as TokenSymbol)
+      ? feeRbtc.toString()
+      : feeValue
     let feeContract = ''
     try {
       feeContract =
         etx?.feeSymbol === rbtcSymbol
           ? rbtcAddress
-          : getTokenAddress(feeSymbol, chainTypesById[chainId])
+          : getTokenAddress(feeSymbol as TokenSymbol, chainId)
     } catch {}
     const feeQuote = prices[feeContract.toLowerCase()]?.price || 0
     const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote).toFixed(2)
@@ -127,7 +129,7 @@ export const activityDeserializer: (
       symbol: tokenSymbol,
       price: Number(tokenUsd),
       fee: {
-        tokenValue: feeValue,
+        tokenValue: formatLongNumbers(feeTokenValue.toString()),
         symbol: feeSymbol,
         usdValue: feeUsd,
       },

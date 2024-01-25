@@ -24,6 +24,54 @@ import { RelayWallet } from 'lib/relayWallet'
 import { Wallet } from '../wallet'
 import { ErrorWithMessage } from '../types'
 
+const tiniestAmount = 0.0000001
+
+export const formatSmallNumbers = (smallNumber: string | number) => {
+  if (isNaN(Number(smallNumber))) {
+    return smallNumber
+  }
+
+  if (Number(smallNumber) >= tiniestAmount) {
+    return smallNumber.toString()
+  }
+
+  return `< ${tiniestAmount}`
+}
+
+// this needs to be here because of the failing tests
+enum TokenSymbol {
+  TRBTC = 'TRBTC',
+  RBTC = 'RBTC',
+}
+
+export const rbtcMap = new Map([
+  [TokenSymbol.TRBTC, true],
+  [TokenSymbol.RBTC, true],
+  [undefined, false],
+])
+
+export const formatLongNumbers = (longNumber: string | number) => {
+  if (isNaN(Number(longNumber))) {
+    return longNumber.toString()
+  }
+
+  if (!(typeof longNumber === 'string')) {
+    longNumber = longNumber.toString()
+  }
+
+  if (longNumber.length <= 3) {
+    return longNumber
+  }
+
+  const longNumberArr = longNumber.split('')
+
+  for (let i = longNumber.length - 3; i > 0; i -= 3) {
+    longNumberArr.splice(i, 0, ',')
+  }
+
+  return longNumberArr.join('')
+}
+
 export const errorHandler = (error: unknown) => {
   if (typeof error === 'object' && Object.hasOwn(error as object, 'message')) {
     const err = error as ErrorWithMessage
