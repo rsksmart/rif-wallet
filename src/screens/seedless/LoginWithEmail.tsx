@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 
 import { AppButton, AppTouchable, Input, Typography } from 'components/index'
 import { noop, sharedColors, sharedStyles } from 'shared/constants'
@@ -12,10 +13,13 @@ import { castStyle } from 'shared/utils'
 import { Google, SocialSvgProps } from 'components/icons/Google'
 import { Facebook } from 'components/icons/Facebook'
 import { Apple } from 'components/icons/Apple'
-import { loginWithEmail } from 'store/slices/settingsSlice'
 import { useInitializeWallet } from 'src/shared/wallet'
 import { ConfirmationModal } from 'src/components/modal'
 import { useGlobalMagicInstance } from 'components/GlobalErrorHandler/GlobalErrorHandlerContext'
+import {
+  loginWithEmail,
+  selectSeedlessLoading,
+} from 'store/slices/seedlessSlice'
 
 interface FormValues {
   email: string
@@ -49,6 +53,8 @@ export const LoginWithEmail = () => {
   const initializeWallet = useInitializeWallet()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const loading = useSelector(selectSeedlessLoading)
+
   const methods = useForm<FormValues>({
     defaultValues: {
       email: 'alexivchenko9@gmail.com',
@@ -106,6 +112,7 @@ export const LoginWithEmail = () => {
           color={sharedColors.white}
           textColor={sharedColors.black}
           onPress={handleSubmit(onSubmit)}
+          loading={loading}
         />
 
         <View style={styles.continueWithContainer}>
