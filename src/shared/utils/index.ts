@@ -24,16 +24,18 @@ import { RelayWallet } from 'lib/relayWallet'
 import { Wallet } from '../wallet'
 import { ErrorWithMessage } from '../types'
 
+const tiniestAmount = 0.0000001
+
 export const formatSmallNumbers = (smallNumber: string | number) => {
   if (isNaN(Number(smallNumber))) {
     return smallNumber
   }
 
-  if (Number(smallNumber) >= 0.0000001) {
+  if (Number(smallNumber) >= tiniestAmount) {
     return smallNumber.toString()
   }
 
-  return '< 0.0000001'
+  return `< ${tiniestAmount}`
 }
 
 // this needs to be here because of the failing tests
