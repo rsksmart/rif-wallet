@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react'
+import { useMemo, useEffect, useState, useCallback } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 
@@ -6,8 +6,12 @@ import { shortAddress } from 'lib/utils'
 import { RelayWallet } from 'lib/relayWallet'
 
 import { AccountBox } from 'components/accounts/AccountBox'
-import { useAppSelector } from 'store/storeUtils'
-import { selectBitcoin, selectChainId } from 'store/slices/settingsSlice'
+import { useAppDispatch, useAppSelector } from 'store/storeUtils'
+import {
+  resetApp,
+  selectBitcoin,
+  selectChainId,
+} from 'store/slices/settingsSlice'
 import { headerLeftOption } from 'navigation/profileNavigator'
 import {
   SettingsScreenProps,
@@ -22,6 +26,7 @@ import { DeleteWalletModal } from 'components/modal/deleteWalletModal'
 export const AccountsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.AccountsScreen>) => {
+  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
     useState<boolean>(false)
@@ -40,6 +45,10 @@ export const AccountsScreen = ({
         : [],
     [bitcoinCore],
   )
+
+  const eraseWallet = useCallback(() => {
+    dispatch(resetApp({ wallet }))
+  }, [dispatch, wallet])
 
   useEffect(() => {
     navigation.setOptions({
@@ -67,6 +76,7 @@ export const AccountsScreen = ({
       />
       <DeleteWalletModal
         isVisible={isDeleteConfirmationVisible}
+        eraseWallet={eraseWallet}
         setVisible={setIsDeleteConfirmationVisible}
       />
     </View>

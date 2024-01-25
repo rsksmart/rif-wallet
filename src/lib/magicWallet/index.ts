@@ -48,18 +48,25 @@ export class MagicWallet extends Signer implements TypedDataSigner {
     magicInstance: Magic,
     onRequest: OnRequest,
   ) {
-    //@TODO: figure out why 3rd switching of chains does not work
-    //@TODO: address is the same for both 30 | 31 why?
-    const provider = await magicInstance.wallet.getProvider()
-    const signer = new providers.Web3Provider(provider).getSigner()
+    try {
+      //@TODO: figure out why 3rd switching of chains does not work
+      // it works when you close the app, but not in one session
+      // probably something to do with how magic tracks user
+      //@TODO: address is the same for both 30 | 31 why?
+      const provider = await magicInstance.wallet.getProvider()
+      const signer = new providers.Web3Provider(provider).getSigner()
 
-    if (!(await magicInstance.user.isLoggedIn())) {
-      await magicInstance.auth.loginWithEmailOTP({ email })
+      if (!(await magicInstance.user.isLoggedIn())) {
+        await magicInstance.auth.loginWithEmailOTP({ email })
+      }
+
+      const address = await signer.getAddress()
+
+      return new MagicWallet(magicInstance, signer, onRequest, address)
+    } catch (err) {
+      console.log('ERROR IN .create', err)
+      return null
     }
-
-    const address = await signer.getAddress()
-
-    return new MagicWallet(magicInstance, signer, onRequest, address)
   }
 
   async sendTransaction(
@@ -163,7 +170,6 @@ export class MagicWallet extends Signer implements TypedDataSigner {
 
   async loginWithEmail(email: string) {
     try {
-      console.log('EMAIL', email)
       const result = await this.magic.auth.loginWithEmailOTP({
         email,
         showUI: true,
@@ -175,6 +181,17 @@ export class MagicWallet extends Signer implements TypedDataSigner {
     }
 
     return null
+  }
+
+  async logout() {
+    try {
+      const result = await this.magic.user.logout()
+
+      return result
+    } catch (err) {
+      console.log('FAILED TO LOGOUT USER', err)
+      return false
+    }
   }
 
   async loginWithPhone(phoneNumber: string) {

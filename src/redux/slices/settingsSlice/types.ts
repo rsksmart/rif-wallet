@@ -1,6 +1,5 @@
 import { BitcoinNetworkWithBIPRequest } from '@rsksmart/rif-wallet-bitcoin'
 import { ColorValue } from 'react-native'
-import { Magic } from '@magic-sdk/react-native-bare'
 
 import { RequestWithBitcoin } from 'shared/types'
 import { ChainTypesByIdType } from 'shared/constants/chainConstants'
@@ -31,12 +30,6 @@ export interface UnlockAppAction {
   initializeWallet: InitializeWallet
   isOffline?: boolean
   pinUnlocked?: boolean
-}
-
-export interface EmailLogin {
-  email: string
-  initializeWallet: InitializeWallet
-  magic: Magic
 }
 
 export interface SetKeysAction {
