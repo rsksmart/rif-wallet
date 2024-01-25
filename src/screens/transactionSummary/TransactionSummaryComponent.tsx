@@ -231,7 +231,7 @@ export const TransactionSummaryComponent = ({
             </View>
           </View>
           <View style={styles.dollarAmountWrapper}>
-            {usdValue.symbol === '<' && (
+            {usdValue.symbol === '<' && Number(totalUsd) <= 0.01 && (
               <Typography type="body1" color={sharedColors.labelLight}>
                 {'<'}
               </Typography>
