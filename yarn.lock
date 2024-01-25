@@ -2047,9 +2047,9 @@
     randombytes "^2.1.0"
 
 "@rsksmart/rif-relay-light-sdk@*", "@rsksmart/rif-relay-light-sdk@^1.0.17":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-relay-light-sdk/-/rif-relay-light-sdk-1.0.12.tgz#0123e465953fe76ca80db1ddbc0359f1edbb5f2d"
-  integrity sha512-J7K7Ae7CWahZVpglR4w9+SlVpJ+K8RL8UufyqkzW0v7Z1kXUjJ6k9cQy67zgQuePBdDJSwCDcanHgKy4dZgOeQ==
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/@rsksmart/rif-relay-light-sdk/-/rif-relay-light-sdk-1.0.17.tgz#22ad5699d6e7c1e2036b351a734d96fa8c0c960e"
+  integrity sha512-gZDL7ILSM+j7a2cZm8SyhQcgrI24HNEmWIeplA3+Ih2viq4neMIBA68NWe9CEhkR5x8gjGXkcVZnTKvf5E2QsQ==
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     axios "^1.2.3"
@@ -2080,7 +2080,7 @@
     "@rsksmart/rif-wallet-token" "*"
     axios "^0.27.2"
 
-"@rsksmart/rif-wallet-abi-enhancer@^1.0.9":
+"@rsksmart/rif-wallet-abi-enhancer@^1.0.10":
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-abi-enhancer/-/rif-wallet-abi-enhancer-1.0.11.tgz#19a5209c42d3f3359919f346e9c9433dc77cecbf"
   integrity sha512-kbGT200zt+tFAi4HUCwv57Ctbd19+rp8boNE38XTLWwQnp/QWE+EgBKT+Pclzh0cAaSm2ggIdUGvjF/UZ5ZoJw==
@@ -2095,7 +2095,7 @@
     "@rsksmart/rif-relay-light-sdk" "*"
     "@rsksmart/rif-wallet-token" "*"
 
-"@rsksmart/rif-wallet-adapters@^1.0.1":
+"@rsksmart/rif-wallet-adapters@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-adapters/-/rif-wallet-adapters-1.0.4.tgz#2a5c3da8813db9374c22745b05c2359c65ff3a58"
   integrity sha512-ej/WJbvLZ0oHWXclAfO2Vt3PR26dpSFnEkOW6pb5D3LSH4KN6JgBqNG/YUuGKBueYdDHWzg+dlLqQHUu0HzWkA==
@@ -2120,7 +2120,7 @@
     bitcoin-address-validation "^2.2.1"
     bitcoinjs-lib "^6.0.2"
 
-"@rsksmart/rif-wallet-bitcoin@^1.2.2":
+"@rsksmart/rif-wallet-bitcoin@^1.2.3":
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-bitcoin/-/rif-wallet-bitcoin-1.2.3.tgz#428f3f30291edd0a79b477dc0dbddacb9bc6e6e2"
   integrity sha512-FAnLn4T4lRHXQck7nGESzXaaTRnZVeU2mCCmOV8b+WyeCXBAo+DD7jePAFlDTOaMrbCwHesKDfWS/Kg02daakQ==
