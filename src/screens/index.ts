@@ -1,14 +1,12 @@
 export { SendScreen } from './send/SendScreen'
 export { ReceiveScreen } from './receive/ReceiveScreen'
 export { ActivityScreen } from './activity/ActivityScreen'
-export { ShowMnemonicScreen } from './info/ShowMnemonicScreen'
 export { RelayDeployScreen } from './settings/RelayDeployScreen'
 export {
   WalletConnectScreen,
   WalletConnectScreenWithProvider,
 } from './walletConnect'
 export { ScanQRScreen } from './walletConnect/ScanQRScreen'
-export { ChangeLanguageScreen } from './settings/ChangeLanguageScreen'
 export { SearchDomainScreen } from './rnsManager/SearchDomainScreen'
 export { AliasBoughtScreen } from './rnsManager/AliasBoughtScreen'
 export { PurchaseDomainScreen } from './rnsManager/PurchaseDomainScreen'

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Dimensions } from 'react-native'
 
 import { castStyle } from '../utils'
 
@@ -169,3 +169,7 @@ export const sharedStyles = StyleSheet.create({
     marginLeft: '25%',
   },
 })
+export const WINDOW_WIDTH = Dimensions.get('window').width
+export const WINDOW_HEIGHT = Dimensions.get('window').height
+export const SLIDER_WIDTH = Math.round(WINDOW_WIDTH * 0.8)
+export const SLIDER_HEIGHT = Math.round(WINDOW_HEIGHT * 0.75)

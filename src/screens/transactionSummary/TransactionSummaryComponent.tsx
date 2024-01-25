@@ -9,10 +9,14 @@ import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 import { displayRoundBalance } from 'lib/utils'
 
 import { TokenBalance } from 'components/token'
-import { sharedColors, sharedStyles } from 'shared/constants'
+import {
+  WINDOW_HEIGHT,
+  WINDOW_WIDTH,
+  sharedColors,
+  sharedStyles,
+} from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { AppButton, AppTouchable, Typography } from 'components/index'
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
 import { DollarIcon } from 'components/icons/DollarIcon'

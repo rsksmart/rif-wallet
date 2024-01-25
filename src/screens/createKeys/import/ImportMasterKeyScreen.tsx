@@ -17,10 +17,9 @@ import {
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
 import { castStyle } from 'shared/utils'
-import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { createWallet } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
-import { sharedColors, sharedStyles } from 'shared/constants'
+import { SLIDER_WIDTH, sharedColors, sharedStyles } from 'shared/constants'
 import { useInitializeWallet } from 'shared/wallet'
 
 const slidesIndexes = [0, 1, 2, 3]
@@ -37,8 +36,6 @@ const initialWords = Array.from({ length: slidesIndexes.length * 3 }).reduce<
   prev[index] = ''
   return prev
 }, [])
-
-const SLIDER_WIDTH = WINDOW_WIDTH * 0.8
 
 const headerTextMap = new Map([
   [StatusActions.ERROR, 'header_phrase_not_correct'],

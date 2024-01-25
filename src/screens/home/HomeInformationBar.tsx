@@ -5,10 +5,9 @@ import Carousel, { ICarouselInstance } from 'react-native-reanimated-carousel'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Dots from 'react-native-dots-pagination'
 
-import { noop, sharedColors } from 'shared/constants'
+import { WINDOW_WIDTH, noop, sharedColors } from 'shared/constants'
 import { Typography } from 'components/typography'
 import { AppTouchable } from 'components/appTouchable'
-import { WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
 import { castStyle } from 'shared/utils'
 
 import { HomeInformationItem } from './HomeInformationItem'

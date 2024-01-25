@@ -3,10 +3,6 @@ import { ColorValue, StyleSheet, Text, TextProps } from 'react-native'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
-export { default as MediumText } from './MediumText'
-export { RegularText } from './RegularText'
-export { default as SemiBoldText } from './SemiBoldText'
-
 export const fonts = StyleSheet.create({
   regular: castStyle.text({
     fontFamily: 'Sora-Regular',

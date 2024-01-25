@@ -2,8 +2,7 @@ import { StyleSheet, View, ViewProps } from 'react-native'
 import { ComponentProps } from 'react'
 
 import { castStyle } from 'shared/utils'
-import { WINDOW_HEIGHT, WINDOW_WIDTH } from 'src/ux/slides/Dimensions'
-import { sharedStyles } from 'shared/constants'
+import { WINDOW_HEIGHT, WINDOW_WIDTH, sharedStyles } from 'shared/constants'
 import { AppSpinner, Typography, TypographyType } from 'src/components'
 
 interface FullScreenSpinnerProps {
