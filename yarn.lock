@@ -2143,17 +2143,10 @@
     "@ethersproject/bytes" "^5.7.0"
     "@rsksmart/rif-relay-light-sdk" "*"
 
-<<<<<<< HEAD
 "@rsksmart/rif-wallet-core@^1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-core/-/rif-wallet-core-1.0.5.tgz#aa5adf52e5bd34e3ea0cd7433f057c1191bb1842"
   integrity sha512-84fY8w/lgVi2GGMb5+GDAHuE4WCoaUi6N8kn8ROpClkOjFdA/RWMNJKrVdx0auGjfPUOI58Vp0bAl/g75xCeig==
-=======
-"@rsksmart/rif-wallet-core@^1.0.2":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@rsksmart/rif-wallet-core/-/rif-wallet-core-1.0.6.tgz#f29edcd57c227a25f92c233f3e4f76fee754bcc9"
-  integrity sha512-OR2fCTBVzcTsSJOo1WLnK4Xp6cab1XaJt2s9u5TPFSbnjsbTVSyqHcKP1PJawNP8YWF/xi9rBcurqEQfki0N2Q==
->>>>>>> b4e01bd5 (fix: request.payload incorrectly assumed as an array)
   dependencies:
     "@ethersproject/abstract-provider" "^5.7.0"
     "@ethersproject/abstract-signer" "^5.7.0"
