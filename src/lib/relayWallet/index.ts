@@ -9,7 +9,7 @@ import {
 } from '@rsksmart/rif-relay-light-sdk'
 import { Wallet, providers } from 'ethers'
 import { BlockchainAuthenticatorConfig } from '@json-rpc-tools/utils'
-import { defineReadOnly, resolveProperties } from 'ethers/lib/utils'
+import { defineReadOnly } from 'ethers/lib/utils'
 
 import {
   ChainID,
@@ -147,19 +147,15 @@ export class RelayWallet extends EOAWallet {
     })
   }
 
-  override estimateGas(txRequest: TransactionRequest, tokenContract?: string) {
+  override async estimateGas(
+    txRequest: TransactionRequest,
+    tokenContract?: string,
+  ) {
     if (tokenContract) {
       return this.rifRelaySdk.estimateTransactionCost(txRequest, tokenContract)
     }
 
-    return resolveProperties(this.checkTransaction(txRequest)).then(
-      (tx: TransactionRequest) =>
-        this.rifRelaySdk.smartWallet.estimateDirectExecute(
-          tx.to || AddressZero,
-          tx.data || HashZero,
-          filterTxOptions(tx),
-        ),
-    )
+    return super.estimateGas(txRequest)
   }
 
   public static override async fromWalletState(
