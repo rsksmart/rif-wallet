@@ -5,19 +5,13 @@ import { ScrollView, StyleSheet, View } from 'react-native'
 import { KeyManagementSystem } from 'lib/core'
 
 import { sharedColors } from 'shared/constants'
-import {
-  AppButton,
-  AppButtonBackgroundVarietyEnum,
-  MnemonicComponent,
-  Typography,
-} from 'components/index'
+import { MnemonicComponent, Typography } from 'components/index'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { castStyle, usePreventScreenshot } from 'shared/utils'
 import { getKeys } from 'storage/SecureStorage'
-import { DeleteWalletModal } from 'components/modal/deleteWalletModal'
 import { getCurrentChainId } from 'storage/ChainStorage'
 
 type Props = SettingsScreenProps<settingsStackRouteNames.WalletBackup>
@@ -25,8 +19,6 @@ type Props = SettingsScreenProps<settingsStackRouteNames.WalletBackup>
 export const WalletBackup = (_: Props) => {
   const { t } = useTranslation()
   usePreventScreenshot(t)
-  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
-    useState<boolean>(false)
 
   const [mnemonic, setMnemonic] = useState<string | null>()
   const mnemonicArray = mnemonic ? mnemonic.split(' ') : []
@@ -53,17 +45,6 @@ export const WalletBackup = (_: Props) => {
         </Typography>
         <MnemonicComponent words={mnemonicArray} showAdvice={false} />
       </View>
-      <AppButton
-        title={t('wallet_backup_delete_button')}
-        onPress={() => setIsDeleteConfirmationVisible(true)}
-        backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
-        color={sharedColors.white}
-        style={styles.deleteButton}
-      />
-      <DeleteWalletModal
-        isVisible={isDeleteConfirmationVisible}
-        setVisible={setIsDeleteConfirmationVisible}
-      />
     </ScrollView>
   )
 }
@@ -78,8 +59,5 @@ const styles = StyleSheet.create({
   }),
   title: castStyle.text({
     marginVertical: 24,
-  }),
-  deleteButton: castStyle.view({
-    marginTop: 24,
   }),
 })
