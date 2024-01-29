@@ -33,7 +33,7 @@
     "@react-navigation/stack": "^6.0.9",
     "@reduxjs/toolkit": "^1.9.0",
     "@rsksmart/rif-id-mnemonic": "^0.1.1",
-    "@rsksmart/rif-relay-light-sdk": "1.1.0-beta.2",
+    "@rsksmart/rif-relay-light-sdk": "1.1.0-beta.3",
     "@rsksmart/rif-wallet-abi-enhancer": "^1.0.10",
     "@rsksmart/rif-wallet-adapters": "^1.0.4",
     "@rsksmart/rif-wallet-bitcoin": "^1.2.3",
