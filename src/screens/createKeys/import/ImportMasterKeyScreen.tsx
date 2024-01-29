@@ -84,12 +84,13 @@ export const ImportMasterKeyScreen = (
           initializeWallet,
         }),
       )
+      form.reset()
     } catch (err) {
       if (err instanceof Error) {
         throw new Error(err.toString())
       }
     }
-  }, [dispatch, status, initializeWallet])
+  }, [dispatch, status, initializeWallet, form])
 
   const handleSlideChange = useCallback((index: number) => {
     setSelectedSlide(index)
