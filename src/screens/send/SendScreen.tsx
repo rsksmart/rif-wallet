@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
@@ -46,6 +46,7 @@ export const SendScreen = ({
   const { loading, isDeployed } = walletIsDeployed
   const chainId = useAppSelector(selectChainId)
   const { contacts } = useAppSelector(getContactsAsArrayAndSelected)
+  const [isOnProposal, setIsOnProposal] = useState(false)
 
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
@@ -161,7 +162,7 @@ export const SendScreen = ({
   // when you try to scan code again from main bottom nav
   useEffect(() => {
     dispatch(setFullscreen(isFocused))
-  }, [dispatch, isFocused])
+  }, [dispatch, isFocused, isOnProposal])
 
   useEffect(() => {
     navigation.setOptions({
@@ -222,6 +223,7 @@ export const SendScreen = ({
         contactList={contacts}
         onConfirm={onExecuteTransfer}
         onCancel={onCancel}
+        onProposal={() => setIsOnProposal(true)}
         tokenList={assets}
         totalUsdBalance={totalUsdBalance}
         tokenPrices={prices}

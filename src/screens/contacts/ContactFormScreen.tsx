@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { CompositeScreenProps } from '@react-navigation/native'
+import { CompositeScreenProps, useIsFocused } from '@react-navigation/native'
 import { Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -25,7 +25,7 @@ import {
   editContact,
   getContactsAsArray,
 } from 'store/slices/contactsSlice'
-import { selectChainId } from 'store/slices/settingsSlice'
+import { selectChainId, setFullscreen } from 'store/slices/settingsSlice'
 import { sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { sharedHeaderLeftOptions } from 'src/navigation'
@@ -73,6 +73,7 @@ export const ContactFormScreen = ({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const [rnsLoading, setRnsLoading] = useState(false)
+  const isFocused = useIsFocused()
 
   const schema = useMemo(
     () =>
@@ -194,11 +195,11 @@ export const ContactFormScreen = ({
   )
 
   useEffect(() => {
+    const editMode = !!initialValue.address && !proposed
     navigation.setOptions({
-      headerTitle:
-        initialValue.address && !proposed
-          ? t('contact_form_title_edit')
-          : t('contact_form_title_create'),
+      headerTitle: editMode
+        ? t('contact_form_title_edit')
+        : t('contact_form_title_create'),
       headerTintColor: sharedColors.white,
       headerStyle: {
         backgroundColor: sharedColors.black,
@@ -209,14 +210,23 @@ export const ContactFormScreen = ({
       headerLeftContainerStyle: {
         paddingTop: 0,
       },
+      headerLeftLabelVisible: editMode,
       headerLeft: proposed
         ? () =>
-            sharedHeaderLeftOptions(() =>
-              navigation.navigate(rootTabsRouteNames.Home),
-            )
+            sharedHeaderLeftOptions(() => {
+              navigation.replace(contactsStackRouteNames.ContactsList)
+              navigation.navigate(rootTabsRouteNames.Home)
+            })
         : undefined,
     })
   }, [navigation, initialValue, t, proposed])
+
+  useEffect(() => {
+    dispatch(setFullscreen(isFocused || !!proposed))
+    return () => {
+      dispatch(setFullscreen(false))
+    }
+  }, [dispatch, isFocused, proposed])
 
   return (
     <KeyboardAvoidingView

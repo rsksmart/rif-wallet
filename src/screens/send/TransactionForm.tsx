@@ -47,6 +47,7 @@ interface Props {
     to: string,
   ) => void
   onCancel: () => void
+  onProposal?: () => void
   isWalletDeployed: boolean
   tokenList: TokenBalanceObject[]
   tokenPrices: Record<string, IPrice>
@@ -104,6 +105,7 @@ export const TransactionForm = ({
   isWalletDeployed,
   onConfirm,
   onCancel,
+  onProposal,
   totalUsdBalance,
   bitcoinBalance = 0,
   status,
@@ -324,8 +326,9 @@ export const TransactionForm = ({
         },
       })
       setProposedContact(null)
+      onProposal?.()
     }
-  }, [proposedContact])
+  }, [onProposal, proposedContact])
 
   const AlertIconIfBalanceBtc = useMemo(() => {
     if (isBitcoinToken) {
