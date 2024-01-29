@@ -101,21 +101,12 @@ export const TransactionSummaryComponent = ({
   )
 
   const openTransactionHash = () => {
-    let explorerUrl = ''
+    const setting = isBitcoinAddressValid(to)
+      ? SETTINGS.BTC_EXPLORER_ADDRESS_URL
+      : SETTINGS.EXPLORER_ADDRESS_URL
 
-    if (isBitcoinAddressValid(to)) {
-      explorerUrl = getWalletSetting(
-        SETTINGS.BTC_EXPLORER_ADDRESS_URL,
-        chainTypesById[chainId],
-      )
-    } else {
-      explorerUrl = getWalletSetting(
-        SETTINGS.EXPLORER_ADDRESS_URL,
-        chainTypesById[chainId],
-      )
-    }
-
-    Linking.openURL(`${explorerUrl}/tx/${hashId}`)
+    const explorerUrl = getWalletSetting(setting, chainTypesById[chainId])
+    Linking.openURL(`${explorerUrl}/${hashId}`)
   }
 
   return (
