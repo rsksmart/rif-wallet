@@ -5,7 +5,8 @@
     "rifTokenAddress": "0x19f64674d8a5b4e652319f5e239efd3bc969a1fe",
     "rnsRegistryAddress": "0x7d284aaac6e925aad802a53c0c69efe3764597b8",
     "rifWalletDeployment": "0x0000000000000000000000000000000000000000",
-    "rBTCFaucet": "0x88250f772101179a4ecfaa4b92a983676a3ce445"
+    "rBTCFaucet": "0x88250f772101179a4ecfaa4b92a983676a3ce445",
+    "rifFaucet": "0x248b320687ebf655f9ee7f62f0388c79fbb7b2f4"
   },
   "MAINNET": {
     "rskOwnerAddress": "0x45d3e4fb311982a06ba52359d44cb4f5980e0ef1",
