@@ -1,8 +1,9 @@
 name: Android Build SDK
 
 on:
-  release:
-    types: [released]
+  pull_request
+#  release:
+#    types: [released]
 
 jobs:
   install-and-test:
@@ -37,7 +38,8 @@ jobs:
 
       - name: Build Android Release
         run: |
-          cd android && ./gradlew app:assembleRelease
+          cd android
+          ./gradlew app:assembleRelease
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
