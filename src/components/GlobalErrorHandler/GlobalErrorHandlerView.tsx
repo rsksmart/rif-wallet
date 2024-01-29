@@ -2,11 +2,14 @@ import Clipboard from '@react-native-community/clipboard'
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 
+import { sharedColors, sharedStyles } from 'src/shared/constants'
+import { castStyle } from 'shared/utils'
+
 import { colors } from '../../styles'
-import { PrimaryButton } from '../button/PrimaryButton'
 import ContentCopyMaterialIcon from '../icons/ContentCopyMaterialIcon'
-import { RegularText, SemiBoldText } from '../typography'
+import { Typography } from '../typography'
 import { useGlobalErrorContext } from './GlobalErrorHandlerContext'
+import { AppButton } from '../button'
 
 export type GlobalErrorHandlerViewType = {
   message?: string | undefined
@@ -32,33 +35,39 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
       </View>
       <View style={styles.secondView}>
         <View style={styles.textView}>
-          <SemiBoldText style={styles.text}>
-            Oops... Something went wrong!
-          </SemiBoldText>
-          <RegularText style={styles.text}>
-            We are working hard to fix it.
-          </RegularText>
+          <Typography type={'h1'} style={styles.text}>
+            {'Oops... Something went wrong!'}
+          </Typography>
+          <Typography type={'body1'} style={styles.text}>
+            {'We are working hard to fix it.'}
+          </Typography>
         </View>
         {messageToShow !== '' && (
-          <View style={styles.errorDetailsView}>
-            <RegularText style={[styles.errorDetailsText, styles.whiteText]}>
-              error details
-            </RegularText>
+          <View style={sharedStyles.flex}>
+            <Typography
+              type={'body2'}
+              color={sharedColors.white}
+              style={styles.errorDetailsText}>
+              {'error details'}
+            </Typography>
 
             <TouchableOpacity
               style={styles.errorDetailsTouch}
               onPress={onCopyError}>
-              <RegularText style={[styles.whiteText, styles.detailsText]}>
+              <Typography
+                type={'body3'}
+                color={sharedColors.white}
+                style={sharedStyles.flex}>
                 {messageToShow}
-              </RegularText>
-              <ContentCopyMaterialIcon color="white" size={25} />
+              </Typography>
+              <ContentCopyMaterialIcon color={sharedColors.white} size={25} />
             </TouchableOpacity>
           </View>
         )}
         <View style={styles.reloadButtonView}>
-          <PrimaryButton
-            title="reload"
-            accessibilityLabel="reload"
+          <AppButton
+            title={'reload'}
+            accessibilityLabel={'reload'}
             onPress={handleReload}
             style={styles.reload}
           />
@@ -69,43 +78,40 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: castStyle.view({
     width: '100%',
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.darkPurple3,
     paddingHorizontal: 40,
-  },
-  firstView: {
+  }),
+  firstView: castStyle.view({
     flex: 0.8,
     justifyContent: 'flex-end',
-  },
-  secondView: {
+  }),
+  secondView: castStyle.view({
     flex: 1,
     width: '100%',
-  },
-  imageView: {
+  }),
+  imageView: castStyle.view({
     flex: 3,
     justifyContent: 'flex-end',
-  },
-  textView: {
+  }),
+  textView: castStyle.view({
     flex: 1,
     justifyContent: 'center',
-  },
-  errorDetailsView: {
-    flex: 1,
-  },
-  reloadButtonView: {
+  }),
+  reloadButtonView: castStyle.view({
     flex: 1,
     alignItems: 'center',
-  },
-  text: {
-    color: 'white',
+  }),
+  text: castStyle.text({
+    color: sharedColors.white,
     marginBottom: 10,
     textAlign: 'center',
-  },
-  errorDetailsTouch: {
+  }),
+  errorDetailsTouch: castStyle.view({
     backgroundColor: colors.darkPurple5,
     height: 65,
     borderRadius: 17,
@@ -113,30 +119,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-  },
-  errorDetailsText: {
+  }),
+  errorDetailsText: castStyle.text({
     left: 16,
     fontSize: 10,
     marginBottom: 4,
-  },
-  whiteText: {
-    color: 'white',
-  },
-  detailsText: {
-    flex: 1,
-  },
-  exclamation: {
+  }),
+  exclamation: castStyle.text({
     fontSize: 32,
-  },
-  imageStyle: {
+  }),
+  imageStyle: castStyle.image({
     width: '100%',
     height: undefined,
     aspectRatio: 1,
-  },
-  reload: {
+  }),
+  reload: castStyle.view({
     backgroundColor: colors.background.bustyBlue,
     width: 150,
-  },
+  }),
 })
 
 export default GlobalErrorHandlerView

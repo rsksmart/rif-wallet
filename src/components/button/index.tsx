@@ -178,16 +178,3 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.inputActive,
   }),
 })
-
-// Legacy buttons to remove
-export { ActiveButton } from './ActiveButton'
-export { DialButton } from './DialButton'
-export { OutlineButton } from './OutlineButton'
-export { PrimaryButton } from './PrimaryButton'
-export { SecondaryButton } from './SecondaryButton'
-export { TransferButton } from './TransferButton'
-export { WhiteTransparentButton } from './WhiteButton'
-
-// Button-like things
-export { ToggleButtons } from './ToggleButtons'
-export { TokenButton } from './TokenButton'

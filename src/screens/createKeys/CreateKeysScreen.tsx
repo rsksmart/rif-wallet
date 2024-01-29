@@ -11,9 +11,8 @@ import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator'
-import { sharedColors } from 'shared/constants'
+import { WINDOW_HEIGHT, sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
 
 export const CreateKeysScreen = ({
   navigation,

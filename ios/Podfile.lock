@@ -372,7 +372,7 @@ PODS:
     - React-Core
   - react-native-get-random-values (1.9.0):
     - React-Core
-  - react-native-mmkv (2.5.1):
+  - react-native-mmkv (2.4.3):
     - MMKV (>= 1.2.13)
     - React-Core
   - react-native-netinfo (9.4.1):
@@ -817,7 +817,7 @@ SPEC CHECKSUMS:
   react-native-config: bcafda5b4c51491ee1b0e1d0c4e3905bc7b56c1b
   react-native-flipper: 2d552a8178d839ef378220101fb7f0cd5b2a8003
   react-native-get-random-values: dee677497c6a740b71e5612e8dbd83e7539ed5bb
-  react-native-mmkv: 69b9c003f10afdd01addf7c6ee784ce42ee2eff3
+  react-native-mmkv: 1265a348a4711097ba29c8bcefd5971f48220f2b
   react-native-netinfo: fefd4e98d75cbdd6e85fc530f7111a8afdf2b0c5
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
@@ -856,4 +856,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 078a56513c6ebe1366f300f18d66914e074eca6f
 
-COCOAPODS: 1.13.0
+COCOAPODS: 1.14.3

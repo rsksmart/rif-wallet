@@ -11,9 +11,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { Typography } from 'components/typography'
-import { sharedColors } from 'shared/constants'
+import { WINDOW_HEIGHT, sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { WINDOW_HEIGHT } from 'src/ux/slides/Dimensions'
 
 import { AppButton, AppButtonProps } from '../button'
 
