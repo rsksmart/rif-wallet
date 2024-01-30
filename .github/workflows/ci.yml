@@ -8,14 +8,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js 16.x
+    - uses: actions/checkout@v3
+    - name: Use Node.js 20.x
       uses: actions/setup-node@v1
       with:
-        node-version: 16.x
-    - name: Set up NPM authentication
-      run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PACKAGES_KEY }}" >> ~/.npmrc
-    - run: yarn
-    - run: yarn ganache &
-    - run: yarn test
-    - run: yarn lint
+        node-version: 20.x
+
+    - name: Install dependencies
+      run: yarn
+
+    - name: Test and Lint
+      run: |
+        yarn ganache &
+        yarn test
+        yarn lint
