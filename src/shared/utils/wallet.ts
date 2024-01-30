@@ -6,6 +6,7 @@ import { Magic } from '@magic-sdk/react-native-bare'
 import { ChainID, EOAWallet, OnRequest, WalletState } from 'lib/eoaWallet'
 import { RelayWallet } from 'lib/relayWallet'
 import { MagicWallet } from 'lib/magicWallet'
+import { MagicRelayWallet } from 'lib/magicRelayWallet'
 
 import { Wallet } from '../wallet'
 
@@ -16,10 +17,10 @@ export const createMagicWalletWithEmail = async (
   email: string,
   magic: Magic,
   onRequest: OnRequest,
+  config?: RifRelayConfig,
 ) => {
-  if (isRelayWallet) {
-    //@TODO: add MagicRelay instance logic
-    return null
+  if (isRelayWallet && config) {
+    return await MagicRelayWallet.create(email, magic, onRequest, config)
   } else {
     return await MagicWallet.create(email, magic, onRequest)
   }

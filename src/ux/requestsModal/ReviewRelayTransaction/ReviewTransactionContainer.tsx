@@ -7,10 +7,8 @@ import { isAddress } from '@rsksmart/rsk-utils'
 
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
 import { RelayWallet } from 'lib/relayWallet'
-import {
-  OverriddableTransactionOptions,
-  SendTransactionRequest,
-} from 'lib/eoaWallet'
+import { SendTransactionRequest } from 'lib/eoaWallet'
+import { MagicRelayWallet } from 'lib/magicRelayWallet'
 
 import { AppButtonBackgroundVarietyEnum } from 'components/index'
 import { getTokenAddress } from 'core/config'
@@ -98,7 +96,10 @@ export const ReviewTransactionContainer = ({
   } = enhancedTransactionRequest
 
   const isMainnet = chainTypesById[chainId] === ChainTypeEnum.MAINNET
-  const feeSymbol = getFeeSymbol(isMainnet, wallet instanceof RelayWallet)
+  const feeSymbol = getFeeSymbol(
+    isMainnet,
+    wallet instanceof RelayWallet || wallet instanceof MagicRelayWallet,
+  )
   const feeContract = getTokenAddress(feeSymbol, chainId)
 
   const getTokenBySymbol = useCallback(
@@ -193,7 +194,7 @@ export const ReviewTransactionContainer = ({
 
     if (
       tokenToBoolMap.get(symbol as TokenSymbol) &&
-      wallet instanceof RelayWallet
+      (wallet instanceof RelayWallet || wallet instanceof MagicRelayWallet)
     ) {
       insufficientFunds =
         Number(value) + Number(feeValue) > Number(balances[feeContract].balance)
