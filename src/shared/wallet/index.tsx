@@ -11,10 +11,11 @@ import {
 import { EOAWallet } from 'lib/eoaWallet'
 import { RelayWallet } from 'lib/relayWallet'
 import { MagicWallet } from 'lib/magicWallet'
+import { MagicRelayWallet } from 'lib/magicRelayWallet'
 
 // preparing for having different types of Wallets
 // like EOA Wallet, MAGIC etc
-export type Wallet = RelayWallet | EOAWallet | MagicWallet
+export type Wallet = RelayWallet | EOAWallet | MagicWallet | MagicRelayWallet
 
 interface WalletIsDeployed {
   loading: boolean

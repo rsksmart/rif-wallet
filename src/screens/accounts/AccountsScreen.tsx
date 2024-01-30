@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 
 import { shortAddress } from 'lib/utils'
 import { RelayWallet } from 'lib/relayWallet'
+import { MagicRelayWallet } from 'lib/magicRelayWallet'
 
 import { AccountBox } from 'components/accounts/AccountBox'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
@@ -62,7 +63,9 @@ export const AccountsScreen = ({
         walletIsDeployed={walletIsDeployed}
         address={wallet.address}
         smartWalletAddress={
-          wallet instanceof RelayWallet ? wallet.smartWalletAddress : null
+          wallet instanceof RelayWallet || wallet instanceof MagicRelayWallet
+            ? wallet.smartWalletAddress
+            : null
         }
         chainId={chainId}
         publicKeys={publicKeys}
