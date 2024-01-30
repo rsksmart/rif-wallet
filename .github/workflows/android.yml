@@ -10,12 +10,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up NPM authentication
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PACKAGES_KEY }}" >> ~/.npmrc
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
 
       - name: Install dependencies
-        run: |
-          yarn
+        run: yarn
 
       - name: Test and Lint
         run: |
@@ -28,16 +29,19 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
-      - name: Set up NPM authentication
-        run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.GH_PACKAGES_KEY }}" >> ~/.npmrc
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
 
       - name: Install dependencies
-        run: |
-          yarn
+        run: yarn
 
       - name: Build Android Release
         run: |
-          cd android && ./gradlew app:assembleRelease
+          cd android
+          ./gradlew app:assembleRelease
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
