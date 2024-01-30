@@ -43,43 +43,49 @@ export const useEnhancedWithGas = (
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
   useEffect(() => {
-    // avoid to call estimateGas if the tx.to address is not valid
-    if (tx.to && !isAddress(tx.to)) {
-      return
-    }
-    const gasLimitEstimate = wallet
-      .estimateGas({ to: tx.to || '0x', data: tx.data || '0x' })
-      .then((estimate: BigNumber) => {
-        if (tx.gasLimit && estimate.lt(tx.gasLimit)) {
-          return tx.gasLimit
-        } else {
-          return estimate
-        }
+    ;(async () => {
+      // avoid to call estimateGas if the tx.to address is not valid
+      if (tx.to && !isAddress(tx.to)) {
+        return
+      }
+      const gasLimit = await wallet
+        .estimateGas({ to: tx.to || '0x', data: tx.data || '0x' })
+        .then((estimate: BigNumber) => {
+          if (tx.gasLimit && estimate.lt(tx.gasLimit)) {
+            return tx.gasLimit
+          } else {
+            return estimate
+          }
+        })
+
+      const gasPrice = await wallet.provider
+        ?.getGasPrice()
+        .then((gp: BigNumber) => gp.mul('101').div('100'))
+        .then((estimate: BigNumber) => {
+          if (tx.gasPrice && estimate.lt(tx.gasPrice)) {
+            return tx.gasPrice
+          } else {
+            return estimate
+          }
+        })
+
+      const txEnhanced = await abiEnhancer.enhance(chainId, tx)
+
+      if (!txEnhanced) {
+        console.log('ENHANCED RESULT IS NULL')
+        return
+      }
+
+      const convertedResult = convertTransactionToStrings({
+        ...txEnhanced,
+        gasLimit,
+        gasPrice,
       })
 
-    const gasPriceEstimate = wallet.provider
-      ?.getGasPrice()
-      .then((gp: BigNumber) => gp.mul('101').div('100'))
-      .then((estimate: BigNumber) => {
-        if (tx.gasPrice && estimate.lt(tx.gasPrice)) {
-          return tx.gasPrice
-        } else {
-          return estimate
-        }
-      })
-
-    const enhancer = abiEnhancer.enhance(chainId, tx)
-
-    Promise.all([gasLimitEstimate, gasPriceEstimate, enhancer]).then(result => {
-      const txEnhanced = convertTransactionToStrings({
-        ...result[2],
-        gasLimit: result[0] || 0,
-        gasPrice: result[1] || 0,
-      })
-
-      setEnhancedTransactionRequest(txEnhanced)
+      setEnhancedTransactionRequest(convertedResult)
       setIsLoaded(true)
-    })
+      // })
+    })()
   }, [tx, wallet, chainId])
 
   const setGasLimit = (gasLimit: string) =>
