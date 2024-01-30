@@ -73,8 +73,16 @@ export const ReviewBitcoinTransactionContainer = ({
     onCancel()
   }, [onCancel, request])
 
-  const data: TransactionSummaryScreenProps = useMemo(
-    () => ({
+  const data: TransactionSummaryScreenProps = useMemo(() => {
+    const convertToUSD = (amount: string) =>
+      convertTokenToUSD(Number(amount), tokenPrices.BTC.price).toFixed(2)
+
+    // usd values
+    const amountToPayUsd = convertToUSD(amountToPay)
+    const feeUsd = convertToUSD(miningFee)
+    const isAmountSmall = !Number(amountToPayUsd) && !!Number(amountToPay)
+
+    return {
       transaction: {
         tokenValue: {
           balance: amountToPay,
@@ -82,28 +90,19 @@ export const ReviewBitcoinTransactionContainer = ({
           symbol: TokenSymbol.BTC,
         },
         usdValue: {
-          balance: convertTokenToUSD(
-            Number(amountToPay),
-            tokenPrices.BTC.price,
-            true,
-          ).toString(),
+          balance: isAmountSmall ? '0.01' : amountToPayUsd,
           symbolType: 'usd',
-          symbol: '$',
+          symbol: isAmountSmall ? '<' : '$',
         },
         fee: {
           tokenValue: miningFee,
-          usdValue: convertTokenToUSD(
-            Number(miningFee),
-            tokenPrices.BTC.price,
-          ).toString(),
+          usdValue: feeUsd,
+          symbol: TokenSymbol.BTC,
         },
         time: 'approx 1 min',
         total: {
           tokenValue: amountToPay,
-          usdValue: convertTokenToUSD(
-            Number(amountToPay) + Number(miningFee),
-            tokenPrices.BTC.price,
-          ).toString(),
+          usdValue: Number(amountToPayUsd) + Number(feeUsd),
         },
         to: addressToPay,
       },
@@ -128,19 +127,18 @@ export const ReviewBitcoinTransactionContainer = ({
           defaultMiningFee={payload.miningFee}
         />
       ),
-    }),
-    [
-      addressToPay,
-      amountToPay,
-      miningFee,
-      onCancelTransaction,
-      t,
-      onConfirmTransaction,
-      tokenPrices,
-      payload.miningFee,
-      onMiningFeeChange,
-    ],
-  )
+    }
+  }, [
+    addressToPay,
+    amountToPay,
+    miningFee,
+    onCancelTransaction,
+    t,
+    onConfirmTransaction,
+    tokenPrices,
+    payload.miningFee,
+    onMiningFeeChange,
+  ])
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/*Without a Wallet it's not possible to initiate a transaction */}

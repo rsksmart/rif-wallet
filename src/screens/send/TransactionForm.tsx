@@ -336,6 +336,7 @@ export const TransactionForm = ({
         <Icon
           name={'info-circle'}
           size={defaultIconSize}
+          style={styles.infoIcon}
           onPress={() =>
             Alert.alert(
               t('transaction_form_bitcoin_alert_utxo_title'),
@@ -533,4 +534,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   }),
   proposedContact: castStyle.view({ marginTop: 6 }),
+  infoIcon: castStyle.text({ color: sharedColors.inputLabelColor }),
 })

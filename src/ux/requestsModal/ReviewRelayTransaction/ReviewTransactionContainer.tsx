@@ -205,7 +205,7 @@ export const ReviewTransactionContainer = ({
       Alert.alert(t('transaction_summary_insufficient_funds'))
     }
 
-    // get usd values
+    // usd values
     const tokenUsd = convertToUSD(Number(value), tokenQuote)
     const feeUsd = convertToUSD(Number(feeValue), feeQuote)
     const isAmountSmall = !Number(tokenUsd) && !!Number(value)

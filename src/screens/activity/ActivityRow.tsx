@@ -92,7 +92,10 @@ export const ActivityBasicRow = ({
           balance: usdBalance ? usdBalance.toFixed(2) : '0.01',
         },
         status,
-        fee,
+        fee: {
+          ...fee,
+          symbol: fee.symbol || symbol,
+        },
         amIReceiver,
         from,
         to,
