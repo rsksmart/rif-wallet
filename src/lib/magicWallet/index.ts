@@ -104,11 +104,15 @@ export class MagicWallet extends Signer implements TypedDataSigner {
     })
   }
 
-  _signTypedData(
+  async _signTypedData(
     domain: TypedDataDomain,
     types: Record<string, TypedDataField[]>,
     value: Record<string, any>,
+    forceConfirm?: boolean,
   ): Promise<string> {
+    if (forceConfirm) {
+      return await this.signer._signTypedData(domain, types, value)
+    }
     console.log('SIGNED TYPED DATA', domain, types, value)
     return new Promise((resolve, reject) => {
       const nextRequest = Object.freeze<SignTypedDataRequest>({

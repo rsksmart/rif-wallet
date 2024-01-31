@@ -65,9 +65,7 @@ export class MagicRelayWallet extends MagicWallet {
       }
 
       // bypass the EOAWallet's _signTypedData since the consent is already given
-      // wallet._signTypedData = (domain, types, value) => {
-      //   return wallet._signTypedData
-      // }
+      wallet._signTypedData = wallet.signer._signTypedData
 
       const rifRelaySdk = await RIFRelaySDK.create(wallet, config)
 
