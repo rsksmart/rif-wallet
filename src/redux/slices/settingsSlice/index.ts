@@ -8,6 +8,7 @@ import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 
 import { ChainID, WalletState } from 'lib/eoaWallet'
 import { MagicWallet } from 'lib/magicWallet'
+import { MagicRelayWallet } from 'lib/magicRelayWallet'
 
 import { deleteDomains } from 'storage/DomainsStore'
 import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
@@ -348,7 +349,11 @@ export const resetApp = createAsyncThunk<
     resetReduxStorage()
 
     console.log('BEFORE LOGOUT')
-    if (payload && payload.wallet instanceof MagicWallet) {
+    if (
+      payload &&
+      (payload.wallet instanceof MagicWallet ||
+        payload?.wallet instanceof MagicRelayWallet)
+    ) {
       await payload.wallet.logout()
     }
 
@@ -386,7 +391,7 @@ const settingsSlice = createSlice({
       state.topColor = action.payload
     },
     onRequest: (state, { payload }: PayloadAction<OnRequestAction>) => {
-      state.requests.unshift(payload.request)
+      state.requests.push(payload.request)
     },
     closeRequest: state => {
       state.requests.pop()

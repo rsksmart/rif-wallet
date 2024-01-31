@@ -1,6 +1,8 @@
+import { RequestWithBitcoin } from 'src/shared/types'
 import { RootState } from 'store/store'
 
-export const selectRequests = ({ settings }: RootState) => settings.requests
+export const selectRequests = ({ settings }: RootState) =>
+  settings.requests as RequestWithBitcoin[]
 
 export const selectTopColor = ({ settings }: RootState) => settings.topColor
 

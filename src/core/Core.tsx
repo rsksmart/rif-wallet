@@ -62,7 +62,7 @@ export const Core = () => {
               <RootNavigationComponent />
               {requests.length !== 0 && (
                 <RequestHandler
-                  request={requests[0]}
+                  requests={requests}
                   closeRequest={() => dispatch(closeRequest())}
                 />
               )}
