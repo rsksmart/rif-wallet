@@ -2,10 +2,15 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 import { Wallet } from 'shared/wallet'
 import { AsyncThunkWithTypes } from 'store/store'
-import { createMagicWalletWithEmail } from 'shared/utils'
+import { createMagicWalletWithEmail, isRelayWallet } from 'shared/utils'
 
 import { EmailLogin, SeedlessState } from './types'
-import { initializeApp, onRequest, setUnlocked } from '../settingsSlice'
+import {
+  getRifRelayConfig,
+  initializeApp,
+  onRequest,
+  setUnlocked,
+} from '../settingsSlice'
 
 export const loginWithEmail = createAsyncThunk<
   Wallet,
@@ -20,20 +25,25 @@ export const loginWithEmail = createAsyncThunk<
     } = thunkAPI.getState()
     const { email, initializeWallet, magic } = payload
 
-    const wallet = await createMagicWalletWithEmail(email, magic, request =>
-      thunkAPI.dispatch(onRequest({ request })),
+    const wallet = await createMagicWalletWithEmail(
+      email,
+      magic,
+      request => thunkAPI.dispatch(onRequest({ request })),
+      isRelayWallet ? getRifRelayConfig(chainId) : undefined,
     )
 
-    //@TODO: when MagicRelay is added
-    // this ts error will be fixed
-    const result = await wallet?.loginWithEmail(email)
+    if (!wallet) {
+      return thunkAPI.rejectWithValue('Failed to Login With Email')
+    }
+
+    const result = await wallet.loginWithEmail(email)
 
     if (!result) {
       return thunkAPI.rejectWithValue('No DID Token was created!')
     }
 
-    initializeWallet(wallet!, {
-      isDeployed: await wallet!.isDeployed,
+    initializeWallet(wallet, {
+      isDeployed: await wallet.isDeployed,
       txHash: null,
       loading: false,
     })
@@ -42,7 +52,7 @@ export const loginWithEmail = createAsyncThunk<
 
     await initializeApp(
       '',
-      wallet!,
+      wallet,
       chainId,
       usdPrices,
       balances,
@@ -50,7 +60,7 @@ export const loginWithEmail = createAsyncThunk<
       thunkAPI.rejectWithValue,
     )
 
-    // return wallet
+    return wallet
   } catch (err) {
     return thunkAPI.rejectWithValue(err)
   }
@@ -60,7 +70,7 @@ const initialState: SeedlessState = {
   loading: false,
 }
 
-const settingsSlice = createSlice({
+const seedlessSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {},
@@ -77,8 +87,8 @@ const settingsSlice = createSlice({
   },
 })
 
-export const {} = settingsSlice.actions
+export const {} = seedlessSlice.actions
 
-export const seedlessSliceReducer = settingsSlice.reducer
+export const seedlessSliceReducer = seedlessSlice.reducer
 
 export * from './selectors'
