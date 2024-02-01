@@ -39,7 +39,7 @@ export const getRnsResolver = (
 
 const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
   .filter(address =>
-    ['RDOC', 'RIF', 'USDRIF'].includes(mainnetContracts[address].symbol),
+    ['RIF', 'USDRIF'].includes(mainnetContracts[address].symbol),
   )
   .map(address => {
     const { decimals, name, symbol } = mainnetContracts[address]
@@ -54,7 +54,7 @@ const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
   })
 const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
   .filter(address =>
-    ['RDOC', 'tRIF', 'USDRIF'].includes(testnetContracts[address].symbol),
+    ['tRIF', 'USDRIF'].includes(testnetContracts[address].symbol),
   )
   .map(address => {
     const { decimals, name, symbol } = testnetContracts[address]
