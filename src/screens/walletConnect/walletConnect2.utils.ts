@@ -71,6 +71,7 @@ export const createWeb3Wallet = async () => {
   const core = new Core({
     projectId,
     storage: new MMKVCoreStorage(),
+    logger: 'info', // info on this: https://github.com/pinojs/pino/blob/master/docs/api.md#levels
   })
 
   return await Web3Wallet.init({
