@@ -1,11 +1,10 @@
-import { useContext, useMemo, useState } from 'react'
+import { useContext, useMemo, useState, useCallback } from 'react'
 import {
   convertSatoshiToBtcHuman,
   SendBitcoinRequest,
 } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
-import { useCallback } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -22,7 +21,10 @@ import { WalletContext } from 'shared/wallet'
 import { useAddress } from 'shared/hooks'
 import { formatTokenValues } from 'shared/utils'
 
-import { BitcoinMiningFeeContainer } from './BitcoinMiningFeeContainer'
+import {
+  BitcoinMiningFeeContainer,
+  FeeRecord,
+} from './BitcoinMiningFeeContainer'
 
 interface ReviewBitcoinTransactionContainerProps {
   request: SendBitcoinRequest
@@ -179,7 +181,32 @@ const MiningFeeInput = ({
     },
   })
 
-  const handleFeeChange = (text: string) => onChange(text)
+  const { setValue } = methods
+
+  const handleFeeChange = useCallback(
+    (text: string) => onChange(text),
+    [onChange],
+  )
+
+  const onFeeRatesLoaded = useCallback(
+    (feeRates: FeeRecord[]) => {
+      let newFee
+      // If length > 1 then it's fetching the fee from cypher
+      if (feeRates.length > 1) {
+        newFee = feeRates[1].feeRate
+      }
+      // If length === 1 then it's fetching the fee from blockbook
+      if (feeRates.length === 1) {
+        newFee = feeRates[0].feeRate
+      }
+
+      if (newFee) {
+        handleFeeChange(newFee)
+        setValue('miningFee', Number(newFee))
+      }
+    },
+    [handleFeeChange, setValue],
+  )
 
   return (
     <FormProvider {...methods}>
@@ -188,7 +215,7 @@ const MiningFeeInput = ({
         inputName="miningFee"
         onChangeText={handleFeeChange}
       />
-      <BitcoinMiningFeeContainer />
+      <BitcoinMiningFeeContainer onFeeRatesLoaded={onFeeRatesLoaded} />
     </FormProvider>
   )
 }
