@@ -17,7 +17,6 @@ import { getContactByAddress } from 'store/slices/contactsSlice'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
 import { Wallet } from 'shared/wallet'
 import { useAddress } from 'shared/hooks'
-import { formatSmallNumbers } from 'src/shared/utils'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -92,18 +91,18 @@ export const ActivityBasicRow = ({
         usdValue: {
           symbol: usdBalance ? '$' : '<',
           symbolType: 'usd',
-          balance: usdBalance ? usdBalance.toFixed(2) : '0.01',
+          balance: usdBalance ? usdBalance : '0.01',
         },
         totalToken:
           symbol === fee.symbol
             ? Number(value) + Number(fee.tokenValue)
             : Number(value),
-        totalUsd: formatSmallNumbers(Number(value) + Number(fee.usdValue)),
+        totalUsd: Number(value) + Number(fee.usdValue),
         status,
         fee: {
           ...fee,
           symbol: fee.symbol || symbol,
-          usdValue: formatSmallNumbers(fee.usdValue),
+          usdValue: fee.usdValue,
         },
         amIReceiver,
         from,

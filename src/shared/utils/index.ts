@@ -24,18 +24,29 @@ import { RelayWallet } from 'lib/relayWallet'
 import { Wallet } from '../wallet'
 import { ErrorWithMessage } from '../types'
 
-const tiniestAmount = 0.0000001
+const tiniestAmount = 0.000001
+
+const formatWithDigits = (number: string) => {
+  const splitArr = number.split('.')
+  const secondPart =
+    splitArr[1].length > 8 ? splitArr[1].slice(0, 9) : splitArr[1]
+
+  return [splitArr[0], secondPart].join('.')
+}
 
 export const formatSmallNumbers = (smallNumber: string | number) => {
   if (isNaN(Number(smallNumber))) {
-    return smallNumber
-  }
-
-  if (Number(smallNumber) >= tiniestAmount) {
     return smallNumber.toString()
   }
 
-  return `< ${tiniestAmount}`
+  smallNumber = smallNumber.toString()
+  const asNumber = Number(smallNumber)
+
+  if (asNumber >= tiniestAmount) {
+    return formatWithDigits(smallNumber)
+  }
+
+  return asNumber !== 0 ? `< ${tiniestAmount}` : '0.00'
 }
 
 // this needs to be here because of the failing tests
@@ -50,22 +61,29 @@ export const rbtcMap = new Map([
   [undefined, false],
 ])
 
-export const formatLongNumbers = (longNumber: string | number) => {
-  if (isNaN(Number(longNumber))) {
-    return longNumber.toString()
+export const formatTokenValues = (number: string | number) => {
+  // make sure to use this only at the end when showing values
+  if (isNaN(Number(number))) {
+    return number.toString()
+  }
+  number = number.toString()
+  const asNumber = Number(number)
+
+  if (asNumber < 1) {
+    return formatSmallNumbers(number)
   }
 
-  if (!(typeof longNumber === 'string')) {
-    longNumber = longNumber.toString()
+  if (number.includes('.') && asNumber > 1) {
+    return formatWithDigits(number)
   }
 
-  if (longNumber.length <= 3) {
-    return longNumber
+  if (number.length <= 3) {
+    return number
   }
 
-  const longNumberArr = longNumber.split('')
+  const longNumberArr = number.split('')
 
-  for (let i = longNumber.length - 3; i > 0; i -= 3) {
+  for (let i = number.length - 3; i > 0; i -= 3) {
     longNumberArr.splice(i, 0, ',')
   }
 

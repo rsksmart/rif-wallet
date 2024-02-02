@@ -33,7 +33,7 @@ import {
   ChainTypesByIdType,
 } from 'shared/constants/chainConstants'
 import { TokenSymbol } from 'screens/home/TokenImage'
-import { formatLongNumbers, rbtcMap } from 'shared/utils'
+import { rbtcMap } from 'shared/utils'
 
 export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
@@ -116,7 +116,7 @@ export const activityDeserializer: (
           : getTokenAddress(feeSymbol as TokenSymbol, chainId)
     } catch {}
     const feeQuote = prices[feeContract.toLowerCase()]?.price || 0
-    const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote).toFixed(2)
+    const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote).toString()
 
     return {
       id: tx.hash,
@@ -129,7 +129,7 @@ export const activityDeserializer: (
       symbol: tokenSymbol,
       price: Number(tokenUsd),
       fee: {
-        tokenValue: formatLongNumbers(feeTokenValue.toString()),
+        tokenValue: feeTokenValue.toString(),
         symbol: feeSymbol,
         usdValue: feeUsd,
       },

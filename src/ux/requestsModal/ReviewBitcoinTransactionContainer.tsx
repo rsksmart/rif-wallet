@@ -20,6 +20,7 @@ import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { WalletContext } from 'shared/wallet'
 import { useAddress } from 'shared/hooks'
+import { formatTokenValues } from 'shared/utils'
 
 import { BitcoinMiningFeeContainer } from './BitcoinMiningFeeContainer'
 
@@ -104,7 +105,7 @@ export const ReviewBitcoinTransactionContainer = ({
         time: 'approx 1 min',
         total: {
           tokenValue: amountToPay,
-          usdValue: Number(amountToPayUsd) + Number(feeUsd),
+          usdValue: formatTokenValues(Number(amountToPayUsd) + Number(feeUsd)),
         },
         to: addressToPay,
       },

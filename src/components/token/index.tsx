@@ -18,7 +18,7 @@ import { ContactCard } from 'screens/contacts/components'
 import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
 import { noop, sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
-import { castStyle } from 'shared/utils'
+import { castStyle, formatTokenValues } from 'shared/utils'
 
 import { DollarIcon } from '../icons/DollarIcon'
 import { EyeIcon } from '../icons/EyeIcon'
@@ -102,7 +102,11 @@ export const TokenBalance = ({
           )}
           <TextInput
             onChangeText={handleAmountChange}
-            value={hide ? '\u002A\u002A\u002A\u002A' : firstValue.balance}
+            value={
+              hide
+                ? '\u002A\u002A\u002A\u002A'
+                : formatTokenValues(firstValue.balance)
+            }
             keyboardType="numeric"
             accessibilityLabel={'Amount.Input'}
             placeholder="0"
@@ -133,7 +137,9 @@ export const TokenBalance = ({
             <Typography type="body1" style={styles.subTitle}>
               {hide
                 ? '\u002A\u002A\u002A\u002A\u002A\u002A'
-                : secondValue?.balance}
+                : secondValue
+                ? formatTokenValues(secondValue.balance)
+                : ''}
             </Typography>
           )}
           {error && (

@@ -22,8 +22,7 @@ import { chainTypesById } from 'shared/constants/chainConstants'
 import {
   castStyle,
   errorHandler,
-  formatLongNumbers,
-  formatSmallNumbers,
+  formatTokenValues,
   rbtcMap,
 } from 'shared/utils'
 import { selectChainId } from 'store/slices/settingsSlice'
@@ -188,7 +187,7 @@ export const ReviewTransactionContainer = ({
     const feeValue = txCost ? balanceToDisplay(txCost, 18) : '0'
     const rbtcFeeValue =
       txCost && rbtcMap.get(feeSymbol)
-        ? formatLongNumbers(txCost.toString())
+        ? formatTokenValues(txCost.toString())
         : undefined
     let insufficientFunds = false
 
@@ -231,7 +230,7 @@ export const ReviewTransactionContainer = ({
         },
         fee: {
           tokenValue: rbtcFeeValue ?? feeValue,
-          usdValue: formatSmallNumbers(feeUsd),
+          usdValue: formatTokenValues(feeUsd),
           symbol: feeSymbol,
         },
         totalToken,
