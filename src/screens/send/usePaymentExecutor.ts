@@ -3,7 +3,6 @@ import {
   convertBtcToSatoshi,
   UnspentTransactionType,
 } from '@rsksmart/rif-wallet-bitcoin'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { useTranslation } from 'react-i18next'
 
@@ -26,10 +25,19 @@ import {
   addAddressToUsedBitcoinAddresses,
   selectWholeSettingsState,
 } from 'store/slices/settingsSlice'
+import { Wallet } from 'shared/wallet'
 
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
 import { OnSetTransactionStatusChange, TransactionInformation } from './types'
+
+interface ExecutePayment {
+  token: TokenBalanceObject
+  amount: number
+  to: string
+  wallet: Wallet
+  chainId: number
+}
 
 // Update transaction based on status
 // Pending will add a pendingTransaction
@@ -161,13 +169,7 @@ export const usePaymentExecutor = (
     to,
     wallet,
     chainId,
-  }: {
-    token: TokenBalanceObject
-    amount: number
-    to: string
-    wallet: RIFWallet
-    chainId: number
-  }) => {
+  }: ExecutePayment) => {
     if ('bips' in token) {
       const hasError = checkBitcoinPaymentForErrors(utxos, amount)
       if (hasError) {

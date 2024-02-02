@@ -1,12 +1,11 @@
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
-
 import { AppDispatch } from 'store/index'
 import { OnSetTransactionStatusChange } from 'screens/send/types'
 import { handleReduxTransactionStatusChange } from 'screens/send/usePaymentExecutor'
 import { abiEnhancer } from 'core/setup'
+import { Wallet } from 'shared/wallet'
 
 export const handleDomainTransactionStatusChange =
-  (dispatch: AppDispatch, wallet: RIFWallet) =>
+  (dispatch: AppDispatch, wallet: Wallet) =>
   async (tx: Parameters<OnSetTransactionStatusChange>[0]) => {
     const txTransformed = tx
     if (txTransformed.txStatus === 'PENDING') {

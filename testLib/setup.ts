@@ -1,30 +1,42 @@
-import { RIFWallet, OnRequest, Request } from '@rsksmart/rif-wallet-core'
+import { Wallet } from 'ethers'
 
-import { rifRelayConfig } from 'core/setup'
+import { RelayWallet } from 'lib/relayWallet'
+import { OnRequest, Request } from 'lib/eoaWallet'
 
-import { createNewTestWallet } from './utils'
+import { Wallet as WalletType } from 'shared/wallet'
+import { getCurrentChainId } from 'storage/ChainStorage'
+import { getRifRelayConfig } from 'store/slices/settingsSlice'
+
+import { testJsonRpcProvider } from './utils'
 
 export const setupTest = async (
-  privateKey?: string,
+  mnemonic: string,
 ): Promise<{
   navigation: { navigate: () => ReturnType<typeof jest.fn> }
   route: object
-  rifWallet: RIFWallet
+  wallet: WalletType
 }> => {
   jest.mock('react-i18next', () => ({
     useTranslation: () => ({ t: (key: string) => key }),
   }))
 
-  const wallet = await createNewTestWallet(privateKey)
   const onRequest: OnRequest = (nextRequest: Request) => nextRequest.confirm()
 
-  const rifWallet = await RIFWallet.create(wallet, onRequest, rifRelayConfig)
+  const wallet = await RelayWallet.create(
+    !mnemonic
+      ? (Wallet.createRandom().mnemonic as unknown as string)
+      : mnemonic,
+    getCurrentChainId(),
+    testJsonRpcProvider,
+    onRequest,
+    getRifRelayConfig(getCurrentChainId()),
+  )
 
-  const deployTx = await rifWallet.smartWalletFactory.deploy()
+  const deployTx = await wallet.rifRelaySdk.smartWalletFactory.deploy()
   await deployTx.wait()
 
   return {
-    rifWallet,
+    wallet,
     navigation: {
       navigate: jest.fn(),
     },

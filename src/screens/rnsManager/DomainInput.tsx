@@ -1,4 +1,3 @@
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import debounce from 'lodash.debounce'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -14,14 +13,12 @@ import { Input, Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { colors } from 'src/styles'
-import { useAppSelector } from 'store/storeUtils'
-import { selectChainId } from 'store/slices/settingsSlice'
-import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
 
 import { minDomainLength } from './SearchDomainScreen'
 
 interface Props {
-  wallet: RIFWallet
+  address: string
+  rskRegistrar: RSKRegistrar
   inputName: string
   domainValue: string
   error: FieldError | undefined
@@ -47,7 +44,8 @@ const labelColorMap = new Map([
 ])
 
 export const DomainInput = ({
-  wallet,
+  address,
+  rskRegistrar,
   inputName,
   domainValue,
   onDomainAvailable,
@@ -58,21 +56,10 @@ export const DomainInput = ({
   const [domainAvailability, setDomainAvailability] = useState<DomainStatus>(
     DomainStatus.NONE,
   )
-  const chainId = useAppSelector(selectChainId)
   const { t } = useTranslation()
   const errorType = error?.type
   const errorMessage = error?.message
 
-  const rskRegistrar = useMemo(
-    () =>
-      new RSKRegistrar(
-        RNS_ADDRESSES_BY_CHAIN_ID[chainId].rskOwnerAddress,
-        RNS_ADDRESSES_BY_CHAIN_ID[chainId].fifsAddrRegistrarAddress,
-        RNS_ADDRESSES_BY_CHAIN_ID[chainId].rifTokenAddress,
-        wallet,
-      ),
-    [wallet, chainId],
-  )
   const searchDomain = useCallback(
     async (domain: string) => {
       if (errorType === 'matches' && errorMessage) {
@@ -86,9 +73,8 @@ export const DomainInput = ({
 
         if (!available) {
           const ownerAddress = await rskRegistrar.ownerOf(domain)
-          const currentWallet = wallet.smartWallet.smartWalletAddress
 
-          if (currentWallet === ownerAddress) {
+          if (address === ownerAddress) {
             setDomainAvailability(DomainStatus.OWNED)
             onDomainOwned(true)
           } else {
@@ -106,7 +92,7 @@ export const DomainInput = ({
       errorMessage,
       onDomainAvailable,
       rskRegistrar,
-      wallet.smartWallet.smartWalletAddress,
+      address,
       onDomainOwned,
     ],
   )

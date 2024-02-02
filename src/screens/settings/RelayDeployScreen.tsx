@@ -4,10 +4,11 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { BigNumber } from 'ethers'
 import { useTranslation } from 'react-i18next'
 
+import { RelayWallet } from 'lib/relayWallet'
+
 import { AppButton, Typography, AppSpinner } from 'components/index'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { getTokenAddress } from 'core/config'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
@@ -18,8 +19,9 @@ import {
 import { sharedHeaderLeftOptions } from 'navigation/index'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
-import { chainTypesById } from 'shared/constants/chainConstants'
 import { useWholeWalletWithSetters } from 'shared/wallet'
+
+import { TokenSymbol } from '../home/TokenImage'
 
 export const RelayDeployScreen = ({
   route,
@@ -38,53 +40,55 @@ export const RelayDeployScreen = ({
 
   const deploy = useCallback(async () => {
     try {
-      updateErrorState(null)
-      setWalletIsDeployed(prev => {
-        return prev && { ...prev, loading: true }
-      })
+      if (wallet instanceof RelayWallet) {
+        updateErrorState(null)
+        setWalletIsDeployed(prev => {
+          return prev && { ...prev, loading: true }
+        })
 
-      const freePayment = {
-        tokenContract: getTokenAddress(
-          chainTypesById[chainId] === ChainTypeEnum.MAINNET ? 'RIF' : 'tRIF',
-          chainTypesById[chainId],
-        ),
-        tokenAmount: BigNumber.from(0),
-      }
+        const freePayment = {
+          tokenContract: getTokenAddress(
+            chainId === 30 ? TokenSymbol.RIF : TokenSymbol.TRIF,
+            chainId,
+          ),
+          tokenAmount: BigNumber.from(0),
+        }
 
-      const result = await wallet.deploySmartWallet(freePayment)
+        const result = await wallet.deploySmartWallet(freePayment)
 
-      setWalletIsDeployed(prev => {
-        return (
-          prev && {
-            ...prev,
-            txHash: result.hash,
-          }
-        )
-      })
-
-      const receipt = await result.wait()
-
-      if (receipt.status) {
         setWalletIsDeployed(prev => {
           return (
             prev && {
               ...prev,
-              isDeployed: true,
+              txHash: result.hash,
             }
           )
         })
-      } else {
-        console.log('Deploy Error,', receipt)
-        updateErrorState(t('wallet_deploy_error'))
+
+        const receipt = await result.wait()
+
+        if (receipt.status) {
+          setWalletIsDeployed(prev => {
+            return (
+              prev && {
+                ...prev,
+                isDeployed: true,
+              }
+            )
+          })
+        } else {
+          console.log('Deploy Error,', receipt)
+          updateErrorState(t('wallet_deploy_error'))
+        }
+        setWalletIsDeployed(prev => {
+          return (
+            prev && {
+              ...prev,
+              loading: false,
+            }
+          )
+        })
       }
-      setWalletIsDeployed(prev => {
-        return (
-          prev && {
-            ...prev,
-            loading: false,
-          }
-        )
-      })
     } catch (error) {
       console.log('DEPLOY FAILED', error)
       updateErrorState(error.toString())

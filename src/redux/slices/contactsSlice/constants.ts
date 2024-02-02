@@ -8,6 +8,12 @@ export const testnetContacts: Record<string, Contact> = {
     displayAddress: TESTNET.rBTCFaucet,
     isEditable: false,
   },
+  [TESTNET.rifFaucet]: {
+    address: TESTNET.rifFaucet,
+    name: 'RIF Faucet',
+    displayAddress: TESTNET.rifFaucet,
+    isEditable: false,
+  },
   [TESTNET.fifsAddrRegistrarAddress]: {
     address: TESTNET.fifsAddrRegistrarAddress,
     name: 'RNS Manager',

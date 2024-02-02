@@ -15,6 +15,14 @@ import { useAppDispatch } from 'store/storeUtils'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { StepperComponent } from 'src/components/profile'
 import { useInitializeWallet } from 'shared/wallet'
+import {
+  rootTabsRouteNames,
+  RootTabsScreenProps,
+} from 'navigation/rootNavigator'
+
+type ConfirmNewMasterKey =
+  | CreateKeysScreenProps<createKeysRouteNames.ConfirmNewMasterKey>
+  | RootTabsScreenProps<rootTabsRouteNames.ConfirmNewMasterKey>
 
 type MnemonicWordNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 
@@ -72,9 +80,7 @@ const onRandomWordChoice = (_mnemonicWords: string[]) => {
   }
 }
 
-export const ConfirmNewMasterKeyScreen = ({
-  route,
-}: CreateKeysScreenProps<createKeysRouteNames.ConfirmNewMasterKey>) => {
+export const ConfirmNewMasterKeyScreen = ({ route }: ConfirmNewMasterKey) => {
   const initializeWallet = useInitializeWallet()
   const { t } = useTranslation()
   const methods = useForm<FormValues>({

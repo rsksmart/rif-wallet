@@ -1,10 +1,8 @@
 import { StyleSheet, View } from 'react-native'
-import {
-  SignMessageRequest,
-  SignTypedDataRequest,
-} from '@rsksmart/rif-wallet-core'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
+
+import { SignMessageRequest, SignTypedDataRequest } from 'lib/eoaWallet'
 
 import { castStyle } from 'shared/utils'
 import { sharedColors } from 'shared/constants'

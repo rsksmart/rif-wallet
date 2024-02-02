@@ -19,6 +19,8 @@ import { sharedColors } from 'shared/constants'
 import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { WalletContext } from 'shared/wallet'
+import { useAddress } from 'shared/hooks'
+import { formatTokenValues } from 'shared/utils'
 
 import { BitcoinMiningFeeContainer } from './BitcoinMiningFeeContainer'
 
@@ -34,6 +36,7 @@ export const ReviewBitcoinTransactionContainer = ({
   onCancel,
 }: ReviewBitcoinTransactionContainerProps) => {
   const { wallet } = useContext(WalletContext)
+  const address = useAddress(wallet)
   const insets = useSafeAreaInsets()
   const { t } = useTranslation()
   const tokenPrices = useAppSelector(selectUsdPrices)
@@ -102,7 +105,7 @@ export const ReviewBitcoinTransactionContainer = ({
         time: 'approx 1 min',
         total: {
           tokenValue: amountToPay,
-          usdValue: Number(amountToPayUsd) + Number(feeUsd),
+          usdValue: formatTokenValues(Number(amountToPayUsd) + Number(feeUsd)),
         },
         to: addressToPay,
       },
@@ -142,7 +145,7 @@ export const ReviewBitcoinTransactionContainer = ({
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       {/*Without a Wallet it's not possible to initiate a transaction */}
-      <TransactionSummaryComponent {...data} wallet={wallet} />
+      <TransactionSummaryComponent {...data} address={address} />
     </View>
   )
 }

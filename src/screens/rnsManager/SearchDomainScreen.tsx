@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { Alert, ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
+import { RSKRegistrar } from '@rsksmart/rns-sdk'
 
 import {
   RnsProcessor,
@@ -38,6 +39,7 @@ import { ConfirmationModal } from 'components/modal'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
 import { useWalletState } from 'shared/wallet'
+import { useAddress } from 'src/shared/hooks'
 
 import { DomainInput } from './DomainInput'
 import { rnsManagerStyles } from './rnsManagerStyles'
@@ -53,6 +55,7 @@ interface FormValues {
 
 export const SearchDomainScreen = ({ navigation }: Props) => {
   const { wallet, walletIsDeployed } = useWalletState()
+  const address = useAddress(wallet)
   const chainId = useAppSelector(selectChainId)
   const { isDeployed, loading } = walletIsDeployed
 
@@ -112,13 +115,27 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
     () =>
       new RnsProcessor({
         wallet,
+        address,
         onSetTransactionStatusChange: handleDomainTransactionStatusChange(
           dispatch,
           wallet,
         ),
         rnsAddresses: RNS_ADDRESSES_BY_CHAIN_ID[chainId],
       }),
-    [dispatch, wallet, chainId],
+    [dispatch, wallet, address, chainId],
+  )
+
+  // @TODO: figure out if RNS_ADDRESSES_BY_CHAIN_ID
+  // can be put to the lib by passing it chainID
+  const rskRegistrar = useMemo(
+    () =>
+      new RSKRegistrar(
+        RNS_ADDRESSES_BY_CHAIN_ID[chainId].rskOwnerAddress,
+        RNS_ADDRESSES_BY_CHAIN_ID[chainId].fifsAddrRegistrarAddress,
+        RNS_ADDRESSES_BY_CHAIN_ID[chainId].rifTokenAddress,
+        wallet,
+      ),
+    [wallet, chainId],
   )
 
   const onSubmit = useCallback(
@@ -237,7 +254,8 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
         <FormProvider {...methods}>
           <View style={rnsManagerStyles.marginTop}>
             <DomainInput
-              wallet={wallet}
+              address={address}
+              rskRegistrar={rskRegistrar}
               inputName={'domain'}
               error={errors.domain}
               domainValue={domain}

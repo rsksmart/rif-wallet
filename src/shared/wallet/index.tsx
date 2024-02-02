@@ -1,4 +1,3 @@
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 import {
   Dispatch,
   PropsWithChildren,
@@ -6,13 +5,15 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useState,
 } from 'react'
 
+import { EOAWallet } from 'lib/eoaWallet'
+import { RelayWallet } from 'lib/relayWallet'
+
 // preparing for having different types of Wallets
 // like EOA Wallet, MAGIC etc
-export type Wallet = RIFWallet
+export type Wallet = RelayWallet | EOAWallet
 
 interface WalletIsDeployed {
   loading: boolean
@@ -51,14 +52,6 @@ export const WalletProvider = ({
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [walletIsDeployed, setWalletIsDeployed] =
     useState<WalletIsDeployed | null>(null)
-
-  useEffect(() => {
-    console.log('wallet updated', wallet)
-  }, [wallet])
-
-  useEffect(() => {
-    console.log('walletIsDeployed updated', walletIsDeployed)
-  }, [walletIsDeployed])
 
   const initializeWallet = useCallback(
     (walletArg: Wallet, walletIsDeployedArg: WalletIsDeployed) => {
