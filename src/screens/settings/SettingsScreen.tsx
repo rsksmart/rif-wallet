@@ -153,31 +153,39 @@ export const SettingsScreen = ({
         </Typography>
       </AppTouchable>
       <View style={styles.bottomView}>
-        <Typography type={'body1'} color={sharedColors.labelLight}>
-          {t('settings_screen_version')} {version}-
-          {Config.USE_RELAY ? 'relay' : 'eoa'}
-        </Typography>
+        <View style={styles.settingsItem}>
+          <Typography type={'h4'} color={sharedColors.labelLight}>
+            {t('settings_screen_version')} {version}-
+            {Config.USE_RELAY ? 'relay' : 'eoa'}
+          </Typography>
+        </View>
 
-        <Typography type={'h4'} color={sharedColors.labelLight}>
-          {t('settings_screen_smart_wallet_factory')}
-        </Typography>
-        <Typography type={'h5'} color={sharedColors.labelLight}>
-          {smartWalletFactoryAddress}
-        </Typography>
+        <View style={styles.settingsItem}>
+          <Typography type={'h4'} color={sharedColors.labelLight}>
+            {t('settings_screen_smart_wallet_factory')}
+          </Typography>
+          <Typography type={'h5'} color={sharedColors.labelLight}>
+            {smartWalletFactoryAddress}
+          </Typography>
+        </View>
 
-        <Typography type={'h4'} color={sharedColors.labelLight}>
-          {t('settings_screen_rpc_url')}
-        </Typography>
-        <Typography type={'h5'} color={sharedColors.labelLight}>
-          {rpcUrl}
-        </Typography>
+        <View style={styles.settingsItem}>
+          <Typography type={'h4'} color={sharedColors.labelLight}>
+            {t('settings_screen_rpc_url')}
+          </Typography>
+          <Typography type={'h5'} color={sharedColors.labelLight}>
+            {rpcUrl}
+          </Typography>
+        </View>
 
-        <Typography type={'h4'} color={sharedColors.labelLight}>
-          {t('settings_screen_backend_url')}
-        </Typography>
-        <Typography type={'h5'} color={sharedColors.labelLight}>
-          {walletServiceUrl}
-        </Typography>
+        <View style={styles.settingsItem}>
+          <Typography type={'h4'} color={sharedColors.labelLight}>
+            {t('settings_screen_backend_url')}
+          </Typography>
+          <Typography type={'h5'} color={sharedColors.labelLight}>
+            {walletServiceUrl}
+          </Typography>
+        </View>
       </View>
     </ScrollView>
   )
