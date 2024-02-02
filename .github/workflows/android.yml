@@ -1,8 +1,9 @@
 name: Android Build SDK
 
 on:
-  release:
-    types: [released]
+  pull_request
+  # release:
+  #  types: [released]
 
 jobs:
   install-and-test:
@@ -24,7 +25,7 @@ jobs:
           yarn test
           yarn lint
 
-  build-android:
+  build-android-eoa:
     needs: install-and-test
     runs-on: ubuntu-latest
     steps: 
@@ -46,5 +47,33 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: app-release.apk
-          path: android/app/build/outputs/apk/release/
+          name: app-release-eoa.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+  
+  build-android-relay:
+    needs: install-and-test
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+
+      - name: Overwrite USE_RELAY env variable
+        run: echo "USE_RELAY=true" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build Android Release
+        run: |
+          cd android
+          ./gradlew app:assembleRelease
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release-eoa.apk
+          path: android/app/build/outputs/apk/release/app-release.apk
