@@ -1,5 +1,6 @@
 import { SendBitcoinRequest } from '@rsksmart/rif-wallet-bitcoin'
-import { Request } from '@rsksmart/rif-wallet-core'
+
+import { Request } from 'lib/eoaWallet'
 
 import {
   rootTabsRouteNames,

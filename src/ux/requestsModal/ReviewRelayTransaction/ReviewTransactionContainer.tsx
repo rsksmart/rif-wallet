@@ -1,4 +1,3 @@
-import { OverriddableTransactionOptions } from '@rsksmart/rif-wallet-core'
 import { BigNumber } from 'ethers'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -8,7 +7,10 @@ import { isAddress } from '@rsksmart/rsk-utils'
 
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
 import { RelayWallet } from 'lib/relayWallet'
-import { SendTransactionRequest } from 'lib/eoaWallet'
+import {
+  OverriddableTransactionOptions,
+  SendTransactionRequest,
+} from 'lib/eoaWallet'
 
 import { AppButtonBackgroundVarietyEnum } from 'components/index'
 import { getTokenAddress } from 'core/config'

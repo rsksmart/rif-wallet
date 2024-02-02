@@ -3,7 +3,6 @@ import { AddrResolver } from '@rsksmart/rns-sdk'
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
 import axios from 'axios'
-import { RIFWallet } from '@rsksmart/rif-wallet-core'
 
 import { SETTINGS } from 'core/types'
 import { MAINNET, TESTNET } from 'screens/rnsManager/addresses.json'
@@ -13,6 +12,7 @@ import {
   chainTypesById,
 } from 'shared/constants/chainConstants'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { Wallet } from 'shared/wallet'
 
 import { getWalletSetting } from './config'
 
@@ -26,10 +26,7 @@ export const createPublicAxios = (chainId: ChainTypesByIdType) =>
 
 export const abiEnhancer = new AbiEnhancer()
 
-export const getRnsResolver = (
-  chainId: ChainTypesByIdType,
-  wallet: RIFWallet,
-) => {
+export const getRnsResolver = (chainId: ChainTypesByIdType, wallet: Wallet) => {
   const isMainnet = chainTypesById[chainId] === ChainTypeEnum.MAINNET
   const rnsRegistryAddress = isMainnet
     ? MAINNET.rnsRegistryAddress

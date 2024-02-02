@@ -1,5 +1,6 @@
 import { ScrollView } from 'react-native'
-import { SignTypedDataArgs } from '@rsksmart/rif-wallet-core/dist/types'
+
+import { SignTypedDataArgs } from 'lib/eoaWallet'
 
 import { Typography } from 'src/components'
 
