@@ -7,29 +7,22 @@ import { ITokenWithBalance } from '@rsksmart/rif-wallet-services'
 import { useTranslation } from 'react-i18next'
 
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import {
-  addPendingTransaction,
-  modifyTransaction,
-  ApiTransactionWithExtras,
-  ModifyTransaction,
-  fetchBitcoinTransactions,
-} from 'store/slices/transactionsSlice'
+import { fetchBitcoinTransactions } from 'store/slices/transactionsSlice'
 import {
   fetchAddressToReturnFundsTo,
   fetchUtxo,
 } from 'screens/send/bitcoinUtils'
-import { AppDispatch } from 'store/index'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
-import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
 import {
   addAddressToUsedBitcoinAddresses,
   selectWholeSettingsState,
 } from 'store/slices/settingsSlice'
+import { handleTransactionStatusChange } from 'store/shared/utils'
 import { Wallet } from 'shared/wallet'
 
 import { transferBitcoin } from './transferBitcoin'
 import { transfer } from './transferTokens'
-import { OnSetTransactionStatusChange, TransactionInformation } from './types'
+import { TransactionInformation } from './types'
 
 interface ExecutePayment {
   token: TokenBalanceObject
@@ -38,80 +31,6 @@ interface ExecutePayment {
   wallet: Wallet
   chainId: number
 }
-
-// Update transaction based on status
-// Pending will add a pendingTransaction
-// When it's done waiting, it'll modifyTransaction to update it with the receipt
-export const handleReduxTransactionStatusChange =
-  (dispatch: AppDispatch) =>
-  (
-    transactionStatusChange: Parameters<OnSetTransactionStatusChange>[0] | null,
-  ) => {
-    if (transactionStatusChange !== null) {
-      switch (transactionStatusChange.txStatus) {
-        case 'PENDING':
-          const {
-            hash,
-            data,
-            from,
-            gasPrice,
-            nonce,
-            value,
-            symbol,
-            finalAddress,
-            enhancedAmount,
-          } = transactionStatusChange
-          const originTransaction: ApiTransactionWithExtras = {
-            blockHash: '',
-            blockNumber: 0,
-            gas: 0,
-            input: '',
-            timestamp: Number(Date.now().toString().substring(0, 10)),
-            transactionIndex: 0,
-            txId: '',
-            txType: 'contract call',
-            to: finalAddress as string,
-            hash,
-            data,
-            from,
-            gasPrice: gasPrice?.toString() || '',
-            nonce,
-            value: value.toString(),
-            symbol,
-            finalAddress,
-            enhancedAmount,
-          }
-          dispatch(addPendingTransaction(originTransaction))
-          break
-        case 'CONFIRMED':
-          const {
-            blockHash,
-            blockNumber,
-            gasUsed,
-            transactionHash,
-            transactionIndex,
-          } = transactionStatusChange
-          const updatedOriginTransaction: ModifyTransaction = {
-            gas: gasUsed.toNumber(),
-            hash: transactionHash,
-            blockHash,
-            blockNumber,
-            transactionIndex: transactionIndex,
-            receipt: transactionStatusChange,
-            status: TransactionStatus.SUCCESS,
-          }
-          dispatch(modifyTransaction(updatedOriginTransaction))
-          break
-        case 'FAILED':
-          const updatedTransaction = {
-            status: TransactionStatus.FAILED,
-            hash: transactionStatusChange.hash,
-          }
-          dispatch(modifyTransaction(updatedTransaction))
-          break
-      }
-    }
-  }
 /**
  * This function will make sure that the user has enough inputs (balance) to send a payment
  */
@@ -196,8 +115,7 @@ export const usePaymentExecutor = (
         chainId,
         onSetCurrentTransaction: setCurrentTransaction,
         onSetError: setError,
-        onSetTransactionStatusChange:
-          handleReduxTransactionStatusChange(dispatch),
+        onSetTransactionStatusChange: handleTransactionStatusChange(dispatch),
       })
     }
   }

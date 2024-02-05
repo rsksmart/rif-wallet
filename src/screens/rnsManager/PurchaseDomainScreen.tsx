@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
@@ -6,7 +6,6 @@ import { ScrollView } from 'react-native-gesture-handler'
 
 import {
   DomainRegistrationEnum,
-  RnsProcessor,
   useRifToken,
   useRnsDomainPriceInRif as calculatePrice,
 } from 'lib/rns'
@@ -31,15 +30,11 @@ import {
   purchaseUsername,
   selectProfile,
   selectProfileStatus,
-  deleteProfile,
+  deleteRnsProcess,
 } from 'store/slices/profileSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
-import { selectChainId } from 'store/slices/settingsSlice'
-import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
-import { useWallet } from 'shared/wallet'
-import { useAddress } from 'shared/hooks'
+import { useGetRnsProcessor } from 'shared/wallet'
 
 import { rnsManagerStyles } from './rnsManagerStyles'
 
@@ -53,28 +48,12 @@ export enum TestID {
 export const PurchaseDomainScreen = ({ navigation }: Props) => {
   const dispatch = useAppDispatch()
   const rifToken = useRifToken()
-  const wallet = useWallet()
-  const address = useAddress(wallet)
+  const getRnsProcessor = useGetRnsProcessor()
   const profile = useAppSelector(selectProfile)
-  const chainId = useAppSelector(selectChainId)
   const alias = profile.alias
   const duration = profile.duration || 1
   const profileStatus = useAppSelector(selectProfileStatus)
   const [error, setError] = useState('')
-  const rnsProcessor = useMemo(
-    () =>
-      wallet &&
-      new RnsProcessor({
-        wallet,
-        address,
-        onSetTransactionStatusChange: handleDomainTransactionStatusChange(
-          dispatch,
-          wallet,
-        ),
-        rnsAddresses: RNS_ADDRESSES_BY_CHAIN_ID[chainId],
-      }),
-    [dispatch, wallet, address, chainId],
-  )
 
   const methods = useForm()
   const { t } = useTranslation()
@@ -98,13 +77,9 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
   const registerDomain = useCallback(async () => {
     const domain = alias.split('.')[0]
     setError('')
-    if (!rnsProcessor) {
-      return setError('No RNS Processor set!')
-    }
-
     try {
       const response = await dispatch(
-        purchaseUsername({ rnsProcessor, domain }),
+        purchaseUsername({ getRnsProcessor, domain }),
       ).unwrap()
       if (response === DomainRegistrationEnum.REGISTERING_REQUESTED) {
         navigation.navigate(profileStackRouteNames.AliasBought, {
@@ -124,13 +99,12 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
         }
       }
     }
-  }, [alias, dispatch, rnsProcessor, navigation, t])
+  }, [alias, dispatch, navigation, t, getRnsProcessor])
 
-  const onCancelDomainTap = useCallback(async () => {
+  const onCancelDomainTap = useCallback(() => {
     const domain = alias.split('.')[0]
-    rnsProcessor.deleteRnsProcess(domain)
-    dispatch(deleteProfile())
-  }, [alias, dispatch, rnsProcessor])
+    dispatch(deleteRnsProcess({ domain, getRnsProcessor }))
+  }, [alias, dispatch, getRnsProcessor])
 
   return (
     <ScrollView style={rnsManagerStyles.scrollContainer}>

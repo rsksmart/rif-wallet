@@ -5,13 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { Alert, ScrollView, StyleSheet, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import * as yup from 'yup'
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
 
-import {
-  RnsProcessor,
-  useRifToken,
-  useRnsDomainPriceInRif as calculatePrice,
-} from 'lib/rns'
+import { useRifToken, useRnsDomainPriceInRif as calculatePrice } from 'lib/rns'
 
 import { AppTouchable } from 'components/appTouchable'
 import { AppButton, Input, Typography } from 'components/index'
@@ -34,12 +29,9 @@ import { AvatarIconBox } from 'screens/rnsManager/AvatarIconBox'
 import { AppSpinner } from 'components/index'
 import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
 import { settingsStackRouteNames } from 'src/navigation/settingsNavigator/types'
-import { handleDomainTransactionStatusChange } from 'screens/rnsManager/utils'
 import { ConfirmationModal } from 'components/modal'
-import { selectChainId } from 'store/slices/settingsSlice'
-import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
-import { useWalletState } from 'shared/wallet'
-import { useAddress } from 'src/shared/hooks'
+import { useGetRnsProcessor, useWalletState } from 'shared/wallet'
+import { useAddress } from 'shared/hooks'
 
 import { DomainInput } from './DomainInput'
 import { rnsManagerStyles } from './rnsManagerStyles'
@@ -54,9 +46,10 @@ interface FormValues {
 }
 
 export const SearchDomainScreen = ({ navigation }: Props) => {
+  const getRnsProcessor = useGetRnsProcessor()
+  const rnsProcessor = getRnsProcessor()
   const { wallet, walletIsDeployed } = useWalletState()
   const address = useAddress(wallet)
-  const chainId = useAppSelector(selectChainId)
   const { isDeployed, loading } = walletIsDeployed
 
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
@@ -111,33 +104,6 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
   const isRequestButtonDisabled = hasErrors || !validDomain
   const isSaveButtonDisabled = isRequestButtonDisabled && !isDomainOwned
 
-  const rnsProcessor = useMemo(
-    () =>
-      new RnsProcessor({
-        wallet,
-        address,
-        onSetTransactionStatusChange: handleDomainTransactionStatusChange(
-          dispatch,
-          wallet,
-        ),
-        rnsAddresses: RNS_ADDRESSES_BY_CHAIN_ID[chainId],
-      }),
-    [dispatch, wallet, address, chainId],
-  )
-
-  // @TODO: figure out if RNS_ADDRESSES_BY_CHAIN_ID
-  // can be put to the lib by passing it chainID
-  const rskRegistrar = useMemo(
-    () =>
-      new RSKRegistrar(
-        RNS_ADDRESSES_BY_CHAIN_ID[chainId].rskOwnerAddress,
-        RNS_ADDRESSES_BY_CHAIN_ID[chainId].fifsAddrRegistrarAddress,
-        RNS_ADDRESSES_BY_CHAIN_ID[chainId].rifTokenAddress,
-        wallet,
-      ),
-    [wallet, chainId],
-  )
-
   const onSubmit = useCallback(
     async (values: FormValues) => {
       setError('')
@@ -146,7 +112,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
         setCurrentStatus('loading')
         await dispatch(
           requestUsername({
-            rnsProcessor,
+            getRnsProcessor,
             alias: values.domain,
             duration: values.years,
           }),
@@ -169,7 +135,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
         setCurrentStatus('')
       }
     },
-    [dispatch, rnsProcessor, t],
+    [dispatch, t, getRnsProcessor],
   )
 
   const handleDomainAvailable = useCallback(
@@ -253,18 +219,21 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
         <AvatarIconBox text={(domain || '') + '.rsk'} />
         <FormProvider {...methods}>
           <View style={rnsManagerStyles.marginTop}>
-            <DomainInput
-              address={address}
-              rskRegistrar={rskRegistrar}
-              inputName={'domain'}
-              error={errors.domain}
-              domainValue={domain}
-              onDomainOwned={setIsDomainOwned}
-              onDomainAvailable={handleDomainAvailable}
-              onResetValue={() => {
-                resetField('domain')
-              }}
-            />
+            {rnsProcessor ? (
+              <DomainInput
+                address={address}
+                searchAvailability={rnsProcessor.rskRegistrar.available}
+                searchOwnerOf={rnsProcessor.rskRegistrar.ownerOf}
+                inputName={'domain'}
+                error={errors.domain}
+                domainValue={domain}
+                onDomainOwned={setIsDomainOwned}
+                onDomainAvailable={handleDomainAvailable}
+                onResetValue={() => {
+                  resetField('domain')
+                }}
+              />
+            ) : null}
           </View>
           {!isDomainOwned && (
             <Input

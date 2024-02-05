@@ -3,22 +3,50 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns'
 
 import { ProfileStatus } from 'navigation/profileNavigator/types'
+import { Wallet } from 'shared/wallet'
+import { AppDispatch } from 'store/store'
+import {
+  OnSetTransactionStatusChange,
+  TransactionStatus,
+} from 'store/shared/types'
+import { abiEnhancer } from 'core/setup'
+import { handleTransactionStatusChange } from 'store/shared/utils'
 
-import { ProfileStore } from './types'
+import {
+  DeleteRnsProcess,
+  ProfileStore,
+  PurchaseUsername,
+  RequestUsername,
+} from './types'
 
-interface RequestUsernamePayload {
-  rnsProcessor: RnsProcessor
-  alias: string
-  duration: number
-}
+export const handleDomainTransactionStatusChange =
+  (dispatch: AppDispatch, wallet: Wallet) =>
+  async (tx: Parameters<OnSetTransactionStatusChange>[0]) => {
+    const txTransformed = tx
+    if (txTransformed.txStatus === TransactionStatus.PENDING) {
+      const chainId = await wallet.getChainId()
+      // decode transaction
+      const enhancedTransaction = await abiEnhancer.enhance(chainId, {
+        data: txTransformed.data,
+      })
+      if (enhancedTransaction) {
+        // transform it
+        txTransformed.symbol = enhancedTransaction.symbol
+        txTransformed.enhancedAmount = enhancedTransaction.value?.toString()
+      }
+    }
+    // pass it to redux
+    handleTransactionStatusChange(dispatch)(txTransformed)
+  }
 
 export const requestUsername = createAsyncThunk(
   'profile/requestUsername',
-  async (
-    { rnsProcessor, alias, duration }: RequestUsernamePayload,
-    thunkAPI,
-  ) => {
+  async ({ alias, duration, getRnsProcessor }: RequestUsername, thunkAPI) => {
     try {
+      const rnsProcessor = getRnsProcessor()
+      if (!rnsProcessor) {
+        return thunkAPI.rejectWithValue('No RNS Processor created')
+      }
       thunkAPI.dispatch(setAlias(`${alias}.rsk`))
       thunkAPI.dispatch(setDuration(duration))
       let indexStatus = rnsProcessor.getStatus(alias)
@@ -44,14 +72,33 @@ export const requestUsername = createAsyncThunk(
 
 export const purchaseUsername = createAsyncThunk(
   'profile/purchaseUsername',
-  async (
-    { rnsProcessor, domain }: { rnsProcessor: RnsProcessor; domain: string },
-    thunkAPI,
-  ) => {
+  async ({ domain, getRnsProcessor }: PurchaseUsername, thunkAPI) => {
     try {
+      const rnsProcessor = getRnsProcessor()
+      if (!rnsProcessor) {
+        return thunkAPI.rejectWithValue('No RNS Processor created')
+      }
       return await rnsProcessor.register(domain)
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
+    }
+  },
+)
+
+export const deleteRnsProcess = createAsyncThunk(
+  'profile/deleteRnsProcess',
+  async ({ getRnsProcessor, domain }: DeleteRnsProcess, thunkAPI) => {
+    try {
+      const rnsProcessor = getRnsProcessor()
+      if (!rnsProcessor) {
+        return thunkAPI.rejectWithValue('No RNS Processor created')
+      }
+      rnsProcessor.deleteRnsProcess(domain)
+      thunkAPI.dispatch(deleteProfile())
+      return true
+    } catch (err) {
+      thunkAPI.rejectWithValue(err)
+      return false
     }
   },
 )

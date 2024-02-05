@@ -1,4 +1,3 @@
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import debounce from 'lodash.debounce'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -18,10 +17,11 @@ import { minDomainLength } from './SearchDomainScreen'
 
 interface Props {
   address: string
-  rskRegistrar: RSKRegistrar
   inputName: string
   domainValue: string
   error: FieldError | undefined
+  searchAvailability: (domain: string) => Promise<string>
+  searchOwnerOf: (domain: string) => Promise<string>
   onDomainAvailable: (domain: string, valid: boolean) => void
   onDomainOwned: (owned: boolean) => void
   onResetValue: () => void
@@ -45,9 +45,10 @@ const labelColorMap = new Map([
 
 export const DomainInput = ({
   address,
-  rskRegistrar,
   inputName,
   domainValue,
+  searchAvailability,
+  searchOwnerOf,
   onDomainAvailable,
   onDomainOwned,
   onResetValue,
@@ -69,10 +70,10 @@ export const DomainInput = ({
         setDomainAvailability(DomainStatus.NONE)
         onDomainAvailable(domain, false)
       } else {
-        const available = await rskRegistrar.available(domain)
+        const available = await searchAvailability(domain)
 
         if (!available) {
-          const ownerAddress = await rskRegistrar.ownerOf(domain)
+          const ownerAddress = await searchOwnerOf(domain)
 
           if (address === ownerAddress) {
             setDomainAvailability(DomainStatus.OWNED)
@@ -91,7 +92,8 @@ export const DomainInput = ({
       errorType,
       errorMessage,
       onDomainAvailable,
-      rskRegistrar,
+      searchOwnerOf,
+      searchAvailability,
       address,
       onDomainOwned,
     ],

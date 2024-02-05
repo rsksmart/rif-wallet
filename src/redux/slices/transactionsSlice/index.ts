@@ -17,12 +17,9 @@ import { ChainID } from 'lib/eoaWallet'
 import {
   ActivityMixedType,
   ActivityRowPresentationObject,
-  ApiTransactionWithExtras,
   IBitcoinTransaction,
-  ModifyTransaction,
   TransactionsState,
 } from 'store/slices/transactionsSlice/types'
-import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
 import { filterEnhancedTransactions } from 'src/subscriptions/utils'
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
@@ -30,6 +27,11 @@ import { getTokenAddress } from 'core/config'
 import { AsyncThunkWithTypes } from 'store/store'
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { rbtcMap } from 'shared/utils'
+import {
+  ApiTransactionWithExtras,
+  ModifyTransaction,
+  TransactionStatus,
+} from 'store/shared/types'
 
 export const activityDeserializer: (
   activityTransaction: ActivityMixedType,

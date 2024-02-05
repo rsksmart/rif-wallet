@@ -19,13 +19,13 @@ import { isMyAddress } from 'components/address/lib'
 import { DollarIcon } from 'components/icons/DollarIcon'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { getContactByAddress } from 'store/slices/contactsSlice'
-import { getWalletSetting } from 'src/core/config'
+import { getWalletSetting } from 'core/config'
 import { SETTINGS } from 'core/types'
 import { selectChainId } from 'store/slices/settingsSlice'
+import { TransactionStatus } from 'store/shared/types'
 
 import { TokenImage } from '../home/TokenImage'
 import {
-  TransactionStatus,
   transactionStatusDisplayText,
   transactionStatusToIconPropsMap,
 } from './transactionSummaryUtils'
