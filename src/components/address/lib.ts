@@ -5,8 +5,7 @@ import {
 } from '@rsksmart/rsk-utils'
 
 import { shortAddress } from 'lib/utils'
-
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { ChainID } from 'lib/eoaWallet'
 
 export enum AddressValidationMessage {
   INVALID_ADDRESS = 'Invalid address',
@@ -64,7 +63,7 @@ export const isMyAddress = (
 
 export const getAddressDisplayText = (
   inputAddress: string,
-  chainId: ChainTypesByIdType,
+  chainId: ChainID,
 ) => {
   const checksumAddress = toChecksumAddress(inputAddress, chainId)
   const displayAddress = shortAddress(checksumAddress)

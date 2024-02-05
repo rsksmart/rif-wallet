@@ -28,10 +28,6 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import {
-  chainTypesById,
-  ChainTypesByIdType,
-} from 'shared/constants/chainConstants'
 import { getCurrentChainId } from 'storage/ChainStorage'
 import { resetReduxStorage } from 'storage/ReduxStorage'
 import {
@@ -80,7 +76,7 @@ export const getRifRelayConfig = (chainId: 30 | 31): RifRelayConfig => {
   }
 }
 
-const sslPinning = async (chainId: ChainTypesByIdType) => {
+const sslPinning = async (chainId: ChainID) => {
   const rifWalletServiceDomain = getWalletSetting(
     SETTINGS.RIF_WALLET_SERVICE_URL,
     chainTypesById[chainId],
@@ -134,7 +130,6 @@ const initializeApp = async (
   // connect to sockets
   rifSockets({
     address: addressToUse(wallet),
-    fetcher: fetcherInstance,
     dispatch,
     setGlobalError: rejectWithValue,
     usdPrices,
@@ -164,7 +159,7 @@ export const createWallet = createAsyncThunk<
   try {
     const { chainId } = thunkAPI.getState().settings
 
-    const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
+    const url = getWalletSetting(SETTINGS.RPC_URL, chainId)
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
     const wallet = await createAppWallet(
@@ -392,7 +387,7 @@ const settingsSlice = createSlice({
     closeRequest: state => {
       state.requests.pop()
     },
-    setChainId: (state, { payload }: PayloadAction<ChainTypesByIdType>) => {
+    setChainId: (state, { payload }: PayloadAction<ChainID>) => {
       state.chainId = payload
     },
     setAppIsActive: (state, { payload }: PayloadAction<boolean>) => {

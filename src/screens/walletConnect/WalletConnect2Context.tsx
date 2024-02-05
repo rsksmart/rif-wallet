@@ -10,13 +10,14 @@ import Web3Wallet, { Web3WalletTypes } from '@walletconnect/web3wallet'
 import { IWeb3Wallet } from '@walletconnect/web3wallet'
 import { WalletConnectAdapter } from '@rsksmart/rif-wallet-adapters'
 
+import { ChainID } from 'lib/eoaWallet'
+
 import {
   buildRskAllowedNamespaces,
   createWeb3Wallet,
   getProposalErrorComparedWithRskNamespace,
   WalletConnect2SdkErrorString,
 } from 'screens/walletConnect/walletConnect2.utils'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { addPendingTransaction } from 'store/slices/transactionsSlice'
@@ -26,7 +27,7 @@ const onSessionApprove = async (
   web3wallet: Web3Wallet,
   proposal: Web3WalletTypes.SessionProposal,
   walletAddress: string,
-  chainId: ChainTypesByIdType,
+  chainId: ChainID,
 ) => {
   try {
     const namespaces = buildRskAllowedNamespaces({

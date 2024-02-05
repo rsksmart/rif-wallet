@@ -6,6 +6,8 @@ import { StyleSheet, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
+import { ChainID } from 'lib/eoaWallet'
+
 import {
   AppButton,
   AppButtonBackgroundVarietyEnum,
@@ -23,7 +25,6 @@ import { WalletIsDeployed } from 'store/slices/settingsSlice/types'
 import { selectAccounts } from 'store/slices/accountsSlice/selector'
 import { AccountPayload } from 'store/slices/accountsSlice/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { DeleteWalletModal } from 'components/modal/deleteWalletModal'
 
 import { CheckIcon } from '../icons/CheckIcon'
@@ -31,7 +32,7 @@ import { CheckIcon } from '../icons/CheckIcon'
 interface AccountBoxProps {
   address: string
   smartWalletAddress: string | null
-  chainId: ChainTypesByIdType
+  chainId: ChainID
   walletIsDeployed: WalletIsDeployed
   publicKeys: PublicKeyItemType[]
   id?: number

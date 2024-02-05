@@ -1,6 +1,8 @@
 import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 import { EnhancedResult, IAbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 
+import { ChainID } from 'lib/eoaWallet'
+
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { addOrUpdateBalances } from 'store/slices/balancesSlice'
 import {
@@ -13,7 +15,6 @@ import {
 } from 'store/slices/transactionsSlice'
 import { UsdPricesState, setUsdPrices } from 'store/slices/usdPricesSlice'
 import { AppDispatch } from 'store/index'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { getCurrentChainId } from 'storage/ChainStorage'
 import { enhanceTransactionInput } from 'src/screens/activity/ActivityScreen'
 import { MMKVStorage } from 'storage/MMKVStorage'
@@ -24,14 +25,14 @@ interface OnNewTransactionEventEmittedArgs {
   dispatch: AppDispatch
   payload: IApiTransaction
   usdPrices: UsdPricesState
-  chainId: ChainTypesByIdType
+  chainId: ChainID
   abiEnhancer: IAbiEnhancer
 }
 
 interface OnSocketChangeEmittedArgs {
   dispatch: AppDispatch
   usdPrices: UsdPricesState
-  chainId: ChainTypesByIdType
+  chainId: ChainID
   abiEnhancer: IAbiEnhancer
   cache: MMKVStorage
 }
