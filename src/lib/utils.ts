@@ -5,6 +5,8 @@ import moment from 'moment'
 import { abiEnhancer } from 'core/setup'
 import { ApiTransactionWithExtras } from 'src/redux/slices/transactionsSlice'
 
+import { ChainID } from './eoaWallet'
+
 export function shortAddress(address: string, amount = 4): string {
   if (!address) {
     return ''
@@ -187,7 +189,7 @@ export const removeLeadingZeros = (value: string) => {
  */
 export const createPendingTxFromTxResponse = async (
   txResponse: TransactionResponse,
-  { chainId, from, to }: { chainId: number; from: string; to: string },
+  { chainId, from, to }: { chainId: ChainID; from: string; to: string },
 ) => {
   try {
     const enhancedTx = await abiEnhancer.enhance(chainId, {

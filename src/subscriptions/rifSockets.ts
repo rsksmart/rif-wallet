@@ -5,6 +5,8 @@ import {
 } from '@rsksmart/rif-wallet-services'
 import DeviceInfo from 'react-native-device-info'
 
+import { ChainID } from 'lib/eoaWallet'
+
 import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { AppDispatch } from 'store/index'
 import { abiEnhancer, getDefaultTokens } from 'core/setup'
@@ -13,7 +15,6 @@ import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
 import { getWalletSetting } from 'core/config'
 import { SETTINGS } from 'core/types'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { MMKVStorage } from 'storage/MMKVStorage'
 
 import { onSocketChangeEmitted } from './onSocketChangeEmitted'
@@ -28,7 +29,7 @@ export enum SocketsEvents {
 
 interface RifSockets {
   address: string
-  chainId: ChainTypesByIdType
+  chainId: ChainID
   setGlobalError: (err: string) => void
   dispatch: AppDispatch
   usdPrices: UsdPricesState

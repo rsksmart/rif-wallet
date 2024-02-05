@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { FlatList, Image, RefreshControl, StyleSheet, View } from 'react-native'
 import { useIsFocused } from '@react-navigation/native'
 
+import { ChainID } from 'lib/eoaWallet'
+
 import { Typography } from 'components/typography'
 import { abiEnhancer } from 'core/setup'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
@@ -20,7 +22,6 @@ import {
 } from 'store/slices/transactionsSlice/selectors'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { useWallet } from 'shared/wallet'
-import { ChainTypesByIdType } from 'src/shared/constants/chainConstants'
 
 import { ActivityBasicRow } from './ActivityRow'
 
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
 
 export const enhanceTransactionInput = async (
   transaction: IApiTransaction,
-  chainId: ChainTypesByIdType,
+  chainId: ChainID,
 ): Promise<EnhancedResult | null> => {
   try {
     const enhancedTx = await abiEnhancer.enhance(chainId, {

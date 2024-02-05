@@ -7,7 +7,10 @@ import { isAddress } from '@rsksmart/rsk-utils'
 
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
 import { RelayWallet } from 'lib/relayWallet'
-import { SendTransactionRequest } from 'lib/eoaWallet'
+import {
+  OverriddableTransactionOptions,
+  SendTransactionRequest,
+} from 'lib/eoaWallet'
 import { MagicRelayWallet } from 'lib/magicRelayWallet'
 
 import { AppButtonBackgroundVarietyEnum } from 'components/index'
@@ -16,15 +19,12 @@ import { TokenSymbol } from 'screens/home/TokenImage'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
 import { sharedColors } from 'shared/constants'
-import { chainTypesById } from 'shared/constants/chainConstants'
 import {
   castStyle,
   errorHandler,
   formatTokenValues,
   rbtcMap,
 } from 'shared/utils'
-import { selectChainId } from 'store/slices/settingsSlice'
-import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addRecentContact } from 'store/slices/contactsSlice'
@@ -32,6 +32,7 @@ import { selectBalances } from 'store/slices/balancesSlice'
 import { selectRecentRskTransactions } from 'store/slices/transactionsSlice'
 import { WalletContext } from 'shared/wallet'
 import { useAddress } from 'shared/hooks'
+import { getCurrentChainId } from 'src/storage/ChainStorage'
 
 import { useEnhancedWithGas } from '../useEnhancedWithGas'
 
@@ -68,7 +69,7 @@ export const ReviewTransactionContainer = ({
   // enhance the transaction to understand what it is:
   const { wallet } = useContext(WalletContext)
   const address = useAddress(wallet)
-  const chainId = useAppSelector(selectChainId)
+  const chainId = getCurrentChainId()
   const balances = useAppSelector(selectBalances)
   const pendingTransactions = useAppSelector(selectRecentRskTransactions)
   const [txCost, setTxCost] = useState<BigNumber>()
@@ -95,9 +96,8 @@ export const ReviewTransactionContainer = ({
     gasLimit,
   } = enhancedTransactionRequest
 
-  const isMainnet = chainTypesById[chainId] === ChainTypeEnum.MAINNET
   const feeSymbol = getFeeSymbol(
-    isMainnet,
+    chainId === 30,
     wallet instanceof RelayWallet || wallet instanceof MagicRelayWallet,
   )
   const feeContract = getTokenAddress(feeSymbol, chainId)

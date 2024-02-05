@@ -4,9 +4,10 @@ import { BigNumber } from 'ethers'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import { isAddress } from '@rsksmart/rsk-utils'
 
+import { ChainID } from 'lib/eoaWallet'
+
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { Wallet } from 'shared/wallet'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 
 const abiEnhancer = new AbiEnhancer()
 
@@ -33,7 +34,7 @@ export interface EnhancedTransactionRequest extends TransactionRequest {
 export const useEnhancedWithGas = (
   wallet: Wallet,
   tx: TransactionRequest,
-  chainId: ChainTypesByIdType,
+  chainId: ChainID,
 ) => {
   const [enhancedTransactionRequest, setEnhancedTransactionRequest] =
     useState<EnhancedTransactionRequest>({

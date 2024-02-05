@@ -7,6 +7,8 @@ import {
 } from '@rsksmart/rif-wallet-bitcoin'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 
+import { ChainID } from 'lib/eoaWallet'
+
 import {
   BitcoinNetworkStore,
   StoredBitcoinNetworks,
@@ -16,29 +18,21 @@ import { bitcoinMainnet, bitcoinTestnet } from 'shared/constants'
 import { onRequest } from 'store/slices/settingsSlice'
 import { AppDispatch } from 'store/index'
 import { Bitcoin } from 'store/slices/settingsSlice/types'
-import {
-  ChainTypeEnum,
-  chainTypesById,
-  ChainTypesByIdType,
-} from 'shared/constants/chainConstants'
 
 const NETWORKS_INITIAL_STATE: Bitcoin = {
   networksArr: [],
   networksMap: {},
 }
 
-const onNoNetworksPresent = (chainId: ChainTypesByIdType) => {
-  const bitcoinNetwork =
-    chainTypesById[chainId] === ChainTypeEnum.MAINNET
-      ? bitcoinMainnet
-      : bitcoinTestnet
+const onNoNetworksPresent = (chainId: ChainID) => {
+  const bitcoinNetwork = chainId === 30 ? bitcoinMainnet : bitcoinTestnet
 
   BitcoinNetworkStore.addNewNetwork(bitcoinNetwork.name, bitcoinNetwork.bips)
 
   return BitcoinNetworkStore.getStoredNetworks()
 }
 
-const BITCOIN_CHAINID_MAP: Record<ChainTypesByIdType, string> = {
+const BITCOIN_CHAINID_MAP: Record<ChainID, string> = {
   30: bitcoinMainnet.name,
   31: bitcoinTestnet.name,
 }
@@ -56,7 +50,7 @@ export const initializeBitcoin = (
   mnemonic: string,
   dispatch: AppDispatch,
   fetcher: RifWalletServicesFetcher,
-  chainId: ChainTypesByIdType,
+  chainId: ChainID,
 ) => {
   // Return Object which contains both array and map
   const networksObj = NETWORKS_INITIAL_STATE

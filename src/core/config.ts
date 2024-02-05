@@ -4,10 +4,7 @@ import config from 'config.json'
 import ReactNativeConfig from 'react-native-config'
 import { constants } from 'ethers'
 
-import {
-  ChainTypesByIdType,
-  chainTypesById,
-} from 'shared/constants/chainConstants'
+import { chainTypesById } from 'shared/constants/chainConstants'
 import { SETTINGS } from 'core/types'
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { ChainID } from 'src/lib/eoaWallet'
@@ -39,10 +36,7 @@ export const getWalletSetting = (
  */
 export const getEnvSetting = (setting: SETTINGS) => ReactNativeConfig[setting]
 
-export const getTokenAddress = (
-  symbol: TokenSymbol,
-  chainId: ChainTypesByIdType,
-) => {
+export const getTokenAddress = (symbol: TokenSymbol, chainId: ChainID) => {
   const contracts = chainId === 31 ? testnetContracts : mainnetContracts
 
   const result = Object.keys(contracts).find(

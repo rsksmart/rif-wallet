@@ -4,30 +4,26 @@ import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
 import axios from 'axios'
 
+import { ChainID } from 'lib/eoaWallet'
+
 import { SETTINGS } from 'core/types'
 import { MAINNET, TESTNET } from 'screens/rnsManager/addresses.json'
-import {
-  ChainTypeEnum,
-  ChainTypesByIdType,
-  chainTypesById,
-} from 'shared/constants/chainConstants'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 import { Wallet } from 'shared/wallet'
 
 import { getWalletSetting } from './config'
 
-export const createPublicAxios = (chainId: ChainTypesByIdType) =>
+export const createPublicAxios = (chainId: ChainID) =>
   axios.create({
     baseURL: getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, chainId),
   })
 
 export const abiEnhancer = new AbiEnhancer()
 
-export const getRnsResolver = (chainId: ChainTypesByIdType, wallet: Wallet) => {
-  const isMainnet = chainTypesById[chainId] === ChainTypeEnum.MAINNET
-  const rnsRegistryAddress = isMainnet
-    ? MAINNET.rnsRegistryAddress
-    : TESTNET.rnsRegistryAddress
+export const getRnsResolver = (chainId: ChainID, wallet: Wallet) => {
+  const rnsRegistryAddress =
+    chainId === 30 ? MAINNET.rnsRegistryAddress : TESTNET.rnsRegistryAddress
+
   return new AddrResolver(rnsRegistryAddress, wallet)
 }
 
@@ -61,8 +57,6 @@ const defaultTestnetTokens: ITokenWithoutLogo[] = Object.keys(testnetContracts)
       usdBalance: 0,
     }
   })
-export const getDefaultTokens = (chainId: ChainTypesByIdType) => {
-  return chainTypesById[chainId] === ChainTypeEnum.MAINNET
-    ? defaultMainnetTokens
-    : defaultTestnetTokens
+export const getDefaultTokens = (chainId: ChainID) => {
+  return chainId === 30 ? defaultMainnetTokens : defaultTestnetTokens
 }

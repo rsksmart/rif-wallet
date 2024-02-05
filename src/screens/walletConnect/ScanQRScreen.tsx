@@ -13,7 +13,6 @@ import {
 } from 'navigation/rootNavigator'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { chainTypesById } from 'shared/constants/chainConstants'
 import { AndroidQRScanner } from 'screens/walletConnect/AndroidQRScanner'
 
 export const ScanQRScreen = ({

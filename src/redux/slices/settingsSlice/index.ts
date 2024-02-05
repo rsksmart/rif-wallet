@@ -30,7 +30,6 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { getCurrentChainId } from 'storage/ChainStorage'
 import { resetReduxStorage } from 'storage/ReduxStorage'
 import {
@@ -77,7 +76,7 @@ export const getRifRelayConfig = (chainId: ChainID): RifRelayConfig => {
   }
 }
 
-const sslPinning = async (chainId: ChainTypesByIdType) => {
+const sslPinning = async (chainId: ChainID) => {
   const rifWalletServiceDomain = getWalletSetting(
     SETTINGS.RIF_WALLET_SERVICE_URL,
     chainId,
@@ -396,7 +395,7 @@ const settingsSlice = createSlice({
     closeRequest: state => {
       state.requests.pop()
     },
-    setChainId: (state, { payload }: PayloadAction<ChainTypesByIdType>) => {
+    setChainId: (state, { payload }: PayloadAction<ChainID>) => {
       state.chainId = payload
     },
     setAppIsActive: (state, { payload }: PayloadAction<boolean>) => {

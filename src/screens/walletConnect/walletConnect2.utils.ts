@@ -2,9 +2,10 @@ import { Core } from '@walletconnect/core'
 import { Web3Wallet, Web3WalletTypes } from '@walletconnect/web3wallet'
 import { getSdkError, buildApprovedNamespaces } from '@walletconnect/utils'
 
+import { ChainID } from 'lib/eoaWallet'
+
 import { getEnvSetting } from 'core/config'
 import { SETTINGS } from 'core/types'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { AcceptedValue, MMKVStorage } from 'storage/MMKVStorage'
 
 export type WalletConnect2SdkErrorString = Parameters<typeof getSdkError>[0]
@@ -93,7 +94,7 @@ const WALLETCONNECT_SUPPORTED_METHODS = [
   'eth_signTypedData',
 ]
 
-const WALLETCONNECT_BUILD_SUPPORTED_CHAINS = (chainId: ChainTypesByIdType) => [
+const WALLETCONNECT_BUILD_SUPPORTED_CHAINS = (chainId: ChainID) => [
   `eip155:${chainId}`,
 ]
 
@@ -102,7 +103,7 @@ const WALLETCONNECT_BUILD_SUPPORTED_ACCOUNTS = ({
   chainId,
 }: {
   walletAddress: string
-  chainId: ChainTypesByIdType
+  chainId: ChainID
 }) => [`eip155:${chainId}:${walletAddress}`]
 
 const WALLETCONNECT_SUPPORTED_EVENTS = ['accountsChanged', 'chainChanged']
@@ -113,7 +114,7 @@ export const buildRskAllowedNamespaces = ({
   walletAddress,
 }: {
   proposal: Web3WalletTypes.SessionProposal
-  chainId: ChainTypesByIdType
+  chainId: ChainID
   walletAddress: string
 }) =>
   buildApprovedNamespaces({
