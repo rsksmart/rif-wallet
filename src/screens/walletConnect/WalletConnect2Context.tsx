@@ -314,14 +314,23 @@ export const WalletConnect2Provider = ({
             topic: session.topic,
             reason: getSdkError('USER_DISCONNECTED'),
           })
+        } catch (err) {
+          // @TODO handle error disconnecting
+          console.log(319, 'WC2.0 error disconnect', err)
+          console.log('Deleting session from MMKV Storage')
+          Promise.all([
+            web3wallet.engine.signClient.session.delete(
+              session.topic,
+              getSdkError('USER_DISCONNECTED'),
+            ),
+            web3wallet.core.pairing.disconnect({ topic: session.topic }),
+          ]).catch(() => console.log(328, 'Failed to disconnect WC manually'))
+        } finally {
           setSessions(prevSessions =>
             prevSessions.filter(
               prevSession => prevSession.topic !== session.topic,
             ),
           )
-        } catch (err) {
-          // @TODO handle error disconnecting
-          console.log('WC2.0 error disconnect', err)
         }
       }
     },
