@@ -12,7 +12,7 @@ import {
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator'
 import { WINDOW_HEIGHT, sharedColors } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { castStyle, isSeedlessWallet } from 'shared/utils'
 
 export const CreateKeysScreen = ({
   navigation,

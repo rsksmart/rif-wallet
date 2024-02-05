@@ -130,7 +130,6 @@ export const initializeApp = async (
   // connect to sockets
   rifSockets({
     address: addressToUse(wallet),
-    fetcher: fetcherInstance,
     dispatch,
     setGlobalError: rejectWithValue,
     usdPrices,

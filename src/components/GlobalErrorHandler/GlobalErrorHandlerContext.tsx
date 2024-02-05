@@ -5,7 +5,7 @@ import Config from 'react-native-config'
 
 import { getWalletSetting } from 'src/core/config'
 import { SETTINGS } from 'src/core/types'
-import { getCurrentChainId } from 'src/storage/ChainStorage'
+import { getCurrentChainId } from 'storage/ChainStorage'
 
 import GlobalErrorHandlerView from './GlobalErrorHandlerView'
 
