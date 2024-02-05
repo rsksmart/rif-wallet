@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Wallet } from 'shared/wallet'
 import { AsyncThunkWithTypes } from 'store/store'
 import { createMagicWalletWithEmail, isRelayWallet } from 'shared/utils'
+import { getCurrentChainId } from 'storage/ChainStorage'
 
 import { EmailLogin, SeedlessState } from './types'
 import {
@@ -18,12 +19,10 @@ export const loginWithEmail = createAsyncThunk<
   AsyncThunkWithTypes
 >('seedless/seedlessEmailLogin', async (payload, thunkAPI) => {
   try {
-    const {
-      settings: { chainId },
-      usdPrices,
-      balances,
-    } = thunkAPI.getState()
+    const { usdPrices, balances } = thunkAPI.getState()
     const { email, initializeWallet, magic } = payload
+
+    const chainId = getCurrentChainId()
 
     const wallet = await createMagicWalletWithEmail(
       email,

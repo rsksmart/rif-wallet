@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useCallback } from 'react'
 import { FC, ReactNode, createContext, useState, useContext } from 'react'
 import { Magic } from '@magic-sdk/react-native-bare'
 import Config from 'react-native-config'
@@ -47,12 +47,12 @@ const GlobalErrorHandlerProvider: React.FC<GlobalErrorHandlerProviderType> = ({
   const [globalError, setGlobalError] = useState<string | null>(null)
   const [compKey, setCompKey] = useState(0)
 
-  const handleReload = () => {
+  const handleReload = useCallback(() => {
     setGlobalError(null)
     const newInstance = createGlobalMagicInstance()
     setGlobalMagicInstance(newInstance)
     setCompKey(curKey => curKey + 1)
-  }
+  }, [])
 
   return (
     <GlobalErrorHandlerContext.Provider
