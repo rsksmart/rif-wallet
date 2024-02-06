@@ -197,3 +197,5 @@ export const getFormattedTokenValue = (tokenValue: string) => {
     ending
   )
 }
+
+export * from './wallet'

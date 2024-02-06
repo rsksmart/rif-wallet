@@ -7,7 +7,7 @@ import { RelayWallet } from 'lib/relayWallet'
 
 import { Wallet } from '../wallet'
 
-const useRelay = Config.USE_RELAY === 'true'
+export const isRelayWallet = Config.USE_RELAY === 'true'
 
 export const createAppWallet = async (
   mnemonic: string,
@@ -17,10 +17,10 @@ export const createAppWallet = async (
   config: RifRelayConfig,
   cache?: (privateKey: string, mnemonic?: string) => void,
 ) => {
-  console.log('USE RELAY createAppWallet', useRelay)
+  console.log('USE RELAY createAppWallet', isRelayWallet)
   let wallet: Wallet
 
-  if (useRelay) {
+  if (isRelayWallet) {
     wallet = await RelayWallet.create(
       mnemonic,
       chainId,
@@ -49,11 +49,11 @@ export const loadAppWallet = async (
   onRequest: OnRequest,
   config: RifRelayConfig,
 ) => {
-  console.log('USE RELAY loadAppWallet', useRelay)
+  console.log('USE RELAY loadAppWallet', isRelayWallet)
 
   let wallet: Wallet
 
-  if (useRelay) {
+  if (isRelayWallet) {
     wallet = await RelayWallet.fromWalletState(
       keys,
       chainId,
