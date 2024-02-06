@@ -49,13 +49,17 @@ export const requestUsername = createAsyncThunk(
       }
       thunkAPI.dispatch(setAlias(`${alias}.rsk`))
       thunkAPI.dispatch(setDuration(duration))
+
       let indexStatus = rnsProcessor.getStatus(alias)
+
       if (!indexStatus?.commitmentRequested) {
         thunkAPI.dispatch(setStatus(ProfileStatus.WAITING_FOR_USER_COMMIT))
         await rnsProcessor.process(alias, duration)
         thunkAPI.dispatch(setStatus(ProfileStatus.REQUESTING))
       }
+
       indexStatus = rnsProcessor.getStatus(alias)
+
       if (indexStatus.commitmentRequested) {
         return await commitment(
           rnsProcessor,
@@ -75,9 +79,11 @@ export const purchaseUsername = createAsyncThunk(
   async ({ domain, getRnsProcessor }: PurchaseUsername, thunkAPI) => {
     try {
       const rnsProcessor = getRnsProcessor()
+
       if (!rnsProcessor) {
         return thunkAPI.rejectWithValue('No RNS Processor created')
       }
+
       return await rnsProcessor.register(domain)
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
@@ -90,11 +96,14 @@ export const deleteRnsProcess = createAsyncThunk(
   async ({ getRnsProcessor, domain }: DeleteRnsProcess, thunkAPI) => {
     try {
       const rnsProcessor = getRnsProcessor()
+
       if (!rnsProcessor) {
         return thunkAPI.rejectWithValue('No RNS Processor created')
       }
+
       rnsProcessor.deleteRnsProcess(domain)
       thunkAPI.dispatch(deleteProfile())
+
       return true
     } catch (err) {
       thunkAPI.rejectWithValue(err)

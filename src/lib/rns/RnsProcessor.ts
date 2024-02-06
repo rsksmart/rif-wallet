@@ -15,7 +15,7 @@ import { Wallet } from 'shared/wallet'
 
 import { RelayWallet } from '../relayWallet'
 
-interface IDomainRegistrationProcess {
+interface DomainRegistrationProcess {
   domain: string
   secret: string
   hash: string
@@ -37,7 +37,7 @@ export enum DomainRegistrationEnum {
 }
 
 export interface IDomainRegistrationProcessIndex {
-  [domain: string]: IDomainRegistrationProcess
+  [domain: string]: DomainRegistrationProcess
 }
 
 export class RnsProcessor {
@@ -70,7 +70,7 @@ export class RnsProcessor {
   }
   private setIndex = (
     domain: string,
-    domainRegistrationProcess: IDomainRegistrationProcess,
+    domainRegistrationProcess: DomainRegistrationProcess,
   ) => {
     this.index[domain] = domainRegistrationProcess
     saveRnsProcessIndex(this.index)
@@ -239,7 +239,7 @@ export class RnsProcessor {
       }
     }
   }
-  public getStatus = (domain: string): IDomainRegistrationProcess => {
+  public getStatus = (domain: string): DomainRegistrationProcess => {
     return this.index[domain]
   }
 }
