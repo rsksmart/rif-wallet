@@ -3,11 +3,13 @@ import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { ITokenWithoutLogo } from 'src/redux/slices/balancesSlice/types'
 import { TokenSymbol } from 'src/screens/home/TokenImage'
 
+export type TokenOrBitcoinNetwork = ITokenWithoutLogo | BitcoinNetwork
+
 // default order should be RIF, USDRIF, RBTC, BTC and RDOC
 // other tokens should be sorted alphabetically by symbol
 export const sortTokensBySymbol = (
-  a: ITokenWithoutLogo | BitcoinNetwork,
-  b: ITokenWithoutLogo | BitcoinNetwork,
+  a: TokenOrBitcoinNetwork,
+  b: TokenOrBitcoinNetwork,
 ) => {
   const aSymbol = a.symbol.toUpperCase()
   const bSymbol = b.symbol.toUpperCase()
@@ -57,7 +59,7 @@ export const sortTokensBySymbol = (
 }
 
 // note that RDOC is not a default token
-// which means it can be hidden if balance is 0
+// which means it can be hidden if its balance is 0
 export const isDefaultToken = (symbol: string) =>
   symbol === TokenSymbol.RIF ||
   symbol === TokenSymbol.TRIF ||
