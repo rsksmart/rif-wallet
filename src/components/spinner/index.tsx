@@ -9,12 +9,12 @@ interface Props extends CircleSnailPropTypes {
 export const AppSpinner = ({
   size,
   color = sharedColors.white,
-  thickness = 20,
+  thickness = size / 7,
   ...props
 }: Props) => {
   return (
     <CircleSnail
-      size={size + (thickness ? thickness * 2 : 20 * 2)}
+      size={size}
       thickness={thickness}
       strokeCap={'square'}
       indeterminate={true}

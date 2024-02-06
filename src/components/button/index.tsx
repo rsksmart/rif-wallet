@@ -17,8 +17,10 @@ import { defaultIconSize, sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 
 import { AccessibilityLabelStandards } from '../shared'
+import { AppSpinner } from '../spinner'
 
 export const buttonHeight = 52
+const defaultPadding = 14
 
 const getBackgroundVariety = (
   backgroundVariety: AppButtonBackgroundVarietyEnum,
@@ -95,6 +97,7 @@ export interface AppButtonProps extends ButtonProps {
   textColor?: ColorValue
   disabled?: boolean
   disabledStyle?: StyleProp<ViewStyle>
+  loading?: boolean
 }
 export const AppButton = ({
   title,
@@ -113,6 +116,7 @@ export const AppButton = ({
   rightIcon,
   style,
   textStyle,
+  loading,
 }: AppButtonProps) => {
   return (
     <AppTouchable
@@ -139,12 +143,19 @@ export const AppButton = ({
             />
           </View>
         ) : null}
-        <Typography
-          type={textType}
-          accessibilityLabel={`${accessibilityLabel}.${AccessibilityLabelStandards.TEXT}`}
-          style={[styles.text, { color: textColor }, textStyle]}>
-          {title}
-        </Typography>
+        {!loading ? (
+          <Typography
+            type={textType}
+            accessibilityLabel={`${accessibilityLabel}.${AccessibilityLabelStandards.TEXT}`}
+            style={[styles.text, { color: textColor }, textStyle]}>
+            {title}
+          </Typography>
+        ) : (
+          <AppSpinner
+            size={buttonHeight - defaultPadding * 2}
+            color={sharedColors.black}
+          />
+        )}
         {rightIcon ? (
           <View style={styles.iconContainer}>
             <Icon
@@ -164,7 +175,7 @@ const styles = StyleSheet.create({
     minHeight: buttonHeight,
     borderRadius: 25,
     flexDirection: 'row',
-    paddingVertical: 14,
+    paddingVertical: defaultPadding,
     paddingHorizontal: 20,
   }),
   iconContainer: castStyle.view({
