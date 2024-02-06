@@ -32,7 +32,7 @@ export interface TransactionSummaryScreenProps {
     amIReceiver?: boolean
     from?: string
   }
-  buttons?: AppButtonProps[]
+  buttons?: [AppButtonProps, AppButtonProps]
   functionName?: string
   backScreen?: rootTabsRouteNames
   isLoaded?: boolean

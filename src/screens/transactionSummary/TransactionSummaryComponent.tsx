@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Linking, ScrollView, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -53,6 +53,7 @@ export const TransactionSummaryComponent = ({
   isLoaded,
   FeeComponent,
 }: TransactionSummaryComponentProps) => {
+  const [confirmed, setConfirmed] = useState(false)
   const chainId = useAppSelector(selectChainId)
   const { bottom } = useSafeAreaInsets()
   const { t } = useTranslation()
@@ -290,7 +291,23 @@ export const TransactionSummaryComponent = ({
       </ScrollView>
       <View style={styles.buttons}>
         {buttons ? (
-          buttons.map(b => <AppButton {...b} key={b.title} />)
+          buttons.map((b, i) => {
+            if (i === 0) {
+              return (
+                <AppButton
+                  {...b}
+                  onPress={event => {
+                    b.onPress?.(event)
+                    setConfirmed(true)
+                  }}
+                  disabled={b.disabled || confirmed}
+                  loading={confirmed}
+                  key={b.title}
+                />
+              )
+            }
+            return <AppButton {...b} key={b.title} />
+          })
         ) : (
           <AppButton
             onPress={goBack}
