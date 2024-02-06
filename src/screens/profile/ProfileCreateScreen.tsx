@@ -130,7 +130,7 @@ export const ProfileCreateScreen = ({
   }, [navigation])
 
   useEffect(() => {
-    (async () => {
+    const fn = async () => {
       if (profile.alias && profile.status === ProfileStatus.REQUESTING) {
         await dispatch(
           commitment({
@@ -150,7 +150,8 @@ export const ProfileCreateScreen = ({
           dispatch(setStatus(ProfileStatus.READY_TO_PURCHASE))
         }
       }
-    })()
+    }
+    fn()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
