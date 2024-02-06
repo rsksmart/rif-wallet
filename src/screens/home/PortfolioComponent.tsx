@@ -3,13 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleProp, View, ViewStyle } from 'react-native'
 
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
+import { isDefaultToken, sortTokensBySymbol } from 'components/token/utils'
 import { getTokenColor } from 'screens/home/tokenColor'
 import { sharedColors } from 'shared/constants'
-import {
-  TokenOrBitcoinNetwork,
-  isDefaultToken,
-  sortTokensBySymbol,
-} from 'src/components/token/utils'
+import { TokenOrBitcoinNetwork } from 'shared/types'
 
 interface Props {
   setSelectedAddress: (token: string | undefined) => void
