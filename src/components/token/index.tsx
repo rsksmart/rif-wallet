@@ -105,7 +105,7 @@ export const TokenBalance = ({
             value={
               hide
                 ? '\u002A\u002A\u002A\u002A'
-                : formatTokenValues(firstValue.balance)
+                : firstValue.balance && formatTokenValues(firstValue.balance)
             }
             keyboardType="numeric"
             accessibilityLabel={'Amount.Input'}
