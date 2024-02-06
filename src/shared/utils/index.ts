@@ -24,6 +24,14 @@ import { RelayWallet } from 'lib/relayWallet'
 import { Wallet } from '../wallet'
 import { ErrorWithMessage } from '../types'
 
+export const delay = (delayMs: number) => {
+  return new Promise<true>(resolve =>
+    setInterval(async () => {
+      resolve(true)
+    }, delayMs),
+  )
+}
+
 const tiniestAmount = 0.000001
 
 const formatWithDigits = (number: string) => {
@@ -135,8 +143,6 @@ export const usePreventScreenshot = (
       ])
     })
 
-    console.log('CREATE SUBS', subs)
-
     return () => {
       subs.remove()
     }
@@ -144,13 +150,10 @@ export const usePreventScreenshot = (
 
   useEffect(() => {
     if (isFocused) {
-      console.log('ENABLE')
       enabled(true)
       enableSecureView()
       return
     }
-
-    console.log('DISABLE')
 
     enabled(false)
     disableSecureView()

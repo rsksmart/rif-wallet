@@ -222,8 +222,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
             {rnsProcessor ? (
               <DomainInput
                 address={address}
-                searchAvailability={rnsProcessor.rskRegistrar.available}
-                searchOwnerOf={rnsProcessor.rskRegistrar.ownerOf}
+                rskRegistrar={rnsProcessor.rskRegistrar}
                 inputName={'domain'}
                 error={errors.domain}
                 domainValue={domain}

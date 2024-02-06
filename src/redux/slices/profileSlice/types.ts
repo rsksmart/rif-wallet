@@ -25,3 +25,8 @@ export interface DeleteRnsProcess {
   getRnsProcessor: GetRnsProcessor
   domain: string
 }
+
+export interface CommitmentRnsProcess {
+  getRnsProcessor: GetRnsProcessor
+  alias: string
+}

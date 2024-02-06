@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text } from 'react-native'
 import { FieldError } from 'react-hook-form'
+import { RSKRegistrar } from '@rsksmart/rns-sdk'
 
 import {
   AddressValidationMessage,
@@ -20,8 +21,7 @@ interface Props {
   inputName: string
   domainValue: string
   error: FieldError | undefined
-  searchAvailability: (domain: string) => Promise<string>
-  searchOwnerOf: (domain: string) => Promise<string>
+  rskRegistrar: RSKRegistrar
   onDomainAvailable: (domain: string, valid: boolean) => void
   onDomainOwned: (owned: boolean) => void
   onResetValue: () => void
@@ -47,8 +47,7 @@ export const DomainInput = ({
   address,
   inputName,
   domainValue,
-  searchAvailability,
-  searchOwnerOf,
+  rskRegistrar,
   onDomainAvailable,
   onDomainOwned,
   onResetValue,
@@ -70,10 +69,10 @@ export const DomainInput = ({
         setDomainAvailability(DomainStatus.NONE)
         onDomainAvailable(domain, false)
       } else {
-        const available = await searchAvailability(domain)
+        const available = await rskRegistrar.available(domain)
 
         if (!available) {
-          const ownerAddress = await searchOwnerOf(domain)
+          const ownerAddress = await rskRegistrar.ownerOf(domain)
 
           if (address === ownerAddress) {
             setDomainAvailability(DomainStatus.OWNED)
@@ -92,8 +91,7 @@ export const DomainInput = ({
       errorType,
       errorMessage,
       onDomainAvailable,
-      searchOwnerOf,
-      searchAvailability,
+      rskRegistrar,
       address,
       onDomainOwned,
     ],

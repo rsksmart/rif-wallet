@@ -154,8 +154,7 @@ export class RnsProcessor {
       // This to avoid request load
       if (
         this.index[domain]?.commitmentConfirmed ||
-        (!isWaitingForCommitmentTransaction &&
-          this.isDomainAllowedToPingRskRegistrarCanReveal(domain))
+        !isWaitingForCommitmentTransaction
       ) {
         const canReveal = await this.rskRegistrar.canReveal(
           this.index[domain].hash,
@@ -172,6 +171,7 @@ export class RnsProcessor {
       throw new Error((err as Error).message)
     }
   }
+
   public price = async (domain: string) => {
     if (this.index[domain]) {
       const alias = this.index[domain]?.domain

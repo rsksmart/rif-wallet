@@ -77,11 +77,12 @@ export const SettingsScreen = ({
   const { t } = useTranslation()
 
   const { handleReload } = useContext(GlobalErrorHandlerContext)
-  const onSwitchChains = () => {
+
+  const onSwitchChains = useCallback(() => {
     const currentChainId = getCurrentChainId()
     setCurrentChainId(currentChainId === 31 ? 30 : 31)
     handleReload()
-  }
+  }, [handleReload])
   return (
     <ScrollView style={styles.container}>
       <View style={styles.mainView}>

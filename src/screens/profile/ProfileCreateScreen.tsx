@@ -6,8 +6,6 @@ import Clipboard from '@react-native-community/clipboard'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 
-import { RnsProcessor } from 'lib/rns'
-
 import {
   BarButtonGroupContainer,
   BarButtonGroupIcon,
@@ -33,20 +31,14 @@ import {
 } from 'shared/constants'
 import { sharedStyles } from 'shared/styles'
 import { castStyle } from 'shared/utils'
-import {
-  commitment,
-  IntervalProcessOrigin,
-  setProfile,
-  setStatus,
-} from 'store/slices/profileSlice'
+import { commitment, setProfile, setStatus } from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectChainId, selectRequests } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { RNS_ADDRESSES_BY_CHAIN_ID } from 'screens/rnsManager/types'
-import { useWallet } from 'shared/wallet'
+import { useGetRnsProcessor, useWallet } from 'shared/wallet'
 import { useAddress } from 'shared/hooks'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
@@ -56,6 +48,7 @@ export const ProfileCreateScreen = ({
 }: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
   const wallet = useWallet()
   const address = useAddress(wallet)
+  const getRnsProcessor = useGetRnsProcessor()
 
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
@@ -137,36 +130,27 @@ export const ProfileCreateScreen = ({
   }, [navigation])
 
   useEffect(() => {
-    if (
-      wallet &&
-      profile.alias &&
-      profile.status === ProfileStatus.REQUESTING
-    ) {
-      const rns = new RnsProcessor({
-        wallet,
-        address,
-        rnsAddresses: RNS_ADDRESSES_BY_CHAIN_ID[chainId],
-      })
-      commitment(
-        rns,
-        profile.alias.split('.rsk')[0],
-        IntervalProcessOrigin.PROFILE_CREATE_EFFECT,
-      )
-        .then(profileStatus => dispatch(setStatus(profileStatus)))
-        .catch(error => {
-          console.log(error)
-        })
-    }
-    if (requests.length === 0) {
-      if (profile.status === ProfileStatus.WAITING_FOR_USER_COMMIT) {
-        // User got stuck in requesting the commit - set profileStatus back to 0
-        dispatch(setStatus(ProfileStatus.NONE))
+    (async () => {
+      if (profile.alias && profile.status === ProfileStatus.REQUESTING) {
+        await dispatch(
+          commitment({
+            alias: profile.alias.split('.rsk')[0],
+            getRnsProcessor,
+          }),
+        ).unwrap()
       }
-      if (profile.status === ProfileStatus.PURCHASING) {
-        // User got stuck in requesting the purchase - set profileStatus back to 3
-        dispatch(setStatus(ProfileStatus.READY_TO_PURCHASE))
+
+      if (requests.length === 0) {
+        if (profile.status === ProfileStatus.WAITING_FOR_USER_COMMIT) {
+          // User got stuck in requesting the commit - set profileStatus back to 0
+          dispatch(setStatus(ProfileStatus.NONE))
+        }
+        if (profile.status === ProfileStatus.PURCHASING) {
+          // User got stuck in requesting the purchase - set profileStatus back to 3
+          dispatch(setStatus(ProfileStatus.READY_TO_PURCHASE))
+        }
       }
-    }
+    })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

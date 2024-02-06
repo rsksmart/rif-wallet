@@ -1,18 +1,20 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { DomainRegistrationEnum, RnsProcessor } from 'lib/rns'
+import { DomainRegistrationEnum } from 'lib/rns'
 
 import { ProfileStatus } from 'navigation/profileNavigator/types'
 import { Wallet } from 'shared/wallet'
-import { AppDispatch } from 'store/store'
+import { AppDispatch, AsyncThunkWithTypes } from 'store/store'
 import {
   OnSetTransactionStatusChange,
   TransactionStatus,
 } from 'store/shared/types'
 import { abiEnhancer } from 'core/setup'
 import { handleTransactionStatusChange } from 'store/shared/utils'
+import { delay } from 'shared/utils'
 
 import {
+  CommitmentRnsProcess,
   DeleteRnsProcess,
   ProfileStore,
   PurchaseUsername,
@@ -39,14 +41,20 @@ export const handleDomainTransactionStatusChange =
     handleTransactionStatusChange(dispatch)(txTransformed)
   }
 
-export const requestUsername = createAsyncThunk(
+export const requestUsername = createAsyncThunk<
+  unknown,
+  RequestUsername,
+  AsyncThunkWithTypes
+>(
   'profile/requestUsername',
-  async ({ alias, duration, getRnsProcessor }: RequestUsername, thunkAPI) => {
+  async ({ alias, duration, getRnsProcessor }, thunkAPI) => {
     try {
       const rnsProcessor = getRnsProcessor()
+
       if (!rnsProcessor) {
         return thunkAPI.rejectWithValue('No RNS Processor created')
       }
+
       thunkAPI.dispatch(setAlias(`${alias}.rsk`))
       thunkAPI.dispatch(setDuration(duration))
 
@@ -61,12 +69,9 @@ export const requestUsername = createAsyncThunk(
       indexStatus = rnsProcessor.getStatus(alias)
 
       if (indexStatus.commitmentRequested) {
-        return await commitment(
-          rnsProcessor,
-          alias,
-          IntervalProcessOrigin.RNS_ORIGINAL_TRANSACTION,
-        )
+        return await thunkAPI.dispatch(commitment({ alias, getRnsProcessor }))
       }
+
       return null
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
@@ -111,6 +116,33 @@ export const deleteRnsProcess = createAsyncThunk(
     }
   },
 )
+
+export const commitment = createAsyncThunk<
+  DomainRegistrationEnum.COMMITMENT_READY,
+  CommitmentRnsProcess,
+  AsyncThunkWithTypes
+>('profile/commitment', async ({ alias, getRnsProcessor }, thunkAPI) => {
+  try {
+    const rnsProcessor = getRnsProcessor()
+
+    if (!rnsProcessor) {
+      return thunkAPI.rejectWithValue('No RNS Processor created')
+    }
+
+    let response = await rnsProcessor.canReveal(alias)
+
+    while (response !== DomainRegistrationEnum.COMMITMENT_READY) {
+      await delay(3000)
+      response = await rnsProcessor.canReveal(alias)
+    }
+
+    thunkAPI.dispatch(setStatus(ProfileStatus.READY_TO_PURCHASE))
+
+    return DomainRegistrationEnum.COMMITMENT_READY
+  } catch (err) {
+    return thunkAPI.dispatch(err)
+  }
+})
 
 const initialState: ProfileStore = {
   alias: '',
@@ -165,48 +197,6 @@ const profileSlice = createSlice({
     })
   },
 })
-
-export enum IntervalProcessOrigin {
-  NONE = 'NONE',
-  RNS_ORIGINAL_TRANSACTION = 'RNS_ORIGINAL_TRANSACTION',
-  PROFILE_CREATE_EFFECT = 'PROFILE_CREATE_EFFECT',
-}
-const commitmentIntervalProcess: {
-  interval?: ReturnType<typeof setInterval>
-  intervalOrigin: IntervalProcessOrigin
-} = {
-  intervalOrigin: IntervalProcessOrigin.NONE,
-}
-
-export const commitment = (
-  rnsProcessor: RnsProcessor,
-  alias: string,
-  intervalProcessOrigin: IntervalProcessOrigin,
-): Promise<ProfileStatus> => {
-  return new Promise((resolve, reject) => {
-    if (commitmentIntervalProcess.interval) {
-      reject('Interval is already running.')
-    }
-    commitmentIntervalProcess.intervalOrigin = intervalProcessOrigin
-    commitmentIntervalProcess.interval = setInterval(() => {
-      rnsProcessor
-        .canReveal(
-          alias,
-          intervalProcessOrigin ===
-            IntervalProcessOrigin.RNS_ORIGINAL_TRANSACTION,
-        )
-        .then(canRevealResponse => {
-          if (canRevealResponse === DomainRegistrationEnum.COMMITMENT_READY) {
-            clearInterval(commitmentIntervalProcess.interval)
-            commitmentIntervalProcess.interval = undefined
-            commitmentIntervalProcess.intervalOrigin =
-              IntervalProcessOrigin.NONE
-            resolve(ProfileStatus.READY_TO_PURCHASE)
-          }
-        })
-    }, 1000)
-  })
-}
 
 export const {
   setProfile,
