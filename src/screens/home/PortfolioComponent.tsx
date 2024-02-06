@@ -7,6 +7,7 @@ import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { getTokenColor } from 'screens/home/tokenColor'
 import { sharedColors } from 'shared/constants'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { sortTokensBySymbol, isDefaultToken } from 'src/components/token/utils'
 
 interface Props {
   setSelectedAddress: (token: string | undefined) => void
@@ -59,33 +60,36 @@ export const PortfolioComponent = ({
             isSelected={isTotalCardSelected}
           />
         )}
-        {balances.map(
-          (
-            {
-              contractAddress,
-              symbol,
-              balance,
-            }: ITokenWithoutLogo | BitcoinNetwork,
-            i: number,
-          ) => {
-            const isSelected =
-              selectedAddress === contractAddress && !isTotalCardSelected
-            const color = isSelected
-              ? getTokenColor(symbol)
-              : sharedColors.inputInactive
-            return (
-              <PortfolioCard
-                key={i}
-                onPress={() => handleSelectedAddress(contractAddress)}
-                color={color}
-                primaryText={symbol}
-                secondaryText={balance.toString()}
-                isSelected={isSelected}
-                icon={symbol}
-              />
-            )
-          },
-        )}
+        {balances
+          .sort(sortTokensBySymbol)
+          .filter(token => isDefaultToken(token.symbol) || +token.balance > 0)
+          .map(
+            (
+              {
+                contractAddress,
+                symbol,
+                balance,
+              }: ITokenWithoutLogo | BitcoinNetwork,
+              i: number,
+            ) => {
+              const isSelected =
+                selectedAddress === contractAddress && !isTotalCardSelected
+              const color = isSelected
+                ? getTokenColor(symbol)
+                : sharedColors.inputInactive
+              return (
+                <PortfolioCard
+                  key={i}
+                  onPress={() => handleSelectedAddress(contractAddress)}
+                  color={color}
+                  primaryText={symbol}
+                  secondaryText={balance.toString()}
+                  isSelected={isSelected}
+                  icon={symbol}
+                />
+              )
+            },
+          )}
       </ScrollView>
     </View>
   )
