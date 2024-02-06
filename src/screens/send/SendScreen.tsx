@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
@@ -51,6 +51,7 @@ export const SendScreen = ({
   const totalUsdBalance = useAppSelector(selectTotalUsdValue)
   const prices = useAppSelector(selectUsdPrices)
   const pendingTransactions = useAppSelector(selectRecentRskTransactions)
+  const alreadyShownPendingTxAlert = useRef(false)
   const { backScreen, contact } = route.params
 
   const isContactBitcoin = !!contact && isBitcoinAddressValid(contact.address)
@@ -141,13 +142,15 @@ export const SendScreen = ({
   useEffect(() => {
     if (
       pendingTransactions.length > 0 &&
-      currentTransaction?.status === undefined
+      currentTransaction?.status === undefined &&
+      !alreadyShownPendingTxAlert.current
     ) {
       Alert.alert(
         t('send_alert_ongoing_transaction_title'),
         t('send_alert_ongoing_transaction_body'),
         [{ onPress: navigation.goBack, text: t('ok') }],
       )
+      alreadyShownPendingTxAlert.current = true
     }
   }, [navigation.goBack, pendingTransactions, t, currentTransaction])
 
