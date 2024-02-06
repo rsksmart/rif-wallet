@@ -64,7 +64,9 @@ export const PortfolioComponent = ({
         )}
         {balances
           .sort(sortTokensBySymbol)
-          .filter(token => isDefaultToken(token.symbol) || +token.balance > 0)
+          .filter(
+            token => isDefaultToken(token.symbol) || Number(token.balance) > 0,
+          )
           .map(
             (
               { contractAddress, symbol, balance }: TokenOrBitcoinNetwork,
