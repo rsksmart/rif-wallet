@@ -209,17 +209,19 @@ export const ImportMasterKeyScreen = (
             <StatusIcon status={status} />
           </View>
         </View>
-        <Dots
-          length={4}
-          active={selectedSlide}
-          activeColor={sharedColors.white}
-          activeDotWidth={8}
-          activeDotHeight={8}
-          passiveColor={sharedColors.inputActive}
-          passiveDotHeight={6}
-          passiveDotWidth={6}
-          marginHorizontal={6}
-        />
+        {status !== StatusActions.ERROR && (
+          <Dots
+            length={4}
+            active={selectedSlide}
+            activeColor={sharedColors.white}
+            activeDotWidth={8}
+            activeDotHeight={8}
+            passiveColor={sharedColors.inputActive}
+            passiveDotHeight={6}
+            passiveDotWidth={6}
+            marginHorizontal={6}
+          />
+        )}
 
         <AppButton
           accessibilityLabel={'OK'}
@@ -281,7 +283,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   }),
   titleText: castStyle.text({
+    alignSelf: 'center',
     marginTop: 42,
+    marginBottom: 20,
   }),
   hideCarouselView: castStyle.view({
     display: 'none',
