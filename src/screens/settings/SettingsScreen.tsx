@@ -35,25 +35,17 @@ export const SettingsScreen = ({
   const { walletIsDeployed } = useContext(WalletContext)
 
   const smartWalletFactoryAddress = useMemo(
-    () =>
-      getWalletSetting(
-        SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-        chainTypesById[chainId],
-      ),
+    () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS, chainId),
     [chainId],
   )
 
   const rpcUrl = useMemo(
-    () => getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
+    () => getWalletSetting(SETTINGS.RPC_URL, chainId),
     [chainId],
   )
 
   const walletServiceUrl = useMemo(
-    () =>
-      getWalletSetting(
-        SETTINGS.RIF_WALLET_SERVICE_URL,
-        chainTypesById[chainId],
-      ),
+    () => getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, chainId),
     [chainId],
   )
 

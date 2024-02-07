@@ -59,41 +59,38 @@ export const getRifRelayConfig = (chainId: 30 | 31): RifRelayConfig => {
   return {
     smartWalletFactoryAddress: getWalletSetting(
       SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
     relayVerifierAddress: getWalletSetting(
       SETTINGS.RELAY_VERIFIER_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
     deployVerifierAddress: getWalletSetting(
       SETTINGS.DEPLOY_VERIFIER_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
-    relayServer: getWalletSetting(
-      SETTINGS.RIF_RELAY_SERVER,
-      chainTypesById[chainId],
-    ),
+    relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER, chainId),
   }
 }
 
 const sslPinning = async (chainId: ChainID) => {
   const rifWalletServiceDomain = getWalletSetting(
     SETTINGS.RIF_WALLET_SERVICE_URL,
-    chainTypesById[chainId],
+    chainId,
   ).split('//')[1]
 
   const rifWalletServicePk = getWalletSetting(
     SETTINGS.RIF_WALLET_SERVICE_PUBLIC_KEY,
-    chainTypesById[chainId],
+    chainId,
   ).split(',')
   const rifRelayDomain = getWalletSetting(
     SETTINGS.RIF_RELAY_SERVER,
-    chainTypesById[chainId],
+    chainId,
   ).split('//')[1]
 
   const rifRelayPk = getWalletSetting(
     SETTINGS.RIF_RELAY_SERVER_PK,
-    chainTypesById[chainId],
+    chainId,
   ).split(',')
 
   await initializeSslPinning({
@@ -287,7 +284,7 @@ export const unlockApp = createAsyncThunk<
       return thunkAPI.rejectWithValue('Move to Offline Screen')
     }
 
-    const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
+    const url = getWalletSetting(SETTINGS.RPC_URL, chainId)
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
     const wallet = await loadAppWallet(

@@ -41,7 +41,7 @@ export const ScanQRScreen = ({
       // Default bitcoin token will be fetched from ENV
       const defaultToken = getWalletSetting(
         SETTINGS.QR_READER_BITCOIN_DEFAULT_NETWORK,
-        chainTypesById[chainId],
+        chainId,
       )
       navigation.navigate(rootTabsRouteNames.Home, {
         screen: homeStackRouteNames.Send,
