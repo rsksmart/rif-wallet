@@ -81,8 +81,15 @@ export const ActivityBasicRow = ({
   const usdBalance = roundBalance(price, 2)
 
   const txSummary: TransactionSummaryScreenProps = useMemo(() => {
-    const feeUsd = roundBalance(Number(fee.usdValue), 2)
-    const totalUsd = Number(price) + Number(fee.usdValue)
+    const tokenUsd = usdBalance.toFixed(2)
+    const feeUsd = Number(fee.usdValue).toFixed(2)
+    const totalUsd = (Number(tokenUsd) + Number(feeUsd)).toFixed(2)
+    const isAmountSmall = !usdBalance && !!price
+
+    const totalToken =
+      symbol === fee.symbol
+        ? Number(value) + Number(fee.tokenValue)
+        : Number(value)
 
     return {
       transaction: {
@@ -92,21 +99,18 @@ export const ActivityBasicRow = ({
           balance: value,
         },
         usdValue: {
-          symbol: usdBalance || !price ? '$' : '<',
+          symbol: isAmountSmall ? '<' : '$',
           symbolType: 'usd',
-          balance: price ? usdBalance.toFixed(2) || '0.01' : '0.00',
+          balance: isAmountSmall ? '0.01' : tokenUsd,
         },
-        totalToken:
-          symbol === fee.symbol
-            ? Number(value) + Number(fee.tokenValue)
-            : Number(value),
-        totalUsd: roundBalance(totalUsd, 2).toFixed(2),
-        status,
         fee: {
-          tokenValue: fee.tokenValue,
           symbol: fee.symbol || symbol,
-          usdValue: feeUsd.toFixed(2),
+          tokenValue: fee.tokenValue,
+          usdValue: feeUsd,
         },
+        totalToken,
+        totalUsd: totalUsd,
+        status,
         amIReceiver,
         from,
         to,

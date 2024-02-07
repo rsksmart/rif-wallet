@@ -83,10 +83,12 @@ export const ReviewBitcoinTransactionContainer = ({
       convertTokenToUSD(Number(amount), tokenPrices.BTC.price).toFixed(2)
 
     // usd values
-    const amountToPayUsd = convertToUSD(amountToPay)
+    const amountUsd = convertToUSD(amountToPay)
     const feeUsd = convertToUSD(miningFee)
-    const isAmountSmall = !Number(amountToPayUsd) && !!Number(amountToPay)
-    const totalSent = Number(amountToPay) + Number(miningFee)
+    const totalUsd = (Number(amountUsd) + Number(feeUsd)).toFixed(2)
+    const isAmountSmall = !Number(amountUsd) && !!Number(amountToPay)
+
+    const totalBtc = Number(amountToPay) + Number(miningFee)
 
     return {
       transaction: {
@@ -96,24 +98,18 @@ export const ReviewBitcoinTransactionContainer = ({
           symbol: TokenSymbol.BTC,
         },
         usdValue: {
-          balance: isAmountSmall ? '0.01' : amountToPayUsd,
-          symbolType: 'usd',
           symbol: isAmountSmall ? '<' : '$',
+          symbolType: 'usd',
+          balance: isAmountSmall ? '0.01' : amountUsd,
         },
         fee: {
+          symbol: TokenSymbol.BTC,
           tokenValue: miningFee,
           usdValue: feeUsd,
-          symbol: TokenSymbol.BTC,
         },
+        totalToken: totalBtc,
+        totalUsd,
         time: 'approx 1 min',
-        total: {
-          tokenValue: amountToPay,
-          usdValue: formatTokenValues(Number(amountToPayUsd) + Number(feeUsd)),
-        },
-        totalToken: totalSent,
-        totalUsd: Number(
-          formatTokenValues(Number(amountToPayUsd) + Number(feeUsd)),
-        ),
         to: addressToPay,
       },
       buttons: [

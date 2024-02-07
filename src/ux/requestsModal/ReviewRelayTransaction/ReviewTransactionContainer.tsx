@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers'
+import { BigNumber, BigNumberish } from 'ethers'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, StyleSheet, View } from 'react-native'
@@ -203,15 +203,17 @@ export const ReviewTransactionContainer = ({
       Alert.alert(t('transaction_summary_insufficient_funds'))
     }
 
-    // get usd values
-    const tokenUsd = convertTokenToUSD(Number(value), tokenQuote)
-    const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote)
+    // usd values
+    const convertToUSD = (amount: string | BigNumberish, quote: number) =>
+      convertTokenToUSD(Number(amount), quote).toFixed(2)
+
+    const tokenUsd = convertToUSD(value, tokenQuote)
+    const feeUsd = convertToUSD(feeValue, feeQuote)
+    const totalUsd = (Number(tokenUsd) + Number(feeUsd)).toFixed(2)
     const isAmountSmall = !Number(tokenUsd) && !!Number(value)
 
     const totalToken =
       symbol === feeSymbol ? Number(value) + Number(feeValue) : Number(value)
-
-    const totalUsd = (Number(tokenUsd) + Number(feeUsd)).toFixed(2)
 
     return {
       transaction: {
@@ -226,9 +228,9 @@ export const ReviewTransactionContainer = ({
           balance: isAmountSmall ? '0.01' : tokenUsd,
         },
         fee: {
-          tokenValue: rbtcFeeValue ?? feeValue,
-          usdValue: formatTokenValues(feeUsd),
           symbol: feeSymbol,
+          tokenValue: rbtcFeeValue ?? feeValue,
+          usdValue: feeUsd,
         },
         totalToken,
         totalUsd,
