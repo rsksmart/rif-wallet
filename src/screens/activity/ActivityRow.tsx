@@ -80,8 +80,11 @@ export const ActivityBasicRow = ({
   // USD Balance
   const usdBalance = roundBalance(price, 2)
 
-  const txSummary: TransactionSummaryScreenProps = useMemo(
-    () => ({
+  const txSummary: TransactionSummaryScreenProps = useMemo(() => {
+    const feeUsd = roundBalance(Number(fee.usdValue), 2)
+    const totalUsd = Number(price) + Number(fee.usdValue)
+
+    return {
       transaction: {
         tokenValue: {
           symbol,
@@ -91,18 +94,18 @@ export const ActivityBasicRow = ({
         usdValue: {
           symbol: usdBalance || !price ? '$' : '<',
           symbolType: 'usd',
-          balance: price ? usdBalance || '0.01' : '0.00',
+          balance: price ? usdBalance.toFixed(2) || '0.01' : '0.00',
         },
         totalToken:
           symbol === fee.symbol
             ? Number(value) + Number(fee.tokenValue)
             : Number(value),
-        totalUsd: Number(value) + Number(fee.usdValue),
+        totalUsd: roundBalance(totalUsd, 2).toFixed(2),
         status,
         fee: {
-          ...fee,
+          tokenValue: fee.tokenValue,
           symbol: fee.symbol || symbol,
-          usdValue: fee.usdValue,
+          usdValue: feeUsd.toFixed(2),
         },
         amIReceiver,
         from,
@@ -111,22 +114,22 @@ export const ActivityBasicRow = ({
         hashId: id,
       },
       contact: contact || { address },
-    }),
-    [
-      address,
-      amIReceiver,
-      contact,
-      fee,
-      from,
-      to,
-      status,
-      symbol,
-      timeHumanFormatted,
-      usdBalance,
-      value,
-      id,
-    ],
-  )
+    }
+  }, [
+    fee,
+    symbol,
+    value,
+    usdBalance,
+    price,
+    status,
+    amIReceiver,
+    from,
+    to,
+    timeHumanFormatted,
+    id,
+    contact,
+    address,
+  ])
 
   const amount = useMemo(() => {
     if (symbol.startsWith('BTC')) {

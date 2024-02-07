@@ -59,7 +59,7 @@ export const formatSmallNumbers = (
     return formatWithDigits(smallNumber, resultDecimals)
   }
 
-  return asNumber !== 0 ? `< ${tiniestAmount}` : '0.00'
+  return asNumber !== 0 ? `<${tiniestAmount}` : '0.00'
 }
 
 // this needs to be here because of the failing tests
