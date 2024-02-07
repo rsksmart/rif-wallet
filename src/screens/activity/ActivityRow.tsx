@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, ViewStyle } from 'react-native'
 import { ZERO_ADDRESS } from '@rsksmart/rif-relay-light-sdk'
@@ -9,9 +9,6 @@ import { isMyAddress } from 'components/address/lib'
 import { StatusEnum } from 'components/BasicRow'
 import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
 import { AppTouchable } from 'components/appTouchable'
-import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
-import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
-import { ActivityMainScreenProps } from 'shared/types'
 import { useAppSelector } from 'store/storeUtils'
 import { getContactByAddress } from 'store/slices/contactsSlice'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
@@ -30,32 +27,28 @@ const getStatus = (status: string) => {
 }
 
 interface Props {
-  index?: number
   wallet: Wallet
   activityDetails: ActivityRowPresentationObject
-  navigation: ActivityMainScreenProps['navigation']
-  backScreen?: rootTabsRouteNames
+  moveToSummary: (activityTx: ActivityRowPresentationObject) => void
+  index?: number
   style?: StyleProp<ViewStyle>
 }
 
 export const ActivityBasicRow = ({
   index,
   wallet,
-  navigation,
+  moveToSummary,
   activityDetails,
-  backScreen,
   style,
 }: Props) => {
   const {
     symbol,
     value,
     status,
-    fee,
     timeHumanFormatted,
     from = '',
     to = '',
     price,
-    id,
   } = activityDetails
   const walletAddress = useAddress(wallet)
   const { t } = useTranslation()
@@ -80,54 +73,6 @@ export const ActivityBasicRow = ({
   // USD Balance
   const usdBalance = roundBalance(price, 2)
 
-  const txSummary: TransactionSummaryScreenProps = useMemo(
-    () => ({
-      transaction: {
-        tokenValue: {
-          symbol,
-          symbolType: 'icon',
-          balance: value,
-        },
-        usdValue: {
-          symbol: usdBalance ? '$' : '<',
-          symbolType: 'usd',
-          balance: usdBalance ? usdBalance : '0.01',
-        },
-        totalToken:
-          symbol === fee.symbol
-            ? Number(value) + Number(fee.tokenValue)
-            : Number(value),
-        totalUsd: Number(value) + Number(fee.usdValue),
-        status,
-        fee: {
-          ...fee,
-          symbol: fee.symbol || symbol,
-          usdValue: fee.usdValue,
-        },
-        amIReceiver,
-        from,
-        to,
-        time: timeHumanFormatted,
-        hashId: id,
-      },
-      contact: contact || { address },
-    }),
-    [
-      address,
-      amIReceiver,
-      contact,
-      fee,
-      from,
-      to,
-      status,
-      symbol,
-      timeHumanFormatted,
-      usdBalance,
-      value,
-      id,
-    ],
-  )
-
   const amount = useMemo(() => {
     if (symbol.startsWith('BTC')) {
       return value
@@ -140,17 +85,11 @@ export const ActivityBasicRow = ({
     return rounded.toString()
   }, [value, symbol])
 
-  const handlePress = useCallback(() => {
-    if (txSummary) {
-      navigation.navigate(rootTabsRouteNames.TransactionSummary, {
-        ...txSummary,
-        backScreen,
-      })
-    }
-  }, [navigation, txSummary, backScreen])
-
   return (
-    <AppTouchable width={'100%'} onPress={handlePress} style={style}>
+    <AppTouchable
+      width={'100%'}
+      onPress={() => moveToSummary(activityDetails)}
+      style={style}>
       <BasicRowWithContact
         index={index}
         label={label}

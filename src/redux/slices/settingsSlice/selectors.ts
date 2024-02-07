@@ -1,23 +1,11 @@
+import { RequestWithBitcoin } from 'src/shared/types'
 import { RootState } from 'store/store'
 
-export const selectRequests = ({ settings }: RootState) => settings.requests
+export const selectRequests = ({ settings }: RootState) =>
+  settings.requests as RequestWithBitcoin[]
 
 export const selectTopColor = ({ settings }: RootState) => settings.topColor
 
-export const selectWallet = ({ settings }: RootState) => {
-  if (!settings.wallets) {
-    throw new Error('No Wallets set!')
-  }
-
-  return settings.wallets[settings.selectedWallet]
-}
-
-export const selectWalletIsDeployed = ({ settings }: RootState) => {
-  if (!settings.walletsIsDeployed) {
-    throw new Error('WalletIsDeployed is not set!')
-  }
-  return settings.walletsIsDeployed[settings.selectedWallet]
-}
 export const selectSettingsIsLoading = ({ settings }: RootState) =>
   settings.loading
 
@@ -41,16 +29,3 @@ export const selectHideBalance = ({ settings }: RootState) =>
 export const selectBitcoin = ({ settings }: RootState) => settings.bitcoin
 
 export const selectChainId = ({ settings }: RootState) => settings.chainId
-
-export const selectWalletState = ({
-  settings: { wallets, walletsIsDeployed, chainId, selectedWallet },
-}: RootState) => {
-  if (!wallets || !walletsIsDeployed) {
-    throw new Error('No Wallet exist in state')
-  }
-  return {
-    wallet: wallets[selectedWallet],
-    walletIsDeployed: walletsIsDeployed[selectedWallet],
-    chainId,
-  }
-}

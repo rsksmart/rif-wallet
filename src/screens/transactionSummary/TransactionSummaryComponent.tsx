@@ -21,7 +21,6 @@ import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { getContactByAddress } from 'store/slices/contactsSlice'
 import { getWalletSetting } from 'src/core/config'
 import { SETTINGS } from 'src/core/types'
-import { chainTypesById } from 'src/shared/constants/chainConstants'
 import { selectChainId } from 'src/redux/slices/settingsSlice'
 
 import { TokenImage } from '../home/TokenImage'
@@ -98,12 +97,15 @@ export const TransactionSummaryComponent = ({
   }, [amIReceiver, t, status])
 
   const openTransactionHash = () => {
-    const setting = isBitcoinAddressValid(to)
-      ? SETTINGS.BTC_EXPLORER_ADDRESS_URL
-      : SETTINGS.EXPLORER_ADDRESS_URL
+    let explorerUrl = ''
 
-    const explorerUrl = getWalletSetting(setting, chainTypesById[chainId])
-    Linking.openURL(`${explorerUrl}/${hashId}`)
+    if (isBitcoinAddressValid(transaction.to)) {
+      explorerUrl = getWalletSetting(SETTINGS.BTC_EXPLORER_ADDRESS_URL, chainId)
+    } else {
+      explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+    }
+
+    Linking.openURL(`${explorerUrl}/tx/${hashId}`)
   }
 
   return (

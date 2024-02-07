@@ -13,7 +13,6 @@ import {
 } from 'navigation/rootNavigator'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { chainTypesById } from 'shared/constants/chainConstants'
 import { AndroidQRScanner } from 'screens/walletConnect/AndroidQRScanner'
 
 export const ScanQRScreen = ({
@@ -42,7 +41,7 @@ export const ScanQRScreen = ({
       // Default bitcoin token will be fetched from ENV
       const defaultToken = getWalletSetting(
         SETTINGS.QR_READER_BITCOIN_DEFAULT_NETWORK,
-        chainTypesById[chainId],
+        chainId,
       )
       navigation.navigate(rootTabsRouteNames.Home, {
         screen: homeStackRouteNames.Send,

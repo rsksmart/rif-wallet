@@ -163,44 +163,49 @@ export const usePaymentExecutor = (
     }, 3000)
   }
 
-  const executePayment = ({
+  const executePayment = async ({
     token,
     amount,
     to,
     wallet,
     chainId,
   }: ExecutePayment) => {
-    if ('bips' in token) {
-      const hasError = checkBitcoinPaymentForErrors(utxos, amount)
-      if (hasError) {
-        setError(t(hasError))
-        return
+    try {
+      if ('bips' in token) {
+        const hasError = checkBitcoinPaymentForErrors(utxos, amount)
+        if (hasError) {
+          setError(t(hasError))
+          return
+        }
+        transferBitcoin({
+          btcToPay: amount,
+          onSetCurrentTransaction: setCurrentTransaction,
+          onSetError: setError,
+          bip: token.bips[0],
+          to,
+          utxos,
+          balance: bitcoinBalance,
+          addressToReturnRemainingAmount,
+          onBitcoinTransactionSuccess,
+        })
+      } else {
+        await transfer({
+          token: token as unknown as ITokenWithBalance,
+          amount: amount.toString(),
+          to,
+          wallet,
+          chainId,
+          onSetCurrentTransaction: setCurrentTransaction,
+          onSetError: setError,
+          onSetTransactionStatusChange:
+            handleReduxTransactionStatusChange(dispatch),
+        })
       }
-      transferBitcoin({
-        btcToPay: amount,
-        onSetCurrentTransaction: setCurrentTransaction,
-        onSetError: setError,
-        bip: token.bips[0],
-        to,
-        utxos,
-        balance: bitcoinBalance,
-        addressToReturnRemainingAmount,
-        onBitcoinTransactionSuccess,
-      })
-    } else {
-      transfer({
-        token: token as unknown as ITokenWithBalance,
-        amount: amount.toString(),
-        to,
-        wallet,
-        chainId,
-        onSetCurrentTransaction: setCurrentTransaction,
-        onSetError: setError,
-        onSetTransactionStatusChange:
-          handleReduxTransactionStatusChange(dispatch),
-      })
+    } catch (reason) {
+      console.log('TRANSFER FAILED', reason)
     }
   }
+
   // When bitcoin network changes - fetch utxos
   // and also set the return address
   useEffect(() => {

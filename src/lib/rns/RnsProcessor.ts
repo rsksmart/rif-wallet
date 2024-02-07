@@ -18,7 +18,7 @@ interface RNSProcessorConstructor {
 }
 
 export class RnsProcessor {
-  private rskRegistrar
+  public rskRegistrar
   private address
   private index: IDomainRegistrationProcessIndex = {}
   private rnsAddresses: RNS_ADDRESSES_TYPE

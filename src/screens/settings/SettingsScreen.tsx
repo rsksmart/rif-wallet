@@ -1,5 +1,5 @@
 import { version } from 'package.json'
-import { useCallback, useContext, useEffect, useMemo } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, ScrollView, StyleSheet, View } from 'react-native'
 import Config from 'react-native-config'
@@ -13,7 +13,7 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { castStyle, isSeedlessWallet } from 'shared/utils'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { selectPin } from 'store/slices/persistentDataSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -21,6 +21,7 @@ import { ChainTypeEnum, chainTypesById } from 'shared/constants/chainConstants'
 import { GlobalErrorHandlerContext } from 'components/GlobalErrorHandler/GlobalErrorHandlerContext'
 import { getCurrentChainId, setCurrentChainId } from 'storage/ChainStorage'
 import { WalletContext } from 'shared/wallet'
+import { ConfirmationModal } from 'components/modal'
 
 const ChainTypesInversed = {
   [ChainTypeEnum.TESTNET]: ChainTypeEnum.MAINNET,
@@ -33,27 +34,20 @@ export const SettingsScreen = ({
   const statePIN = useAppSelector(selectPin)
   const chainId = useAppSelector(selectChainId)
   const { walletIsDeployed } = useContext(WalletContext)
+  const [showMessage, setShowMessage] = useState(false)
 
   const smartWalletFactoryAddress = useMemo(
-    () =>
-      getWalletSetting(
-        SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-        chainTypesById[chainId],
-      ),
+    () => getWalletSetting(SETTINGS.SMART_WALLET_FACTORY_ADDRESS, chainId),
     [chainId],
   )
 
   const rpcUrl = useMemo(
-    () => getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId]),
+    () => getWalletSetting(SETTINGS.RPC_URL, chainId),
     [chainId],
   )
 
   const walletServiceUrl = useMemo(
-    () =>
-      getWalletSetting(
-        SETTINGS.RIF_WALLET_SERVICE_URL,
-        chainTypesById[chainId],
-      ),
+    () => getWalletSetting(SETTINGS.RIF_WALLET_SERVICE_URL, chainId),
     [chainId],
   )
 
@@ -85,13 +79,22 @@ export const SettingsScreen = ({
   const { t } = useTranslation()
 
   const { handleReload } = useContext(GlobalErrorHandlerContext)
-  const onSwitchChains = () => {
-    const currentChainId = getCurrentChainId()
-    setCurrentChainId(currentChainId === 31 ? 30 : 31)
+  const onSwitchChains = useCallback(() => {
+    const switchToChainId = getCurrentChainId() === 31 ? 30 : 31
+    setCurrentChainId(switchToChainId)
     handleReload()
-  }
+  }, [handleReload])
   return (
     <ScrollView style={styles.container}>
+      <ConfirmationModal
+        isVisible={showMessage}
+        title={t('settings_screen_seedless_warning_title')}
+        description={t('settings_screen_seedless_warning_description')}
+        onOk={onSwitchChains}
+        okText={t('settings_screen_seedless_warning_confirm_text')}
+        onCancel={() => setShowMessage(false)}
+        cancelText={t('settings_screen_seedless_warning_cancel_text')}
+      />
       <View style={styles.mainView}>
         <AppTouchable
           width={'100%'}
@@ -100,15 +103,17 @@ export const SettingsScreen = ({
           onPress={goToAccountsScreen}>
           <Typography type={'h3'}>{t('settings_screen_account')}</Typography>
         </AppTouchable>
-        <AppTouchable
-          width={'100%'}
-          accessibilityLabel="Wallet Backup"
-          style={styles.settingsItem}
-          onPress={goToWalletBackup}>
-          <Typography type={'h3'}>
-            {t('settings_screen_wallet_backup')}
-          </Typography>
-        </AppTouchable>
+        {!isSeedlessWallet && (
+          <AppTouchable
+            width={'100%'}
+            accessibilityLabel="Wallet Backup"
+            style={styles.settingsItem}
+            onPress={goToWalletBackup}>
+            <Typography type={'h3'}>
+              {t('settings_screen_wallet_backup')}
+            </Typography>
+          </AppTouchable>
+        )}
         {Platform.OS === 'android' && statePIN && (
           <AppTouchable
             width={'100%'}
@@ -145,7 +150,9 @@ export const SettingsScreen = ({
         width={'100%'}
         accessibilityLabel="Wallet Backup"
         style={styles.settingsItem}
-        onPress={onSwitchChains}>
+        onPress={
+          isSeedlessWallet ? () => setShowMessage(true) : onSwitchChains
+        }>
         <Typography type={'h3'}>
           {`${t('settings_screen_switch_to')} ${
             ChainTypesInversed[chainTypesById[chainId]]

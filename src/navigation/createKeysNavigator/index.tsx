@@ -13,6 +13,8 @@ import {
 import { selectKeysExist } from 'store/slices/persistentDataSlice'
 import { useAppSelector } from 'store/storeUtils'
 import { PinScreen } from 'screens/pinScreen'
+import { LoginWithEmail } from 'screens/seedless'
+import { isSeedlessWallet } from 'shared/utils'
 
 import { CreateKeysStackParamList, createKeysRouteNames } from './types'
 import { screenOptionsWithHeader } from '..'
@@ -39,6 +41,13 @@ export const CreateKeysNavigation = () => {
           name={createKeysRouteNames.RetryLogin}
           component={RetryLogin}
           options={screensOptions}
+        />
+      )}
+      {isSeedlessWallet && (
+        <Stack.Screen
+          name={createKeysRouteNames.LoginWithEmail}
+          component={LoginWithEmail}
+          options={screenOptionsWithHeader(top, '')}
         />
       )}
       <Stack.Screen

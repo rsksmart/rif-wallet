@@ -7,6 +7,8 @@ import { providers } from 'ethers'
 import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 
 import { ChainID, WalletState } from 'lib/eoaWallet'
+import { MagicWallet } from 'lib/magicWallet'
+import { MagicRelayWallet } from 'lib/magicRelayWallet'
 
 import { deleteDomains } from 'storage/DomainsStore'
 import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
@@ -28,10 +30,6 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import {
-  chainTypesById,
-  ChainTypesByIdType,
-} from 'shared/constants/chainConstants'
 import { getCurrentChainId } from 'storage/ChainStorage'
 import { resetReduxStorage } from 'storage/ReduxStorage'
 import {
@@ -41,13 +39,14 @@ import {
 } from 'store/slices/persistentDataSlice'
 import { Wallet } from 'shared/wallet'
 import { addressToUse } from 'shared/hooks'
-import { createAppWallet, loadAppWallet } from 'src/shared/utils'
+import { createAppWallet, loadAppWallet } from 'shared/utils'
 import { MMKVStorage } from 'storage/MMKVStorage'
 
 import {
   Bitcoin,
   CreateFirstWalletAction,
   OnRequestAction,
+  ResetAppPayload,
   SettingsSlice,
   UnlockAppAction,
 } from './types'
@@ -59,45 +58,42 @@ export const deleteCache = () => {
   cache.deleteAll()
 }
 
-export const getRifRelayConfig = (chainId: 30 | 31): RifRelayConfig => {
+export const getRifRelayConfig = (chainId: ChainID): RifRelayConfig => {
   return {
     smartWalletFactoryAddress: getWalletSetting(
       SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
     relayVerifierAddress: getWalletSetting(
       SETTINGS.RELAY_VERIFIER_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
     deployVerifierAddress: getWalletSetting(
       SETTINGS.DEPLOY_VERIFIER_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
-    relayServer: getWalletSetting(
-      SETTINGS.RIF_RELAY_SERVER,
-      chainTypesById[chainId],
-    ),
+    relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER, chainId),
   }
 }
 
-const sslPinning = async (chainId: ChainTypesByIdType) => {
+const sslPinning = async (chainId: ChainID) => {
   const rifWalletServiceDomain = getWalletSetting(
     SETTINGS.RIF_WALLET_SERVICE_URL,
-    chainTypesById[chainId],
+    chainId,
   ).split('//')[1]
 
   const rifWalletServicePk = getWalletSetting(
     SETTINGS.RIF_WALLET_SERVICE_PUBLIC_KEY,
-    chainTypesById[chainId],
+    chainId,
   ).split(',')
   const rifRelayDomain = getWalletSetting(
     SETTINGS.RIF_RELAY_SERVER,
-    chainTypesById[chainId],
+    chainId,
   ).split('//')[1]
 
   const rifRelayPk = getWalletSetting(
     SETTINGS.RIF_RELAY_SERVER_PK,
-    chainTypesById[chainId],
+    chainId,
   ).split(',')
 
   await initializeSslPinning({
@@ -112,7 +108,7 @@ const sslPinning = async (chainId: ChainTypesByIdType) => {
   })
 }
 
-const initializeApp = async (
+export const initializeApp = async (
   mnemonic: string,
   wallet: Wallet,
   chainId: ChainID,
@@ -134,7 +130,6 @@ const initializeApp = async (
   // connect to sockets
   rifSockets({
     address: addressToUse(wallet),
-    fetcher: fetcherInstance,
     dispatch,
     setGlobalError: rejectWithValue,
     usdPrices,
@@ -144,16 +139,18 @@ const initializeApp = async (
 
   socketsEvents.emit(SocketsEvents.CONNECT)
 
-  // initialize bitcoin
-  const bitcoin = initializeBitcoin(
-    mnemonic,
-    dispatch,
-    fetcherInstance,
-    chainId,
-  )
+  if (mnemonic) {
+    // initialize bitcoin
+    const bitcoin = initializeBitcoin(
+      mnemonic,
+      dispatch,
+      fetcherInstance,
+      chainId,
+    )
 
-  // set bitcoin in redux
-  dispatch(setBitcoinState(bitcoin))
+    // set bitcoin in redux
+    dispatch(setBitcoinState(bitcoin))
+  }
 }
 
 export const createWallet = createAsyncThunk<
@@ -164,7 +161,7 @@ export const createWallet = createAsyncThunk<
   try {
     const { chainId } = thunkAPI.getState().settings
 
-    const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
+    const url = getWalletSetting(SETTINGS.RPC_URL, chainId)
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
     const wallet = await createAppWallet(
@@ -292,7 +289,7 @@ export const unlockApp = createAsyncThunk<
       return thunkAPI.rejectWithValue('Move to Offline Screen')
     }
 
-    const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
+    const url = getWalletSetting(SETTINGS.RPC_URL, chainId)
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
     const wallet = await loadAppWallet(
@@ -334,25 +331,36 @@ export const unlockApp = createAsyncThunk<
   }
 })
 
-export const resetApp = createAsyncThunk(
-  'settings/resetApp',
-  async (_, thunkAPI) => {
-    try {
-      thunkAPI.dispatch(deleteContactsFromRedux())
-      thunkAPI.dispatch(resetKeysAndPin())
-      thunkAPI.dispatch(resetSocketState())
-      thunkAPI.dispatch(deleteProfile())
-      thunkAPI.dispatch(setPreviouslyUnlocked(false))
-      thunkAPI.dispatch(setPinState(null))
-      thunkAPI.dispatch(setKeysExist(false))
-      resetMainStorage()
-      resetReduxStorage()
-      return 'deleted'
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err)
+export const resetApp = createAsyncThunk<
+  string,
+  ResetAppPayload,
+  AsyncThunkWithTypes
+>('settings/resetApp', async (payload, thunkAPI) => {
+  try {
+    thunkAPI.dispatch(deleteContactsFromRedux())
+    thunkAPI.dispatch(resetKeysAndPin())
+    thunkAPI.dispatch(resetSocketState())
+    thunkAPI.dispatch(deleteProfile())
+    thunkAPI.dispatch(setPreviouslyUnlocked(false))
+    thunkAPI.dispatch(setPinState(null))
+    thunkAPI.dispatch(setKeysExist(false))
+    resetMainStorage()
+    resetReduxStorage()
+
+    console.log('BEFORE LOGOUT')
+    if (
+      payload &&
+      (payload.wallet instanceof MagicWallet ||
+        payload?.wallet instanceof MagicRelayWallet)
+    ) {
+      await payload.wallet.logout()
     }
-  },
-)
+
+    return 'deleted'
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err)
+  }
+})
 
 const initialState: SettingsSlice = {
   isSetup: false,
@@ -366,18 +374,13 @@ const initialState: SettingsSlice = {
   fullscreen: false,
   hideBalance: false,
   bitcoin: null,
-  chainId: 31,
+  chainId: getCurrentChainId(),
   usedBitcoinAddresses: {},
 }
 
-const createInitialState = () => ({
-  ...initialState,
-  chainId: getCurrentChainId(),
-})
-
 const settingsSlice = createSlice({
   name: 'settings',
-  initialState: createInitialState,
+  initialState,
   reducers: {
     setIsSetup: (state, { payload }: PayloadAction<boolean>) => {
       state.isSetup = payload
@@ -387,12 +390,12 @@ const settingsSlice = createSlice({
       state.topColor = action.payload
     },
     onRequest: (state, { payload }: PayloadAction<OnRequestAction>) => {
-      state.requests.unshift(payload.request)
+      state.requests.push(payload.request)
     },
     closeRequest: state => {
       state.requests.pop()
     },
-    setChainId: (state, { payload }: PayloadAction<ChainTypesByIdType>) => {
+    setChainId: (state, { payload }: PayloadAction<ChainID>) => {
       state.chainId = payload
     },
     setAppIsActive: (state, { payload }: PayloadAction<boolean>) => {
@@ -408,7 +411,7 @@ const settingsSlice = createSlice({
       deleteKeys()
       deleteDomains()
       deleteCache()
-      return createInitialState()
+      return initialState
     },
     setFullscreen: (state, { payload }: PayloadAction<boolean>) => {
       state.fullscreen = payload

@@ -7,6 +7,8 @@ declare module 'react-native-config' {
     RIF_WALLET_KEY: string
     WALLETCONNECT2_PROJECT_ID: string
     USE_RELAY: string
+    MAGIC_API_KEY: string
+    IS_SEEDLESS: string
   }
 
   export const Config: NativeConfig

@@ -6,6 +6,7 @@ import {
   NavigationContainer,
 } from '@react-navigation/native'
 
+import { useGlobalMagicInstance } from 'components/GlobalErrorHandler/GlobalErrorHandlerContext'
 import {
   RootNavigationComponent,
   RootTabsParamsList,
@@ -30,6 +31,7 @@ export const navigationContainerRef =
   createNavigationContainerRef<RootTabsParamsList>()
 
 export const Core = () => {
+  const magic = useGlobalMagicInstance()
   const dispatch = useAppDispatch()
   const requests = useAppSelector(selectRequests)
   const topColor = useAppSelector(selectTopColor)
@@ -60,7 +62,7 @@ export const Core = () => {
               <RootNavigationComponent />
               {requests.length !== 0 && (
                 <RequestHandler
-                  request={requests[0]}
+                  requests={requests}
                   closeRequest={() => dispatch(closeRequest())}
                 />
               )}
@@ -68,6 +70,7 @@ export const Core = () => {
           </WalletConnect2Provider>
         </NavigationContainer>
       </View>
+      {magic ? <magic.Relayer /> : null}
     </SafeAreaProvider>
   )
 }

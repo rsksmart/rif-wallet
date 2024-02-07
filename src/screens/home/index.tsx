@@ -4,6 +4,8 @@ import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
 
+import { roundBalance } from 'lib/utils'
+
 import { Typography } from 'components/typography'
 import {
   homeStackRouteNames,
@@ -29,15 +31,20 @@ import {
   hasIsGettingStartedClosed,
   saveIsGettingStartedClosed,
 } from 'storage/MainStorage'
-import { selectTransactions } from 'store/slices/transactionsSlice'
+import {
+  ActivityRowPresentationObject,
+  selectTransactions,
+} from 'store/slices/transactionsSlice'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
 import { useWallet } from 'shared/wallet'
+import { rootTabsRouteNames } from 'navigation/rootNavigator'
 
 import { HomeInformationBar } from './HomeInformationBar'
 import { getTokenColor } from './tokenColor'
 import { PortfolioComponent } from './PortfolioComponent'
+import { TransactionSummaryScreenProps } from '../transactionSummary'
 
 enum TestID {
   NoTransactionsTypography = 'NoTransactionsTypography',
@@ -204,6 +211,51 @@ export const HomeScreen = ({
     setShowInfoBar(false)
   }, [])
 
+  const onMoveToSummaryPress = useCallback(
+    (activityTx: ActivityRowPresentationObject) => {
+      const {
+        symbol,
+        value,
+        status,
+        fee,
+        amIReceiver,
+        from,
+        to,
+        id,
+        timeHumanFormatted,
+        price,
+      } = activityTx
+
+      const usdBalance = roundBalance(price, 2)
+
+      const summary: TransactionSummaryScreenProps = {
+        transaction: {
+          tokenValue: {
+            symbol,
+            symbolType: 'icon',
+            balance: value,
+          },
+          usdValue: {
+            symbol: usdBalance ? '$' : '<',
+            symbolType: 'usd',
+            balance: usdBalance ? usdBalance.toString() : '0.01',
+          },
+          status,
+          fee,
+          amIReceiver,
+          from,
+          to,
+          time: timeHumanFormatted,
+          hashId: id,
+        },
+      }
+      navigation.navigate(rootTabsRouteNames.TransactionSummary, {
+        ...summary,
+      })
+    },
+    [navigation],
+  )
+
   const defaultFirstValue: CurrencyValue = {
     balance: totalUsdBalance,
     symbol: '',
@@ -257,7 +309,7 @@ export const HomeScreen = ({
                 index={index}
                 wallet={wallet}
                 activityDetails={tx}
-                navigation={navigation}
+                moveToSummary={onMoveToSummaryPress}
               />
             ))}
           </ScrollView>

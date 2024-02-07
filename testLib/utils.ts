@@ -16,9 +16,8 @@ import {
 
 import { getWalletSetting } from 'core/config'
 import { SETTINGS } from 'core/types'
-import { ChainTypeEnum } from 'store/slices/settingsSlice/types'
 
-const nodeUrl = getWalletSetting(SETTINGS.RPC_URL, ChainTypeEnum.TESTNET)
+const nodeUrl = getWalletSetting(SETTINGS.RPC_URL, 31)
 
 export const testJsonRpcProvider = new providers.JsonRpcProvider(nodeUrl)
 

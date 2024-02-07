@@ -5,48 +5,64 @@ import { ReviewTransactionContainer } from './ReviewRelayTransaction/ReviewTrans
 import { SignRequestHandlerContainer } from './SignRequestHandlerContainer'
 
 interface Props {
-  request: RequestWithBitcoin
+  requests: RequestWithBitcoin[]
   closeRequest: () => void
 }
 
 export interface RequestTypeSwitchProps {
-  request: RequestWithBitcoin
+  requests: RequestWithBitcoin[]
   onCancel: () => void
   onConfirm: () => void
 }
 
 const RequestTypeSwitch = ({
-  request,
+  requests,
   onCancel,
   onConfirm,
 }: RequestTypeSwitchProps) => {
-  let ComponentToRender = null
-  switch (request.type) {
-    case 'sendTransaction':
-      ComponentToRender = ReviewTransactionContainer
-      break
-    case 'SEND_BITCOIN':
-      ComponentToRender = ReviewBitcoinTransactionContainer
-      break
-    case 'signMessage':
-    case 'signTypedData':
-      ComponentToRender = SignRequestHandlerContainer
-      break
-    default:
-      return null
-  }
-  return (
-    <ComponentToRender
-      request={request}
-      onCancel={onCancel}
-      onConfirm={onConfirm}
-    />
-  )
+  return requests.map(r => {
+    switch (r.type) {
+      case 'sendTransaction':
+        return (
+          <ReviewTransactionContainer
+            key={r.payload.data?.toString()}
+            request={r}
+            onCancel={onCancel}
+            onConfirm={onConfirm}
+          />
+        )
+      case 'SEND_BITCOIN':
+        return (
+          <ReviewBitcoinTransactionContainer
+            key={r.payload.addressToPay}
+            request={r}
+            onCancel={onCancel}
+            onConfirm={onConfirm}
+          />
+        )
+
+      case 'signMessage':
+      case 'signTypedData':
+        return (
+          <SignRequestHandlerContainer
+            key={r.payload.toString()}
+            request={r}
+            onCancel={onCancel}
+            onConfirm={onConfirm}
+          />
+        )
+    }
+  })
 }
 
-export const RequestHandler = ({ request, closeRequest }: Props) =>
-  RequestTypeSwitch({
-    request,
-    onCancel: closeRequest,
-    onConfirm: closeRequest,
-  })
+export const RequestHandler = ({ requests, closeRequest }: Props) => {
+  return (
+    <>
+      {RequestTypeSwitch({
+        requests,
+        onCancel: closeRequest,
+        onConfirm: closeRequest,
+      })}
+    </>
+  )
+}

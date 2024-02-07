@@ -12,7 +12,7 @@ import {
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator'
 import { WINDOW_HEIGHT, sharedColors } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { castStyle, isSeedlessWallet } from 'shared/utils'
 
 export const CreateKeysScreen = ({
   navigation,
@@ -37,29 +37,44 @@ export const CreateKeysScreen = ({
         {t('initial_screen_welcome_footer')}
       </Typography>
       <View style={[styles.buttonContainer]}>
-        <AppButton
-          onPress={() =>
-            navigation.navigate(createKeysRouteNames.SecurityInformation, {
-              moveTo: createKeysRouteNames.NewMasterKey,
-            })
-          }
-          accessibilityLabel={'newWallet'}
-          title={t('initial_screen_button_create')}
-          color={sharedColors.white}
-          textColor={sharedColors.black}
-        />
-
-        <AppButton
-          onPress={() =>
-            navigation.navigate(createKeysRouteNames.SecurityInformation, {
-              moveTo: createKeysRouteNames.ImportMasterKey,
-            })
-          }
-          accessibilityLabel={'importWallet'}
-          title={t('initial_screen_button_import')}
-          style={styles.importWalletButton}
-          backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
-        />
+        {!isSeedlessWallet ? (
+          <>
+            <AppButton
+              onPress={() =>
+                navigation.navigate(createKeysRouteNames.SecurityInformation, {
+                  moveTo: createKeysRouteNames.NewMasterKey,
+                })
+              }
+              accessibilityLabel={'newWallet'}
+              title={t('initial_screen_button_create')}
+              color={sharedColors.white}
+              textColor={sharedColors.black}
+            />
+            <AppButton
+              onPress={() =>
+                navigation.navigate(createKeysRouteNames.SecurityInformation, {
+                  moveTo: createKeysRouteNames.ImportMasterKey,
+                })
+              }
+              accessibilityLabel={'importWallet'}
+              title={t('initial_screen_button_import')}
+              style={styles.importWalletButton}
+              backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+            />
+          </>
+        ) : (
+          <AppButton
+            onPress={() =>
+              navigation.navigate(createKeysRouteNames.SecurityInformation, {
+                moveTo: createKeysRouteNames.LoginWithEmail,
+              })
+            }
+            accessibilityLabel={'newWallet'}
+            title={t('initial_screen_button_login_with_email')}
+            color={sharedColors.white}
+            textColor={sharedColors.black}
+          />
+        )}
       </View>
     </View>
   )

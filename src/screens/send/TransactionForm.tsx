@@ -16,6 +16,7 @@ import {
   sanitizeMaxDecimalText,
   shortAddress,
 } from 'lib/utils'
+import { ChainID } from 'lib/eoaWallet'
 
 import {
   AddressInput,
@@ -32,7 +33,6 @@ import { castStyle } from 'shared/utils'
 import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { Contact, ContactWithAddressRequired } from 'src/shared/types'
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { navigationContainerRef } from 'src/core/Core'
 import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
 import { contactsStackRouteNames } from 'src/navigation/contactsNavigator'
@@ -51,7 +51,7 @@ interface Props {
   isWalletDeployed: boolean
   tokenList: TokenBalanceObject[]
   tokenPrices: Record<string, IPrice>
-  chainId: ChainTypesByIdType
+  chainId: ChainID
   totalUsdBalance: string
   initialValues: {
     asset?: TokenBalanceObject

@@ -13,6 +13,7 @@ export enum createKeysRouteNames {
   RevealMasterKey = 'RevealMasterKey',
   PinScreen = 'PinScreen',
   RetryLogin = 'RetryLogin',
+  LoginWithEmail = 'LoginWithEmail',
 }
 
 export type CreateKeysStackParamList = {
@@ -22,6 +23,7 @@ export type CreateKeysStackParamList = {
     moveTo:
       | createKeysRouteNames.ImportMasterKey
       | createKeysRouteNames.NewMasterKey
+      | createKeysRouteNames.LoginWithEmail
   }
   [createKeysRouteNames.SecureYourWallet]: undefined
   [createKeysRouteNames.ConfirmNewMasterKey]: { mnemonic: string }
@@ -32,6 +34,7 @@ export type CreateKeysStackParamList = {
     backScreen?: null
   }
   [createKeysRouteNames.RetryLogin]: undefined
+  [createKeysRouteNames.LoginWithEmail]: undefined
 }
 
 export type CreateKeysScreenProps<T extends keyof CreateKeysStackParamList> =

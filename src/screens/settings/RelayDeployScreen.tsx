@@ -5,6 +5,7 @@ import { BigNumber } from 'ethers'
 import { useTranslation } from 'react-i18next'
 
 import { RelayWallet } from 'lib/relayWallet'
+import { MagicRelayWallet } from 'lib/magicRelayWallet'
 
 import { AppButton, Typography, AppSpinner } from 'components/index'
 import { selectChainId } from 'store/slices/settingsSlice'
@@ -40,7 +41,7 @@ export const RelayDeployScreen = ({
 
   const deploy = useCallback(async () => {
     try {
-      if (wallet instanceof RelayWallet) {
+      if (wallet instanceof RelayWallet || wallet instanceof MagicRelayWallet) {
         updateErrorState(null)
         setWalletIsDeployed(prev => {
           return prev && { ...prev, loading: true }
