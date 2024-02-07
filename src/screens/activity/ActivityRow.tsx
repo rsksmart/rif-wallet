@@ -89,9 +89,9 @@ export const ActivityBasicRow = ({
           balance: value,
         },
         usdValue: {
-          symbol: usdBalance ? '$' : '<',
+          symbol: usdBalance || !price ? '$' : '<',
           symbolType: 'usd',
-          balance: usdBalance ? usdBalance : '0.01',
+          balance: price ? usdBalance || '0.01' : '0.00',
         },
         totalToken:
           symbol === fee.symbol
