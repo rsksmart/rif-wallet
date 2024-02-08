@@ -1,8 +1,8 @@
 import mainnetContracts from '@rsksmart/rsk-contract-metadata'
 import testnetContracts from '@rsksmart/rsk-testnet-contract-metadata'
 
-import { TokenSymbol } from 'screens/home/TokenImage'
-import { ChainID } from 'src/lib/eoaWallet'
+import { ChainID } from 'lib/eoaWallet'
+
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 import { isRelayWallet } from './wallet'
@@ -82,26 +82,14 @@ export const getFee = (chainId: ChainID, to?: string) => {
   }
 }
 
-export const allowedFeesEOA = new Map([
-  [true, TokenSymbol.RBTC],
-  [false, TokenSymbol.TRBTC],
-])
-
-export const allowedFeesRelay = new Map([
-  [true, TokenSymbol.RIF],
-  [false, TokenSymbol.TRIF],
-])
-
-export const allowedBitcoinFees = new Map([
-  [true, TokenSymbol.BTC],
-  [true, TokenSymbol.BTCT],
-])
-
-// // this needs to be here because of the failing tests
-// enum TokenSymbol {
-//   TRBTC = 'TRBTC',
-//   RBTC = 'RBTC',
-// }
+// this needs to be here because of the failing tests
+enum TokenSymbol {
+  TRBTC = 'TRBTC',
+  RBTC = 'RBTC',
+  BTC = 'BTC',
+  BTCT = 'BTCT',
+  USDRIF = 'USDRIF',
+}
 
 export const bitcoinFeeMap = new Map([
   [TokenSymbol.BTC, true],
