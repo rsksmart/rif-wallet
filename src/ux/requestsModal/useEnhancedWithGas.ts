@@ -44,43 +44,45 @@ export const useEnhancedWithGas = (
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
   useEffect(() => {
-    // avoid to call estimateGas if the tx.to address is not valid
-    if (tx.to && !isAddress(tx.to)) {
-      return
-    }
-    const gasLimitEstimate = wallet
-      .estimateGas({ to: tx.to || '0x', data: tx.data || '0x' })
-      .then((estimate: BigNumber) => {
-        if (tx.gasLimit && estimate.lt(tx.gasLimit)) {
-          return tx.gasLimit
-        } else {
-          return estimate
-        }
-      })
+    const fn = async () => {
+      // avoid to call estimateGas if the tx.to address is not valid
+      if (tx.to && !isAddress(tx.to)) {
+        return
+      }
+      const gasLimitEstimate = await wallet
+        .estimateGas({ to: tx.to || '0x', data: tx.data || '0x' })
+        .then((estimate: BigNumber) => {
+          if (tx.gasLimit && estimate.lt(tx.gasLimit)) {
+            return tx.gasLimit
+          } else {
+            return estimate
+          }
+        })
 
-    const gasPriceEstimate = wallet.provider
-      ?.getGasPrice()
-      .then((gp: BigNumber) => gp.mul('101').div('100'))
-      .then((estimate: BigNumber) => {
-        if (tx.gasPrice && estimate.lt(tx.gasPrice)) {
-          return tx.gasPrice
-        } else {
-          return estimate
-        }
-      })
+      const gasPriceEstimate = await wallet.provider
+        ?.getGasPrice()
+        .then((gp: BigNumber) => gp.mul('101').div('100'))
+        .then((estimate: BigNumber) => {
+          if (tx.gasPrice && estimate.lt(tx.gasPrice)) {
+            return tx.gasPrice
+          } else {
+            return estimate
+          }
+        })
 
-    const enhancer = abiEnhancer.enhance(chainId, tx)
+      const txRequest = await wallet.populateTransaction(tx)
+      const enhancedTx = await abiEnhancer.enhance(chainId, txRequest)
 
-    Promise.all([gasLimitEstimate, gasPriceEstimate, enhancer]).then(result => {
       const txEnhanced = convertTransactionToStrings({
-        ...result[2],
-        gasLimit: result[0] || 0,
-        gasPrice: result[1] || 0,
+        ...enhancedTx,
+        gasLimit: gasLimitEstimate || 0,
+        gasPrice: gasPriceEstimate || 0,
       })
 
       setEnhancedTransactionRequest(txEnhanced)
       setIsLoaded(true)
-    })
+    }
+    fn()
   }, [tx, wallet, chainId])
 
   const setGasLimit = (gasLimit: string) =>

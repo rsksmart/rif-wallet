@@ -5,6 +5,8 @@ import { TokenSymbol } from 'screens/home/TokenImage'
 import { ChainID } from 'src/lib/eoaWallet'
 import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
+import { isRelayWallet } from './wallet'
+
 const defaultMainnetTokens: ITokenWithoutLogo[] = Object.keys(mainnetContracts)
   .filter(address =>
     ['RIF', 'USDRIF', ''].includes(mainnetContracts[address].symbol),
@@ -55,14 +57,30 @@ export const getAllowedFees = (chainId: ChainID) => {
 
   defaultTokens.push(RBTCToken)
 
-  console.log('defaultTokens inALLOWED FEES', defaultTokens)
-
-  return defaultTokens.map(dt => dt.contractAddress)
+  return defaultTokens
 }
 
 export const getDefaultFeeEOA = () => RBTCToken
 export const getDefaultFeeRelay = (chainId: ChainID) =>
   getDefaultTokens(chainId)[0]
+
+// make sure to only pass originalTx to value
+export const getFee = (chainId: ChainID, to?: string) => {
+  switch (isRelayWallet) {
+    case true:
+      const allowedToken = getAllowedFees(chainId).find(
+        fee => fee.contractAddress.toLowerCase() === to?.toLowerCase(),
+      )
+
+      // if the token was not found
+      // in case of Relay it means that it goes
+      // directly from an address to address
+      // which means it is RBTC
+      return !allowedToken ? getDefaultFeeEOA() : allowedToken
+    case false:
+      return getDefaultFeeEOA()
+  }
+}
 
 export const allowedFeesEOA = new Map([
   [true, TokenSymbol.RBTC],
@@ -95,16 +113,6 @@ export const rbtcMap = new Map([
   [TokenSymbol.RBTC, true],
   [undefined, false],
 ])
-
-export const getFeeSymbol = (isMainnet: boolean, isRelayWallet: boolean) => {
-  switch (isMainnet) {
-    case false:
-      return !isRelayWallet ? TokenSymbol.TRBTC : TokenSymbol.TRIF
-
-    case true:
-      return !isRelayWallet ? TokenSymbol.RBTC : TokenSymbol.RIF
-  }
-}
 
 const tiniestAmount = 0.000001
 

@@ -9,6 +9,7 @@ import { ChainID } from 'lib/eoaWallet'
 import { chainTypesById } from 'shared/constants/chainConstants'
 import { SETTINGS } from 'core/types'
 import { TokenSymbol } from 'screens/home/TokenImage'
+import { rbtcMap } from 'shared/utils'
 
 /**
  * This function will get the environment settings from the config.json
@@ -46,7 +47,7 @@ export const getTokenAddress = (symbol: TokenSymbol, chainId: ChainID) => {
   )
 
   if (!result) {
-    if (symbol === TokenSymbol.TRBTC || symbol === TokenSymbol.RBTC) {
+    if (rbtcMap.get(symbol)) {
       return constants.AddressZero.toLowerCase()
     }
 

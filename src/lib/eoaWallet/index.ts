@@ -129,6 +129,7 @@ export class EOAWallet extends Wallet {
         confirm: async () => {
           try {
             const obj = await super.sendTransaction(transactionRequest)
+
             resolve(obj)
           } catch (err) {
             reject(err)
