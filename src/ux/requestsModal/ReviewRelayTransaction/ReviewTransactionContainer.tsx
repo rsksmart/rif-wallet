@@ -27,9 +27,10 @@ import { selectBalances } from 'store/slices/balancesSlice'
 import { selectRecentRskTransactions } from 'store/slices/transactionsSlice'
 import { WalletContext } from 'shared/wallet'
 import { useAddress } from 'shared/hooks'
-import { getCurrentChainId } from 'src/storage/ChainStorage'
-
-import { useEnhancedWithGas } from '../useEnhancedWithGas'
+import {
+  EnhancedTransactionRequest,
+  enhanceWithGas,
+} from 'shared/utils/enhanceWithGas'
 
 const tokenToBoolMap = new Map([
   [TokenSymbol.RIF, true],
@@ -58,6 +59,9 @@ export const ReviewTransactionContainer = ({
   const balances = useAppSelector(selectBalances)
   const pendingTransactions = useAppSelector(selectRecentRskTransactions)
   const [txCost, setTxCost] = useState<BigNumber>()
+  const [enhancedTransactionRequest, setEnhancedTransactionRequest] =
+    useState<EnhancedTransactionRequest>({})
+  const [isLoaded, setIsLoaded] = useState(false)
   const { t } = useTranslation()
 
   // this is for typescript, and should not happen as the transaction was created by the wallet instance.
@@ -66,12 +70,6 @@ export const ReviewTransactionContainer = ({
   }
 
   const txRequest = request.payload
-
-  const { enhancedTransactionRequest, isLoaded } = useEnhancedWithGas(
-    wallet,
-    txRequest,
-    chainId,
-  )
 
   const {
     to = '',
@@ -124,14 +122,26 @@ export const ReviewTransactionContainer = ({
   }, [onCancel, txRequest.to])
 
   useEffect(() => {
-    wallet
-      .estimateGas(
-        txRequest,
-        fee.contractAddress !== ZERO_ADDRESS ? fee.contractAddress : undefined,
-      )
-      .then(setTxCost)
-      .catch(err => errorHandler(err))
-  }, [txRequest, wallet, fee.contractAddress])
+    const fn = async () => {
+      try {
+        const estimatedCost = await wallet.estimateGas(
+          txRequest,
+          fee.contractAddress !== ZERO_ADDRESS
+            ? fee.contractAddress
+            : undefined,
+        )
+        setTxCost(estimatedCost)
+
+        const eTx = await enhanceWithGas(wallet, txRequest, chainId)
+        setEnhancedTransactionRequest(eTx)
+        setIsLoaded(true)
+      } catch (err) {
+        console.log('ERROR WHEN ESTIMATING THE TX COST', err)
+      }
+    }
+
+    fn()
+  }, [txRequest, wallet, fee.contractAddress, chainId])
 
   const confirmTransaction = useCallback(async () => {
     dispatch(addRecentContact(to))
