@@ -259,3 +259,5 @@ export const loadAppWallet = async (
 
   return wallet
 }
+
+export const useRelay = Config.USE_RELAY === 'true'

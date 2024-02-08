@@ -2,7 +2,6 @@ import { version } from 'package.json'
 import { useCallback, useContext, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Platform, ScrollView, StyleSheet, View } from 'react-native'
-import Config from 'react-native-config'
 
 import { AppTouchable, Typography } from 'components/index'
 import { getWalletSetting } from 'core/config'
@@ -13,7 +12,7 @@ import {
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { castStyle, useRelay } from 'shared/utils'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { selectPin } from 'store/slices/persistentDataSlice'
 import { useAppSelector } from 'store/storeUtils'
@@ -156,7 +155,7 @@ export const SettingsScreen = ({
         <View style={styles.settingsItem}>
           <Typography type={'h4'} color={sharedColors.labelLight}>
             {t('settings_screen_version')} {version}-
-            {Config.USE_RELAY ? 'relay' : 'eoa'}
+            {useRelay ? 'relay' : 'eoa'}
           </Typography>
         </View>
 

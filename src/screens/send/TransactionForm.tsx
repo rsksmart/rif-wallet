@@ -28,7 +28,7 @@ import {
 } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { defaultIconSize, sharedColors, testIDs } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { castStyle, useRelay } from 'shared/utils'
 import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { Contact, ContactWithAddressRequired } from 'src/shared/types'
@@ -85,6 +85,11 @@ const rifFeeMap = new Map([
   [TokenSymbol.RIF, true],
 ])
 
+const rbtcFeeMap = new Map([
+  [TokenSymbol.TRBTC, true],
+  [TokenSymbol.RBTC, true],
+])
+
 const transactionSchema = yup.object().shape({
   amount: yup.number().min(0.000000001),
   to: yup.object({
@@ -115,6 +120,10 @@ export const TransactionForm = ({
     () => tokenList.filter(tk => rifFeeMap.get(tk.symbol as TokenSymbol))[0],
     [tokenList],
   )
+  const rbtcToken = useMemo(
+    () => tokenList.filter(tk => rbtcFeeMap.get(tk.symbol as TokenSymbol))[0],
+    [tokenList],
+  )
   const insets = useSafeAreaInsets()
   const { recipient, asset, amount: initialAmount } = initialValues
   const { t } = useTranslation()
@@ -134,9 +143,13 @@ export const TransactionForm = ({
     if (bitcoinFeeMap.get(selectedToken.symbol as TokenSymbol)) {
       return selectedToken
     } else {
-      return rifToken
+      if (useRelay) {
+        return rifToken
+      } else {
+        return rbtcToken
+      }
     }
-  }, [selectedToken, rifToken])
+  }, [selectedToken, rifToken, rbtcToken])
 
   const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
     ? tokenPrices.BTC.price
