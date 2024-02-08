@@ -2,14 +2,6 @@ export enum ChainTypeEnum {
   TESTNET = 'TESTNET',
   MAINNET = 'MAINNET',
 }
-
-/**
- * Object that has chainTypes IDs
- */
-export const chainTypes = {
-  [ChainTypeEnum.MAINNET]: 30,
-  [ChainTypeEnum.TESTNET]: 31,
-}
 /**
  * Object that has the ChainTypeEnum by ID
  */
