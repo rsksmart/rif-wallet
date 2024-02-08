@@ -59,9 +59,7 @@ export const SendScreen = ({
 
   const balances = Object.values(useAppSelector(selectBalances))
   const assets = contact
-    ? balances.filter(b =>
-        isContactBitcoin ? isAssetBitcoin(b) : !isAssetBitcoin(b),
-      )
+    ? balances.filter(b => isContactBitcoin !== isAssetBitcoin(b))
     : balances
 
   const contractAddress = route.params?.contractAddress || assets[0]

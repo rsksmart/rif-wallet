@@ -56,7 +56,7 @@ export const sortTokensBySymbol = (
 
 // note that RDOC is not a default token
 // which means it can be hidden if its balance is 0
-export const isDefaultToken = (symbol: TokenSymbol) =>
+export const isDefaultToken = (symbol: string) =>
   symbol === TokenSymbol.RIF ||
   symbol === TokenSymbol.TRIF ||
   symbol === TokenSymbol.USDRIF ||
