@@ -69,6 +69,10 @@ export const TokenBalance = ({
     firstValue.symbol?.toUpperCase() === 'RIF' ||
     firstValue.symbol?.toUpperCase() === 'TRIF'
 
+  const firstValueBalance = editable
+    ? firstValue.balance
+    : formatTokenValues(firstValue.balance)
+
   const onCopyAddress = useCallback(() => {
     if (contact) {
       Clipboard.setString(contact.address)
@@ -102,11 +106,7 @@ export const TokenBalance = ({
           )}
           <TextInput
             onChangeText={handleAmountChange}
-            value={
-              hide
-                ? '\u002A\u002A\u002A\u002A'
-                : formatTokenValues(firstValue.balance)
-            }
+            value={hide ? '\u002A\u002A\u002A\u002A' : firstValueBalance}
             keyboardType="numeric"
             accessibilityLabel={'Amount.Input'}
             placeholder="0"
