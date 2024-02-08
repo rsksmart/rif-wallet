@@ -9,7 +9,7 @@ import {
   rootTabsRouteNames,
   RootTabsScreenProps,
 } from 'navigation/rootNavigator'
-import { ITokenWithoutLogo } from 'src/redux/slices/balancesSlice/types'
+import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
 
 export interface ErrorWithMessage {
   message: string
