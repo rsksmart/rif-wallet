@@ -45,7 +45,7 @@ jobs:
         run: yarn
 
       - name: Build Android Release
-        run:
+        run: |
           cd android
           ./gradlew app:assembleRelease
 
@@ -70,7 +70,7 @@ jobs:
         run: yarn
 
       - name: Build Android Release
-        run:
+        run: |
           cd android
           ./gradlew app:assembleRelease
 
