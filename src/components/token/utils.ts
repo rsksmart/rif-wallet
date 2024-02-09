@@ -1,5 +1,5 @@
 import { TokenSymbol } from 'screens/home/TokenImage'
-import { TokenOrBitcoinNetwork } from 'src/shared/types'
+import { TokenOrBitcoinNetwork } from 'shared/types'
 
 // default order should be RIF, USDRIF, RBTC, BTC and RDOC
 // other tokens should be sorted alphabetically by symbol
@@ -53,12 +53,3 @@ export const sortTokensBySymbol = (
   }
   return 0
 }
-
-// note that RDOC is not a default token
-// which means it can be hidden if its balance is 0
-export const isDefaultToken = (symbol: string) =>
-  symbol === TokenSymbol.RIF ||
-  symbol === TokenSymbol.TRIF ||
-  symbol === TokenSymbol.USDRIF ||
-  symbol === TokenSymbol.RBTC ||
-  symbol === TokenSymbol.BTC

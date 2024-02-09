@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleProp, View, ViewStyle } from 'react-native'
 
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
-import { isDefaultToken, sortTokensBySymbol } from 'components/token/utils'
+import { sortTokensBySymbol } from 'components/token/utils'
 import { getTokenColor } from 'screens/home/tokenColor'
 import { sharedColors } from 'shared/constants'
 import { TokenOrBitcoinNetwork } from 'shared/types'
@@ -61,9 +61,6 @@ export const PortfolioComponent = ({
         )}
         {balances
           .sort(sortTokensBySymbol)
-          .filter(
-            token => isDefaultToken(token.symbol) || Number(token.balance) > 0,
-          )
           .map(
             (
               { contractAddress, symbol, balance }: TokenOrBitcoinNetwork,
