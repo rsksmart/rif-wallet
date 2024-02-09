@@ -8,7 +8,7 @@ import { castStyle } from '../utils'
 
 export const getPopupMessage = (
   message: string,
-  actionTitle: string,
+  actionTitle?: string,
   onPress?: () => void,
 ): MessageOptions => {
   const executePress = () => {
@@ -29,13 +29,17 @@ export const getPopupMessage = (
       ...typographyStyles.body3,
       textAlign: 'center',
     },
-    renderAfterContent: () => (
-      <AppTouchable width={150} style={styles.textLink} onPress={executePress}>
-        <Typography style={styles.text} type={'h4'}>
-          {actionTitle}
-        </Typography>
-      </AppTouchable>
-    ),
+    renderAfterContent: () =>
+      actionTitle ? (
+        <AppTouchable
+          width={150}
+          style={styles.textLink}
+          onPress={executePress}>
+          <Typography style={styles.text} type={'h4'}>
+            {actionTitle}
+          </Typography>
+        </AppTouchable>
+      ) : null,
     duration: 6000,
   }
 }
