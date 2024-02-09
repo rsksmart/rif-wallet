@@ -84,6 +84,7 @@ export const ReviewBitcoinTransactionContainer = ({
     const amountToPayUsd = convertToUSD(amountToPay)
     const feeUsd = convertToUSD(miningFee)
     const isAmountSmall = !Number(amountToPayUsd) && !!Number(amountToPay)
+    const totalSent = Number(amountToPay) + Number(miningFee)
 
     return {
       transaction: {
@@ -107,6 +108,10 @@ export const ReviewBitcoinTransactionContainer = ({
           tokenValue: amountToPay,
           usdValue: formatTokenValues(Number(amountToPayUsd) + Number(feeUsd)),
         },
+        totalToken: totalSent,
+        totalUsd: Number(
+          formatTokenValues(Number(amountToPayUsd) + Number(feeUsd)),
+        ),
         to: addressToPay,
       },
       buttons: [
