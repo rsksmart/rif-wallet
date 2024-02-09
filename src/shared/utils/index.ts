@@ -34,15 +34,20 @@ export const delay = (delayMs: number) => {
 
 const tiniestAmount = 0.000001
 
-const formatWithDigits = (number: string) => {
+const formatWithDigits = (number: string, resultDecimals?: number) => {
   const splitArr = number.split('.')
   const secondPart =
-    splitArr[1].length > 8 ? splitArr[1].slice(0, 9) : splitArr[1]
+    splitArr[1].length > 8
+      ? splitArr[1].slice(0, resultDecimals || 9)
+      : splitArr[1]
 
   return [splitArr[0], secondPart].join('.')
 }
 
-export const formatSmallNumbers = (smallNumber: string | number) => {
+export const formatSmallNumbers = (
+  smallNumber: string | number,
+  resultDecimals?: number,
+) => {
   if (isNaN(Number(smallNumber))) {
     return smallNumber.toString()
   }
@@ -51,7 +56,7 @@ export const formatSmallNumbers = (smallNumber: string | number) => {
   const asNumber = Number(smallNumber)
 
   if (asNumber >= tiniestAmount) {
-    return formatWithDigits(smallNumber)
+    return formatWithDigits(smallNumber, resultDecimals)
   }
 
   return asNumber !== 0 ? `< ${tiniestAmount}` : '0.00'
@@ -69,7 +74,10 @@ export const rbtcMap = new Map([
   [undefined, false],
 ])
 
-export const formatTokenValues = (number: string | number) => {
+export const formatTokenValues = (
+  number: string | number,
+  resultDecimals?: number,
+) => {
   // make sure to use this only at the end when showing values
   if (isNaN(Number(number))) {
     return number.toString()
@@ -78,11 +86,11 @@ export const formatTokenValues = (number: string | number) => {
   const asNumber = Number(number)
 
   if (asNumber < 1) {
-    return formatSmallNumbers(number)
+    return formatSmallNumbers(number, resultDecimals)
   }
 
   if (number.includes('.') && asNumber > 1) {
-    return formatWithDigits(number)
+    return formatWithDigits(number, resultDecimals)
   }
 
   if (number.length <= 3) {
