@@ -62,15 +62,16 @@ jobs:
         with:
           node-version: 16.x
 
-      - name: Overwrite USE_RELAY env variable
-        run: echo "USE_RELAY=true" >> $GITHUB_ENV
+      - name: Use Relay config file
+        run: |
+          mv .env .env.eoa
+          mv .env.relay .env
 
       - name: Install dependencies
         run: yarn
 
       - name: Build Android Release
-        run: |
-          ENVFILE=.env.relay
+        run:
           cd android
           ./gradlew app:assembleRelease
 
