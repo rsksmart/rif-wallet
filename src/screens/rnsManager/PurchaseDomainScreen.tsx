@@ -7,7 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import {
   DomainRegistrationEnum,
   useRifToken,
-  useRnsDomainPriceInRif as calculatePrice,
+  calculateRnsDomainPrice,
 } from 'lib/rns'
 
 import { AvatarIcon } from 'components/icons/AvatarIcon'
@@ -57,15 +57,26 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
 
   const methods = useForm()
   const { t } = useTranslation()
-  const [selectedDomainPrice, setSelectedDomainPrice] = useState<number>(2)
+  const [selectedDomainPrice, setSelectedDomainPrice] = useState<string>('0')
 
-  const selectedDomainPriceInUsd = (
-    rifToken.price * selectedDomainPrice
-  ).toFixed(2)
+  const selectedDomainPriceInUsd = rifToken.price * Number(selectedDomainPrice)
 
   useEffect(() => {
-    calculatePrice(alias, duration).then(setSelectedDomainPrice)
-  }, [alias, duration])
+    const fn = async () => {
+      const rskRegistrar = getRnsProcessor()?.rskRegistrar
+
+      if (rskRegistrar) {
+        const rnsDomainPrice = await calculateRnsDomainPrice(
+          rskRegistrar,
+          alias,
+          duration,
+        )
+
+        setSelectedDomainPrice(rnsDomainPrice)
+      }
+    }
+    fn()
+  }, [getRnsProcessor, alias, duration, t])
 
   useEffect(() => {
     navigation.setOptions({
