@@ -32,6 +32,8 @@ import {
   ModifyTransaction,
   TransactionStatus,
 } from 'store/shared/types'
+import { abiEnhancer } from 'core/setup'
+import { getCurrentChainId } from 'storage/ChainStorage'
 
 export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
@@ -245,12 +247,17 @@ export const addPendingTransaction = createAsyncThunk<
 
   const { symbol, finalAddress, enhancedAmount, value, ...restPayload } =
     payload
+
+  const enhancedTx = await abiEnhancer.enhance(getCurrentChainId(), {
+    ...payload,
+  })
+
   const pendingTransaction = {
     originTransaction: {
       ...restPayload,
       value: value,
     },
-    enhancedTransaction: {
+    enhancedTransaction: enhancedTx || {
       symbol,
       from: restPayload.from,
       to: finalAddress,

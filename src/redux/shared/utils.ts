@@ -32,6 +32,7 @@ export const handleTransactionStatusChange =
             finalAddress,
             enhancedAmount,
           } = transactionStatusChange
+
           const originTransaction: ApiTransactionWithExtras = {
             blockHash: '',
             blockNumber: 0,
@@ -52,6 +53,7 @@ export const handleTransactionStatusChange =
             finalAddress,
             enhancedAmount,
           }
+
           dispatch(addPendingTransaction(originTransaction))
           break
         case TransactionStatus.USER_CONFIRM:
