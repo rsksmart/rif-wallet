@@ -1,5 +1,5 @@
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
-import { BigNumber } from 'ethers'
+import { BigNumber, utils } from 'ethers'
 
 import {
   getRnsProcessIndex,
@@ -38,6 +38,16 @@ export enum DomainRegistrationEnum {
 
 export interface IDomainRegistrationProcessIndex {
   [domain: string]: DomainRegistrationProcess
+}
+
+export const calculateRnsDomainPrice = async (
+  rskRegistrar: RSKRegistrar,
+  label: string,
+  years: number,
+) => {
+  return utils.formatUnits(
+    await rskRegistrar.price(label, BigNumber.from(years)),
+  )
 }
 
 export class RnsProcessor {
