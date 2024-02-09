@@ -28,10 +28,6 @@ import {
   SocketsEvents,
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
-import {
-  chainTypesById,
-  ChainTypesByIdType,
-} from 'shared/constants/chainConstants'
 import { getCurrentChainId } from 'storage/ChainStorage'
 import { resetReduxStorage } from 'storage/ReduxStorage'
 import {
@@ -63,41 +59,38 @@ export const getRifRelayConfig = (chainId: 30 | 31): RifRelayConfig => {
   return {
     smartWalletFactoryAddress: getWalletSetting(
       SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
     relayVerifierAddress: getWalletSetting(
       SETTINGS.RELAY_VERIFIER_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
     deployVerifierAddress: getWalletSetting(
       SETTINGS.DEPLOY_VERIFIER_ADDRESS,
-      chainTypesById[chainId],
+      chainId,
     ),
-    relayServer: getWalletSetting(
-      SETTINGS.RIF_RELAY_SERVER,
-      chainTypesById[chainId],
-    ),
+    relayServer: getWalletSetting(SETTINGS.RIF_RELAY_SERVER, chainId),
   }
 }
 
-const sslPinning = async (chainId: ChainTypesByIdType) => {
+const sslPinning = async (chainId: ChainID) => {
   const rifWalletServiceDomain = getWalletSetting(
     SETTINGS.RIF_WALLET_SERVICE_URL,
-    chainTypesById[chainId],
+    chainId,
   ).split('//')[1]
 
   const rifWalletServicePk = getWalletSetting(
     SETTINGS.RIF_WALLET_SERVICE_PUBLIC_KEY,
-    chainTypesById[chainId],
+    chainId,
   ).split(',')
   const rifRelayDomain = getWalletSetting(
     SETTINGS.RIF_RELAY_SERVER,
-    chainTypesById[chainId],
+    chainId,
   ).split('//')[1]
 
   const rifRelayPk = getWalletSetting(
     SETTINGS.RIF_RELAY_SERVER_PK,
-    chainTypesById[chainId],
+    chainId,
   ).split(',')
 
   await initializeSslPinning({
@@ -134,7 +127,6 @@ const initializeApp = async (
   // connect to sockets
   rifSockets({
     address: addressToUse(wallet),
-    fetcher: fetcherInstance,
     dispatch,
     setGlobalError: rejectWithValue,
     usdPrices,
@@ -164,7 +156,7 @@ export const createWallet = createAsyncThunk<
   try {
     const { chainId } = thunkAPI.getState().settings
 
-    const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
+    const url = getWalletSetting(SETTINGS.RPC_URL, chainId)
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
     const wallet = await createAppWallet(
@@ -292,7 +284,7 @@ export const unlockApp = createAsyncThunk<
       return thunkAPI.rejectWithValue('Move to Offline Screen')
     }
 
-    const url = getWalletSetting(SETTINGS.RPC_URL, chainTypesById[chainId])
+    const url = getWalletSetting(SETTINGS.RPC_URL, chainId)
     const jsonRpcProvider = new providers.StaticJsonRpcProvider(url)
 
     const wallet = await loadAppWallet(
@@ -392,7 +384,7 @@ const settingsSlice = createSlice({
     closeRequest: state => {
       state.requests.pop()
     },
-    setChainId: (state, { payload }: PayloadAction<ChainTypesByIdType>) => {
+    setChainId: (state, { payload }: PayloadAction<ChainID>) => {
       state.chainId = payload
     },
     setAppIsActive: (state, { payload }: PayloadAction<boolean>) => {

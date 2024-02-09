@@ -1,4 +1,4 @@
-import { ChainTypesByIdType } from 'shared/constants/chainConstants'
+import { ChainID } from 'lib/eoaWallet'
 
 import { TESTNET, MAINNET } from './addresses.json'
 
@@ -9,10 +9,7 @@ export interface RNS_ADDRESSES_TYPE {
   rnsRegistryAddress: string
 }
 
-export const RNS_ADDRESSES_BY_CHAIN_ID: Record<
-  ChainTypesByIdType,
-  RNS_ADDRESSES_TYPE
-> = {
+export const RNS_ADDRESSES_BY_CHAIN_ID: Record<ChainID, RNS_ADDRESSES_TYPE> = {
   30: MAINNET,
   31: TESTNET,
 }

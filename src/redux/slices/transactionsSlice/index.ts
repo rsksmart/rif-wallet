@@ -12,6 +12,7 @@ import {
   convertTokenToUSD,
   convertUnixTimeToFromNowFormat,
 } from 'lib/utils'
+import { ChainID } from 'lib/eoaWallet'
 
 import {
   ActivityMixedType,
@@ -27,18 +28,13 @@ import { resetSocketState } from 'store/shared/actions/resetSocketState'
 import { UsdPricesState } from 'store/slices/usdPricesSlice'
 import { getTokenAddress } from 'core/config'
 import { AsyncThunkWithTypes } from 'store/store'
-import {
-  ChainTypeEnum,
-  chainTypesById,
-  ChainTypesByIdType,
-} from 'shared/constants/chainConstants'
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { rbtcMap } from 'shared/utils'
 
 export const activityDeserializer: (
   activityTransaction: ActivityMixedType,
   prices: UsdPricesState,
-  chainId: ChainTypesByIdType,
+  chainId: ChainID,
 ) => ActivityRowPresentationObject = (activityTransaction, prices, chainId) => {
   if ('isBitcoin' in activityTransaction) {
     const fee = activityTransaction.fees
@@ -82,10 +78,7 @@ export const activityDeserializer: (
     const etx = activityTransaction.enhancedTransaction
 
     // RBTC
-    const rbtcSymbol =
-      chainTypesById[chainId] === ChainTypeEnum.MAINNET
-        ? TokenSymbol.RBTC
-        : TokenSymbol.TRBTC
+    const rbtcSymbol = chainId === 30 ? TokenSymbol.RBTC : TokenSymbol.TRBTC
     const rbtcAddress = constants.AddressZero
     const feeRbtc = BigNumber.from(tx.receipt?.gasUsed || 0)
 
