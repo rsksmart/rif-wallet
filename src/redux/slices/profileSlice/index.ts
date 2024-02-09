@@ -158,6 +158,15 @@ const profileSlice = createSlice({
   initialState,
   reducers: {
     setProfile: (_, action: PayloadAction<ProfileStore>) => action.payload,
+    setEmail: (state, { payload }: PayloadAction<string>) => {
+      state.email = payload
+    },
+    setPhone: (state, { payload }: PayloadAction<string>) => {
+      state.phone = payload
+    },
+    setInfoBoxClosed: (state, { payload }: PayloadAction<boolean>) => {
+      state.infoBoxClosed = payload
+    },
     setAlias: (state, { payload }: PayloadAction<string>) => {
       state.alias = payload
     },
@@ -200,6 +209,9 @@ const profileSlice = createSlice({
 
 export const {
   setProfile,
+  setEmail,
+  setPhone,
+  setInfoBoxClosed,
   setStatus,
   setAlias,
   deleteProfile,

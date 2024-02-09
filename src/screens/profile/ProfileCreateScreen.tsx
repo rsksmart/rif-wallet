@@ -31,7 +31,13 @@ import {
 } from 'shared/constants'
 import { sharedStyles } from 'shared/styles'
 import { castStyle } from 'shared/utils'
-import { commitment, setProfile, setStatus } from 'store/slices/profileSlice'
+import {
+  commitment,
+  setEmail,
+  setPhone,
+  setInfoBoxClosed as setGlobalStateInfoBoxClosed,
+  setStatus,
+} from 'store/slices/profileSlice'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectChainId, selectRequests } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
@@ -52,6 +58,7 @@ export const ProfileCreateScreen = ({
 
   const dispatch = useAppDispatch()
   const profile = useAppSelector(selectProfile)
+  const { alias, status, email, phone } = profile
   const chainId = useAppSelector(selectChainId)
 
   const [infoBoxClosed, setInfoBoxClosed] = useState<boolean>(
@@ -68,16 +75,16 @@ export const ProfileCreateScreen = ({
 
   const onSetEmail = useCallback(
     (_email: string) => {
-      dispatch(setProfile({ ...profile, email: _email }))
+      dispatch(setEmail(_email))
     },
-    [dispatch, profile],
+    [dispatch],
   )
 
   const onSetPhone = useCallback(
     (_phone: string) => {
-      dispatch(setProfile({ ...profile, phone: _phone }))
+      dispatch(setPhone(_phone))
     },
-    [dispatch, profile],
+    [dispatch],
   )
 
   const onCopyAddress = useCallback(() => {
@@ -86,13 +93,13 @@ export const ProfileCreateScreen = ({
 
   const resetPhone = useCallback(() => {
     resetField('phone')
-    dispatch(setProfile({ ...profile, phone: '' }))
-  }, [dispatch, profile, resetField])
+    dispatch(setPhone(''))
+  }, [dispatch, resetField])
 
   const resetEmail = useCallback(() => {
     resetField('email')
-    dispatch(setProfile({ ...profile, email: '' }))
-  }, [dispatch, profile, resetField])
+    dispatch(setEmail(''))
+  }, [dispatch, resetField])
 
   const onShareUsername = useCallback(() => {
     Share.share({ message: username })
@@ -100,27 +107,27 @@ export const ProfileCreateScreen = ({
 
   const closeInfoBox = useCallback(() => {
     setInfoBoxClosed(true)
-    dispatch(setProfile({ ...profile, infoBoxClosed: true }))
-  }, [dispatch, profile])
+    dispatch(setGlobalStateInfoBoxClosed(true))
+  }, [dispatch])
 
   useEffect(() => {
-    if (profile.status === ProfileStatus.READY_TO_PURCHASE) {
+    if (status === ProfileStatus.READY_TO_PURCHASE) {
       navigation.reset({
         index: 0,
         routes: [{ name: profileStackRouteNames.PurchaseDomain }],
       })
     }
-  }, [navigation, profile.status])
+  }, [navigation, status])
 
   useEffect(() => {
-    const hasAlias = profile.status !== ProfileStatus.NONE && !!profile.alias
-    setUsername(hasAlias ? profile.alias : '')
-  }, [profile.alias, profile.status])
+    const hasAlias = status !== ProfileStatus.NONE && !!alias
+    setUsername(hasAlias ? alias : '')
+  }, [alias, status])
 
   useEffect(() => {
-    setValue('email', profile.email)
-    setValue('phone', profile.phone)
-  }, [profile.email, profile.phone, setValue])
+    setValue('email', email)
+    setValue('phone', phone)
+  }, [email, phone, setValue])
 
   useEffect(() => {
     navigation.setOptions({
@@ -131,29 +138,28 @@ export const ProfileCreateScreen = ({
 
   useEffect(() => {
     const fn = async () => {
-      if (profile.alias && profile.status === ProfileStatus.REQUESTING) {
+      if (alias && status === ProfileStatus.REQUESTING) {
         await dispatch(
           commitment({
-            alias: profile.alias.split('.rsk')[0],
+            alias: alias.split('.rsk')[0],
             getRnsProcessor,
           }),
         ).unwrap()
       }
 
       if (requests.length === 0) {
-        if (profile.status === ProfileStatus.WAITING_FOR_USER_COMMIT) {
+        if (status === ProfileStatus.WAITING_FOR_USER_COMMIT) {
           // User got stuck in requesting the commit - set profileStatus back to 0
           dispatch(setStatus(ProfileStatus.NONE))
         }
-        if (profile.status === ProfileStatus.PURCHASING) {
+        if (status === ProfileStatus.PURCHASING) {
           // User got stuck in requesting the purchase - set profileStatus back to 3
           dispatch(setStatus(ProfileStatus.READY_TO_PURCHASE))
         }
       }
     }
     fn()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [dispatch, getRnsProcessor, alias, status, requests.length])
 
   return (
     <ScrollView
@@ -252,7 +258,7 @@ export const ProfileCreateScreen = ({
             autoCorrect={false}
             autoCapitalize={'none'}
           />
-          {profile.status === ProfileStatus.REQUESTING && (
+          {status === ProfileStatus.REQUESTING && (
             <>
               <View style={[sharedStylesConstants.contentCenter]}>
                 <AppSpinner size={64} thickness={10} />
@@ -268,9 +274,7 @@ export const ProfileCreateScreen = ({
             accessibilityLabel={'registerYourUserName'}
             color={sharedColors.white}
             textColor={sharedColors.black}
-            disabled={
-              profile.status === ProfileStatus.PURCHASING ? false : !!username
-            }
+            disabled={status === ProfileStatus.PURCHASING ? false : !!username}
             onPress={() => {
               navigation.navigate(profileStackRouteNames.SearchDomain)
             }}

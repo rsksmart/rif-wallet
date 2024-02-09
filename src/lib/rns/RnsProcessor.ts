@@ -155,25 +155,14 @@ export class RnsProcessor {
     return new Date() > timeWithThreeMinutesAdded
   }
 
-  public canReveal = async (
-    domain: string,
-    isWaitingForCommitmentTransaction = true,
-  ) => {
+  public canReveal = async (domain: string) => {
     try {
-      // Fail-safe to only ping rskRegistrar after 3 minutes have passed since the transaction was created
-      // This to avoid request load
-      if (
-        this.index[domain]?.commitmentConfirmed ||
-        !isWaitingForCommitmentTransaction
-      ) {
-        const canReveal = await this.rskRegistrar.canReveal(
-          this.index[domain].hash,
-        )
-        if (await canReveal()) {
-          return DomainRegistrationEnum.COMMITMENT_READY
-        } else {
-          return DomainRegistrationEnum.WAITING_COMMITMENT
-        }
+      const canReveal = await this.rskRegistrar.canReveal(
+        this.index[domain].hash,
+      )
+
+      if (await canReveal()) {
+        return DomainRegistrationEnum.COMMITMENT_READY
       } else {
         return DomainRegistrationEnum.WAITING_COMMITMENT
       }
@@ -200,6 +189,7 @@ export class RnsProcessor {
     try {
       const { hash, duration } = this.index[domain]
       const canReveal = await this.rskRegistrar.canReveal(hash)
+
       if (await canReveal()) {
         const price = await this.rskRegistrar.price(
           domain,
