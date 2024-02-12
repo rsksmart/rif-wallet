@@ -6,18 +6,29 @@ import { selectBitcoin } from 'store/slices/settingsSlice'
 import { Typography } from 'src/components'
 import { sharedStyles } from 'shared/styles'
 
-export const BitcoinMiningFeeContainer = () => {
+export interface FeeRecord {
+  feeName: string
+  feeRate: string
+}
+
+interface BitcoinMiningFeeContainerProps {
+  onFeeRatesLoaded?: (rates: FeeRecord[]) => void
+}
+
+export const BitcoinMiningFeeContainer = ({
+  onFeeRatesLoaded,
+}: BitcoinMiningFeeContainerProps) => {
   const bitcoinCore = useAppSelector(selectBitcoin)
-  const [suggestedBitcoinFees, setSuggestedBitcoinFees] = useState<
-    { feeName: string; feeRate: string }[]
-  >([])
+  const [suggestedBitcoinFees, setSuggestedBitcoinFees] = useState<FeeRecord[]>(
+    [],
+  )
 
   useEffect(() => {
     // Fetch the bitcoin fees
     bitcoinCore?.networksArr[0].bips[0].fetcher
       .fetchBitcoinMiningFeeRates('cypher')
       .then(cypherResponse => {
-        setSuggestedBitcoinFees([
+        const suggestedBitcoinFeesData = [
           {
             feeName: 'low',
             feeRate: cypherResponse.low_fee_per_kb.toString(),
@@ -30,7 +41,9 @@ export const BitcoinMiningFeeContainer = () => {
             feeName: 'high',
             feeRate: cypherResponse.high_fee_per_kb.toString(),
           },
-        ])
+        ]
+        setSuggestedBitcoinFees(suggestedBitcoinFeesData)
+        onFeeRatesLoaded?.(suggestedBitcoinFeesData)
       })
       .catch(() => {
         // Fetch from blockbook if cypher fails
@@ -38,16 +51,19 @@ export const BitcoinMiningFeeContainer = () => {
         bitcoinCore?.networksArr[0].bips[0].fetcher
           .fetchBitcoinMiningFeeRates('blockbook')
           .then(blockbookResponse => {
-            setSuggestedBitcoinFees([
+            const suggestedBitcoinFeesData = [
               {
                 feeName: 'low',
                 feeRate: convertBtcToSatoshi(
                   blockbookResponse.result,
                 ).toString(),
               },
-            ])
+            ]
+            setSuggestedBitcoinFees(suggestedBitcoinFeesData)
+            onFeeRatesLoaded?.(suggestedBitcoinFeesData)
           })
       })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bitcoinCore])
 
   return (
