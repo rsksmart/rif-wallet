@@ -110,6 +110,7 @@ interface FormatNumberOptions {
   decimalPlaces?: number
   useThousandSeparator?: boolean
   isCurrency?: boolean
+  sign?: string
 }
 
 /**
@@ -131,24 +132,25 @@ const formatNumber = (
     num = parsedNum
   }
 
-  // Immediately return "0.00" for zero values
-  if (num === 0) {
-    return '0.00'
-  }
-
   // Destructure with default values
   const {
     decimalPlaces = 8,
     useThousandSeparator = true,
     isCurrency = false,
+    sign = '',
   } = options
+
+  // Immediately return "0.00" for zero values
+  if (num === 0) {
+    return `${sign}0.00`
+  }
 
   // Calculate the minimum value that can be displayed given the number of decimal places
   const minValue = 1 / Math.pow(10, decimalPlaces)
 
   // Check for small positive amounts less than the minimum value
   if (num > 0 && num < minValue) {
-    const smallAmountDisplay = `<0.${'0'.repeat(decimalPlaces - 1)}1`
+    const smallAmountDisplay = `<${sign}0.${'0'.repeat(decimalPlaces - 1)}1`
     return smallAmountDisplay
   }
 
@@ -167,7 +169,12 @@ const formatNumber = (
     result = parts.join('.')
   }
 
-  return result
+  // Check if the number is negative; if so, format accordingly
+  if (num < 0) {
+    return `-${sign}${result.substring(1)}`
+  }
+
+  return `${sign}${result}`
 }
 
 /**
@@ -180,6 +187,19 @@ export const formatUsdValue = (value: number | string): string =>
     decimalPlaces: 2,
     useThousandSeparator: true,
     isCurrency: true,
+  })
+
+/**
+ * Formats a number or a numeric string as a USD value with a dollar sign.
+ * @param value The number or string to format.
+ * @returns The formatted USD value with a dollar sign as a string.
+ */
+export const formatUsdValueWithDollarSign = (value: number | string): string =>
+  formatNumber(value, {
+    decimalPlaces: 2,
+    useThousandSeparator: true,
+    isCurrency: true,
+    sign: '$',
   })
 
 /**

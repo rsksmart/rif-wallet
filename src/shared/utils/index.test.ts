@@ -1,4 +1,8 @@
-import { formatUsdValue, formatTokenValue } from './index'
+import {
+  formatUsdValue,
+  formatTokenValue,
+  formatUsdValueWithDollarSign,
+} from './index'
 
 describe('formatUsdValue', () => {
   test('formats basic USD values correctly', () => {
@@ -64,5 +68,20 @@ describe('formatTokenValue', () => {
 
   test('rounds to eight decimal places where applicable', () => {
     expect(formatTokenValue(1234.567890123)).toBe('1,234.56789012')
+  })
+})
+
+describe('formatUsdValueWithDollarSign', () => {
+  test('formats basic USD values correctly', () => {
+    expect(formatUsdValueWithDollarSign('5678.90')).toBe('$5,678.90')
+    expect(formatUsdValueWithDollarSign(1234567.891)).toBe('$1,234,567.89')
+    expect(formatUsdValueWithDollarSign(0.001)).toBe('<$0.01')
+    expect(formatUsdValueWithDollarSign(-10.99)).toBe('-$10.99')
+  })
+
+  test('handles zero as a special case', () => {
+    expect(formatUsdValueWithDollarSign(0)).toBe('$0.00')
+    expect(formatUsdValueWithDollarSign('0')).toBe('$0.00')
+    expect(formatUsdValueWithDollarSign('0.000000')).toBe('$0.00')
   })
 })
