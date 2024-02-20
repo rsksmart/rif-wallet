@@ -1,55 +1,48 @@
-import { TokenSymbol } from 'screens/home/TokenImage'
+import { ChainID } from 'lib/eoaWallet'
+
+import { TokenSymbol, getTokenByChainId } from 'screens/home/TokenImage'
 import { TokenOrBitcoinNetwork } from 'shared/types'
 
-// default order should be RIF, USDRIF, RBTC, BTC and RDOC
-// other tokens should be sorted alphabetically by symbol
-export const sortTokensBySymbol = (
-  a: TokenOrBitcoinNetwork,
-  b: TokenOrBitcoinNetwork,
-) => {
-  const aSymbol = a.symbol.toUpperCase()
-  const bSymbol = b.symbol.toUpperCase()
-  if (
-    aSymbol === TokenSymbol.RIF ||
-    aSymbol === TokenSymbol.TRIF.toUpperCase()
-  ) {
-    return -1
-  }
-  if (
-    bSymbol === TokenSymbol.RIF ||
-    bSymbol === TokenSymbol.TRIF.toUpperCase()
-  ) {
-    return 1
-  }
-  if (aSymbol === TokenSymbol.USDRIF) {
-    return -1
-  }
-  if (bSymbol === TokenSymbol.USDRIF) {
-    return 1
-  }
-  if (aSymbol === TokenSymbol.RBTC || aSymbol === TokenSymbol.TRBTC) {
-    return -1
-  }
-  if (bSymbol === TokenSymbol.RBTC || bSymbol === TokenSymbol.TRBTC) {
-    return 1
-  }
-  if (aSymbol === TokenSymbol.BTC || aSymbol === TokenSymbol.BTCT) {
-    return -1
-  }
-  if (bSymbol === TokenSymbol.BTC || bSymbol === TokenSymbol.BTCT) {
-    return 1
-  }
-  if (aSymbol === TokenSymbol.RDOC.toUpperCase()) {
-    return -1
-  }
-  if (bSymbol === TokenSymbol.RDOC.toUpperCase()) {
-    return 1
-  }
-  if (aSymbol < bSymbol) {
-    return -1
-  }
-  if (aSymbol > bSymbol) {
-    return 1
-  }
-  return 0
+/**
+ * Sorts balances by symbol in the following order:
+ * RIF, USDRIF, RBTC, BTC, RDOC and then alphabetically by symbol
+ * @param balances - array of balances
+ * @param chainId - chain id (30 or 31)
+ * @returns sorted array of balances
+ */
+export const sortBalancesBySymbol = (
+  balances: Array<TokenOrBitcoinNetwork>,
+  chainId: ChainID,
+): Array<TokenOrBitcoinNetwork> => {
+  const rif = getTokenByChainId(TokenSymbol.RIF, chainId)
+  const usdrif = getTokenByChainId(TokenSymbol.USDRIF, chainId)
+  const rbtc = getTokenByChainId(TokenSymbol.RBTC, chainId)
+  const btc = getTokenByChainId(TokenSymbol.BTC, chainId)
+  const rdoc = getTokenByChainId(TokenSymbol.RDOC, chainId)
+
+  const defaultOrder = [rif, usdrif, rbtc, btc, rdoc]
+
+  return balances.sort((a, b) => {
+    const symbolA = getTokenByChainId(a.symbol, chainId)
+    const symbolB = getTokenByChainId(b.symbol, chainId)
+    const indexA = defaultOrder.indexOf(symbolA)
+    const indexB = defaultOrder.indexOf(symbolB)
+
+    if (indexA !== -1 && indexB !== -1) {
+      return indexA - indexB
+    }
+    if (indexA !== -1) {
+      return -1
+    }
+    if (indexB !== -1) {
+      return 1
+    }
+    if (symbolA < symbolB) {
+      return -1
+    }
+    if (symbolA > symbolB) {
+      return 1
+    }
+    return 0
+  })
 }
