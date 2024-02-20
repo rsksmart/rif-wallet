@@ -106,6 +106,97 @@ export const formatTokenValues = (
   return longNumberArr.join('')
 }
 
+interface FormatNumberOptions {
+  decimalPlaces?: number
+  useThousandSeparator?: boolean
+  isCurrency?: boolean
+}
+
+/**
+ * Formats a number or a numeric string with the given options.
+ * @param num The number or string to format.
+ * @param options The formatting options to use.
+ * @returns The formatted number as a string.
+ */
+const formatNumber = (
+  num: number | string,
+  options: FormatNumberOptions = {},
+): string => {
+  // Attempt to parse if num is a string
+  if (typeof num === 'string') {
+    const parsedNum = parseFloat(num)
+    if (isNaN(parsedNum)) {
+      return num
+    }
+    num = parsedNum
+  }
+
+  // Immediately return "0.00" for zero values
+  if (num === 0) {
+    return '0.00'
+  }
+
+  // Destructure with default values
+  const {
+    decimalPlaces = 8,
+    useThousandSeparator = true,
+    isCurrency = false,
+  } = options
+
+  // Calculate the minimum value that can be displayed given the number of decimal places
+  const minValue = 1 / Math.pow(10, decimalPlaces)
+
+  // Check for small positive amounts less than the minimum value
+  if (num > 0 && num < minValue) {
+    const smallAmountDisplay = `<0.${'0'.repeat(decimalPlaces - 1)}1`
+    return smallAmountDisplay
+  }
+
+  // Format the number with fixed decimal places
+  let result = num.toFixed(isCurrency ? 2 : decimalPlaces)
+
+  // For non-currency numbers, remove unnecessary trailing zeros
+  if (!isCurrency) {
+    result = result.replace(/(\.\d*?[1-9])0+$|\.0*$/, '$1')
+  }
+
+  // Add thousand separators if enabled
+  if (useThousandSeparator) {
+    const parts = result.split('.')
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    result = parts.join('.')
+  }
+
+  return result
+}
+
+/**
+ * Formats a number or a numeric string as a USD value.
+ * @param value The number or string to format.
+ * @returns The formatted USD value as a string.
+ */
+export const formatUsdValue = (value: number | string): string =>
+  formatNumber(value, {
+    decimalPlaces: 2,
+    useThousandSeparator: true,
+    isCurrency: true,
+  })
+
+/**
+ * Formats a number or a numeric string as a token value.
+ * @param value The number or string to format.
+ * @returns The formatted token value as a string.
+ */
+export const formatTokenValue = (
+  value: number | string,
+  precision = 8,
+): string =>
+  formatNumber(value, {
+    decimalPlaces: precision,
+    useThousandSeparator: true,
+    isCurrency: false,
+  })
+
 export const errorHandler = (error: unknown) => {
   if (typeof error === 'object' && Object.hasOwn(error as object, 'message')) {
     const err = error as ErrorWithMessage
