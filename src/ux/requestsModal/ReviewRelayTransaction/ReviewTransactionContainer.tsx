@@ -4,14 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { Alert, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { isAddress } from '@rsksmart/rsk-utils'
-import { ZERO_ADDRESS } from '@rsksmart/rif-relay-light-sdk'
+import { showMessage } from 'react-native-flash-message'
 
 import { balanceToDisplay, convertTokenToUSD } from 'lib/utils'
-import { RelayWallet } from 'lib/relayWallet'
-import {
-  OverriddableTransactionOptions,
-  SendTransactionRequest,
-} from 'lib/eoaWallet'
+import { OverriddableTransactionOptions, RelayWallet } from 'lib/relayWallet'
+import { SendTransactionRequest } from 'lib/eoaWallet'
 
 import { AppButtonBackgroundVarietyEnum } from 'components/index'
 import { getTokenAddress } from 'core/config'
@@ -19,7 +16,13 @@ import { TokenSymbol } from 'screens/home/TokenImage'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { TransactionSummaryComponent } from 'screens/transactionSummary/TransactionSummaryComponent'
 import { sharedColors } from 'shared/constants'
-import { castStyle, errorHandler, getFee, rbtcMap } from 'shared/utils'
+import {
+  castStyle,
+  errorHandler,
+  getDefaultTokenContract,
+  getFee,
+  rbtcMap,
+} from 'shared/utils'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addRecentContact } from 'store/slices/contactsSlice'
@@ -31,6 +34,8 @@ import {
   EnhancedTransactionRequest,
   enhanceWithGas,
 } from 'shared/utils/enhanceWithGas'
+import { getPopupMessage } from 'shared/popupMessage'
+import { getCurrentChainId } from 'storage/ChainStorage'
 
 const tokenToBoolMap = new Map([
   [TokenSymbol.RIF, true],
@@ -80,11 +85,6 @@ export const ReviewTransactionContainer = ({
     gasLimit,
   } = enhancedTransactionRequest
 
-  const fee = useMemo(
-    () => getFee(chainId, txRequest.to),
-    [chainId, txRequest.to],
-  )
-
   const getTokenBySymbol = useCallback(
     (symb: string) => {
       const result = Object.values(balances).find(
@@ -108,28 +108,32 @@ export const ReviewTransactionContainer = ({
         return getTokenBySymbol(symbol).contractAddress
       }
     }
-    return fee.contractAddress
-  }, [symbol, fee.contractAddress, chainId, getTokenBySymbol])
+
+    return getDefaultTokenContract(chainId).contractAddress
+  }, [symbol, chainId, getTokenBySymbol])
+
+  const fee = useMemo(() => getFee(chainId, txRequest.to), [chainId, txRequest])
 
   const tokenQuote = tokenPrices[tokenContract]?.price
   const feeQuote = tokenPrices[fee.contractAddress]?.price
 
   useEffect(() => {
     if (txRequest.to && !isAddress(txRequest.to)) {
-      console.log('Invalid "to" address, rejecting transaction')
-      onCancel()
+      showMessage(
+        getPopupMessage(t('send_transaction_popup'), t('ok'), onCancel),
+      )
     }
-  }, [onCancel, txRequest.to])
+  }, [onCancel, txRequest.to, t])
 
+  // this hook estimatesGas for txRequest
   useEffect(() => {
     const fn = async () => {
       try {
         const estimatedCost = await wallet.estimateGas(
           txRequest,
-          fee.contractAddress !== ZERO_ADDRESS
-            ? fee.contractAddress
-            : undefined,
+          fee.contractAddress,
         )
+
         setTxCost(estimatedCost)
 
         const eTx = await enhanceWithGas(wallet, txRequest, chainId)

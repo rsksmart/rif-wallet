@@ -64,19 +64,17 @@ export const getDefaultFeeEOA = () => RBTCToken
 export const getDefaultFeeRelay = (chainId: ChainID) =>
   getDefaultTokens(chainId)[0]
 
-// make sure to only pass originalTx to value
-export const getFee = (chainId: ChainID, to?: string) => {
+export const getDefaultTokenContract = (chainId: ChainID) =>
+  isRelayWallet ? getDefaultFeeRelay(chainId) : getDefaultFeeEOA()
+
+export const getFee = (chainId: ChainID, address?: string) => {
   switch (isRelayWallet) {
     case true:
       const allowedToken = getAllowedFees(chainId).find(
-        fee => fee.contractAddress.toLowerCase() === to?.toLowerCase(),
+        fee => fee.contractAddress.toLowerCase() === address?.toLowerCase(),
       )
 
-      // if the token was not found
-      // in case of Relay it means that it goes
-      // directly from an address to address
-      // which means it is RBTC
-      return !allowedToken ? getDefaultFeeEOA() : allowedToken
+      return !allowedToken ? getDefaultFeeRelay(chainId) : allowedToken
     case false:
       return getDefaultFeeEOA()
   }

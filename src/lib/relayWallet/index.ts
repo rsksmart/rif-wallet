@@ -2,20 +2,17 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider'
-import {
-  RIFRelaySDK,
-  RelayPayment,
-  RifRelayConfig,
-} from '@rsksmart/rif-relay-light-sdk'
-import { Wallet, providers } from 'ethers'
+import { BigNumber, BigNumberish, Wallet, providers } from 'ethers'
 import { BlockchainAuthenticatorConfig } from '@json-rpc-tools/utils'
 import { defineReadOnly } from 'ethers/lib/utils'
+import { RIFRelaySDK } from '@rsksmart/rif-relay-light-sdk'
 
 import {
   ChainID,
   EOAWallet,
+  IncomingRequest,
   OnRequest,
-  SendTransactionRequest,
+  RequestType,
   WalletState,
 } from '../eoaWallet'
 
@@ -30,6 +27,25 @@ const filterTxOptions = (transactionRequest: TransactionRequest) =>
       obj[key] = (transactionRequest as any)[key]
       return obj
     }, {})
+
+export interface RelayPayment {
+  tokenContract: string
+  tokenAmount: BigNumber
+  tokenGasIncrease?: number
+}
+
+export interface OverriddableTransactionOptions {
+  gasLimit: BigNumberish
+  gasPrice: BigNumberish
+  tokenPayment: RelayPayment
+  pendingTxsCount?: number
+}
+
+type SendRelayTransactionRequest = IncomingRequest<
+  RequestType.SEND_TRANSACTION,
+  TransactionRequest,
+  OverriddableTransactionOptions
+>
 
 export class RelayWallet extends EOAWallet {
   public rifRelaySdk: RIFRelaySDK
@@ -104,12 +120,11 @@ export class RelayWallet extends EOAWallet {
     transactionRequest: TransactionRequest,
   ): Promise<TransactionResponse> {
     return new Promise((resolve, reject) => {
-      const nextRequest = Object.freeze<SendTransactionRequest>({
-        type: 'sendTransaction',
+      const nextRequest = Object.freeze<SendRelayTransactionRequest>({
+        type: RequestType.SEND_TRANSACTION,
         payload: transactionRequest,
         confirm: async overriddenOptions => {
-          // check if paying with tokens:
-          if (overriddenOptions && overriddenOptions.tokenPayment) {
+          try {
             console.log('sendRelayTransaction', transactionRequest)
             return resolve(
               await this.rifRelaySdk.sendRelayTransaction(
@@ -121,23 +136,9 @@ export class RelayWallet extends EOAWallet {
                 overriddenOptions.tokenPayment,
               ),
             )
+          } catch (err) {
+            reject(err)
           }
-
-          // direct execute transaction paying gas with EOA wallet:
-          const txOptions = {
-            ...filterTxOptions(transactionRequest),
-            ...(overriddenOptions || {}),
-          }
-
-          console.log('txOptions', txOptions)
-
-          return resolve(
-            await this.rifRelaySdk.smartWallet.directExecute(
-              transactionRequest.to!,
-              transactionRequest.data ?? HashZero,
-              txOptions,
-            ),
-          )
         },
         reject,
       })

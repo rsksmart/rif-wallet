@@ -1,3 +1,5 @@
+import { RequestType } from 'lib/eoaWallet'
+
 import { RequestWithBitcoin } from 'shared/types'
 import { ReviewBitcoinTransactionContainer } from 'src/ux/requestsModal/ReviewBitcoinTransactionContainer'
 
@@ -22,14 +24,14 @@ const RequestTypeSwitch = ({
 }: RequestTypeSwitchProps) => {
   let ComponentToRender = null
   switch (request.type) {
-    case 'sendTransaction':
+    case RequestType.SEND_TRANSACTION:
       ComponentToRender = ReviewTransactionContainer
       break
     case 'SEND_BITCOIN':
       ComponentToRender = ReviewBitcoinTransactionContainer
       break
-    case 'signMessage':
-    case 'signTypedData':
+    case RequestType.SIGN_MESSAGE:
+    case RequestType.SIGN_TYPED_DATA:
       ComponentToRender = SignRequestHandlerContainer
       break
     default:
