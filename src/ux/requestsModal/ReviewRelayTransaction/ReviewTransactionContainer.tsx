@@ -109,7 +109,7 @@ export const ReviewTransactionContainer = ({
       }
     }
 
-    return getDefaultTokenContract(chainId).contractAddress
+    return getDefaultTokenContract(chainId)
   }, [symbol, chainId, getTokenBySymbol])
 
   const fee = useMemo(() => getFee(chainId, txRequest.to), [chainId, txRequest])

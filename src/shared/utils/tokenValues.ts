@@ -65,7 +65,9 @@ export const getDefaultFeeRelay = (chainId: ChainID) =>
   getDefaultTokens(chainId)[0]
 
 export const getDefaultTokenContract = (chainId: ChainID) =>
-  isRelayWallet ? getDefaultFeeRelay(chainId) : getDefaultFeeEOA()
+  isRelayWallet
+    ? getDefaultFeeRelay(chainId).contractAddress
+    : getDefaultFeeEOA().contractAddress
 
 export const getFee = (chainId: ChainID, address?: string) => {
   switch (isRelayWallet) {
