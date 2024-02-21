@@ -280,7 +280,7 @@ export const getIconSource = (
   }
 }
 
-export const getTokenByChainId = (
+export const getTokenSymbolByChainId = (
   symbol: string | TokenSymbol,
   chainId: ChainID,
 ) => {

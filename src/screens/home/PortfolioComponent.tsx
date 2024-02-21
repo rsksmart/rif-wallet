@@ -3,15 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleProp, View, ViewStyle } from 'react-native'
 
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
-import {
-  sortBalancesBySymbol,
-  sortTokensBySymbol,
-} from 'components/token/utils'
+import { sortBalancesBySymbol } from 'components/token/utils'
 import { getTokenColor } from 'screens/home/tokenColor'
 import { sharedColors } from 'shared/constants'
 import { TokenOrBitcoinNetwork } from 'shared/types'
-import { useAppSelector } from 'src/redux/storeUtils'
-import { selectChainId } from 'src/redux/slices/settingsSlice'
+import { getCurrentChainId } from 'storage/ChainStorage'
 
 interface Props {
   setSelectedAddress: (token: string | undefined) => void
@@ -29,7 +25,7 @@ export const PortfolioComponent = ({
   showTotalCard = true,
   style,
 }: Props) => {
-  const chainId = useAppSelector(selectChainId)
+  const chainId = getCurrentChainId()
   const { t } = useTranslation()
   const [isTotalCardSelected, setIsTotalCardSelected] = useState<boolean>(
     showTotalCard && !selectedAddress,
