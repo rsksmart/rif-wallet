@@ -1,38 +1,34 @@
-import {
-  formatUsdValue,
-  formatTokenValue,
-  formatUsdValueWithDollarSign,
-} from './index'
+import { formatTokenValue, formatUsdValue } from './index'
 
 describe('formatUsdValue', () => {
   test('formats basic USD values correctly', () => {
-    expect(formatUsdValue('5678.90')).toBe('5,678.90')
-    expect(formatUsdValue(1234567.89123)).toBe('1,234,567.89')
-    expect(formatUsdValue(1234567.89)).toBe('1,234,567.89')
-    expect(formatUsdValue(1234567)).toBe('1,234,567.00')
-    expect(formatUsdValue(1234.5)).toBe('1,234.50')
-    expect(formatUsdValue(1234)).toBe('1,234.00')
+    expect(formatUsdValue('5678.90')).toBe('$5,678.90')
+    expect(formatUsdValue(1234567.89123)).toBe('$1,234,567.89')
+    expect(formatUsdValue(1234567.89)).toBe('$1,234,567.89')
+    expect(formatUsdValue(1234567)).toBe('$1,234,567.00')
+    expect(formatUsdValue(1234.5)).toBe('$1,234.50')
+    expect(formatUsdValue(1234)).toBe('$1,234.00')
   })
 
   test('handles zero as a special case', () => {
-    expect(formatUsdValue(0)).toBe('0.00')
-    expect(formatUsdValue('0')).toBe('0.00')
+    expect(formatUsdValue(0)).toBe('$0.00')
+    expect(formatUsdValue('0')).toBe('$0.00')
   })
 
   test('formats negative USD values correctly', () => {
-    expect(formatUsdValue(-1234.56)).toBe('-1,234.56')
+    expect(formatUsdValue(-1234.56)).toBe('-$1,234.56')
   })
 
   test('rounds to two decimal places', () => {
-    expect(formatUsdValue(1234.567)).toBe('1,234.57')
+    expect(formatUsdValue(1234.567)).toBe('$1,234.57')
   })
 
   test('small amounts', () => {
-    expect(formatUsdValue(0.0000000099)).toBe('<0.01')
-    expect(formatUsdValue(0.009)).toBe('<0.01')
-    expect(formatUsdValue(0.0100000001)).toBe('0.01')
-    expect(formatUsdValue(0.01)).toBe('0.01')
-    expect(formatUsdValue(0.1)).toBe('0.10')
+    expect(formatUsdValue(0.0000000099)).toBe('<$0.01')
+    expect(formatUsdValue(0.009)).toBe('<$0.01')
+    expect(formatUsdValue(0.0100000001)).toBe('$0.01')
+    expect(formatUsdValue(0.01)).toBe('$0.01')
+    expect(formatUsdValue(0.1)).toBe('$0.10')
   })
 })
 
@@ -68,20 +64,5 @@ describe('formatTokenValue', () => {
 
   test('rounds to eight decimal places where applicable', () => {
     expect(formatTokenValue(1234.567890123)).toBe('1,234.56789012')
-  })
-})
-
-describe('formatUsdValueWithDollarSign', () => {
-  test('formats basic USD values correctly', () => {
-    expect(formatUsdValueWithDollarSign('5678.90')).toBe('$5,678.90')
-    expect(formatUsdValueWithDollarSign(1234567.891)).toBe('$1,234,567.89')
-    expect(formatUsdValueWithDollarSign(0.001)).toBe('<$0.01')
-    expect(formatUsdValueWithDollarSign(-10.99)).toBe('-$10.99')
-  })
-
-  test('handles zero as a special case', () => {
-    expect(formatUsdValueWithDollarSign(0)).toBe('$0.00')
-    expect(formatUsdValueWithDollarSign('0')).toBe('$0.00')
-    expect(formatUsdValueWithDollarSign('0.000000')).toBe('$0.00')
   })
 })

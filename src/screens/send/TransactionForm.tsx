@@ -29,7 +29,7 @@ import {
 } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { defaultIconSize, sharedColors, testIDs } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { castStyle, formatTokenValue, formatUsdValue } from 'shared/utils'
 import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { Contact, ContactWithAddressRequired } from 'src/shared/types'
@@ -182,9 +182,9 @@ export const TransactionForm = ({
     symbol: selectedToken.symbol,
   })
   const [secondBalance, setSecondBalance] = useState<CurrencyValue>({
-    balance: '0',
+    balance: formatUsdValue(0),
     symbolType: 'usd',
-    symbol: '',
+    symbol: '$',
   })
   const [balanceInverted, setBalanceInverted] = useState(false)
   const [proposedContact, setProposedContact] =
@@ -207,13 +207,13 @@ export const TransactionForm = ({
         setValue('amount', balanceToSet)
         setSecondBalance(prev => ({
           ...prev,
-          balance: balanceToSet.toString(),
+          balance: formatTokenValue(balanceToSet, 18),
         }))
       } else {
         setValue('amount', numberAmount)
         setSecondBalance(prev => ({
           ...prev,
-          balance: convertTokenToUSD(numberAmount, tokenQuote).toFixed(2),
+          balance: formatUsdValue(convertTokenToUSD(numberAmount, tokenQuote)),
         }))
       }
     },
@@ -487,9 +487,10 @@ export const TransactionForm = ({
           </Typography>
         )}
         <AppButton
-          title={`${t('transaction_form_button_send')} ${amount} ${
-            selectedToken.symbol
-          }`}
+          title={`${t('transaction_form_button_send')} ${formatTokenValue(
+            amount,
+            18,
+          )} ${selectedToken.symbol}`}
           onPress={handleSubmit(handleConfirmClick)}
           accessibilityLabel={'Send'}
           disabled={

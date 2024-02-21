@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleProp, ViewStyle } from 'react-native'
 import { ZERO_ADDRESS } from '@rsksmart/rif-relay-light-sdk'
 
-import { roundBalance, shortAddress } from 'lib/utils'
+import { shortAddress } from 'lib/utils'
 
 import { isMyAddress } from 'components/address/lib'
 import { StatusEnum } from 'components/BasicRow'
@@ -17,6 +17,7 @@ import { getContactByAddress } from 'store/slices/contactsSlice'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
 import { Wallet } from 'shared/wallet'
 import { useAddress } from 'shared/hooks'
+import { formatTokenValue, formatUsdValue } from 'src/shared/utils'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -54,7 +55,7 @@ export const ActivityBasicRow = ({
     timeHumanFormatted,
     from = '',
     to = '',
-    price,
+    price: usdValue,
     id,
   } = activityDetails
   const walletAddress = useAddress(wallet)
@@ -77,14 +78,10 @@ export const ActivityBasicRow = ({
     label = t('wallet_deployment_label')
   }
 
-  // USD Balance
-  const usdBalance = roundBalance(price, 2)
-
   const txSummary: TransactionSummaryScreenProps = useMemo(() => {
-    const tokenUsd = usdBalance.toFixed(2)
-    const feeUsd = Number(fee.usdValue).toFixed(2)
-    const totalUsd = (Number(tokenUsd) + Number(feeUsd)).toFixed(2)
-    const isAmountSmall = !usdBalance && !!price
+    const tokenUsd = formatUsdValue(usdValue)
+    const feeUsd = formatUsdValue(fee.usdValue)
+    const totalUsd = formatUsdValue(usdValue + Number(fee.usdValue))
 
     const totalToken =
       symbol === fee.symbol
@@ -99,16 +96,16 @@ export const ActivityBasicRow = ({
           balance: value,
         },
         usdValue: {
-          symbol: isAmountSmall ? '<' : '$',
+          symbol: '$',
           symbolType: 'usd',
-          balance: isAmountSmall ? '0.01' : tokenUsd,
+          balance: tokenUsd,
         },
         fee: {
           symbol: fee.symbol || symbol,
           tokenValue: fee.tokenValue,
           usdValue: feeUsd,
         },
-        totalToken,
+        totalToken: formatTokenValue(totalToken),
         totalUsd: totalUsd,
         status,
         amIReceiver,
@@ -123,8 +120,7 @@ export const ActivityBasicRow = ({
     fee,
     symbol,
     value,
-    usdBalance,
-    price,
+    usdValue,
     status,
     amIReceiver,
     from,
@@ -135,17 +131,9 @@ export const ActivityBasicRow = ({
     address,
   ])
 
-  const amount = useMemo(() => {
-    if (symbol.startsWith('BTC')) {
-      return value
-    }
-    const num = Number(value)
-    let rounded = roundBalance(num, 4)
-    if (!rounded) {
-      rounded = roundBalance(num, 8)
-    }
-    return rounded.toString()
-  }, [value, symbol])
+  const amount = symbol.startsWith('BTC') ? value : formatTokenValue(value)
+  const isUnknownToken = !usdValue && Number(value) > 0
+  const usdAmount = isUnknownToken ? '' : formatUsdValue(usdValue)
 
   const handlePress = useCallback(() => {
     if (txSummary) {
@@ -166,7 +154,7 @@ export const ActivityBasicRow = ({
         status={getStatus(status)}
         avatar={{ name: 'A' }}
         secondaryLabel={timeHumanFormatted}
-        usdAmount={price === 0 ? undefined : usdBalance}
+        usdAmount={usdAmount}
         contact={contact}
       />
     </AppTouchable>

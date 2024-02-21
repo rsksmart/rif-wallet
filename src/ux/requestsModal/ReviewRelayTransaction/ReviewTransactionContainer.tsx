@@ -21,7 +21,8 @@ import { sharedColors } from 'shared/constants'
 import {
   castStyle,
   errorHandler,
-  formatTokenValues,
+  formatTokenValue,
+  formatUsdValue,
   rbtcMap,
 } from 'shared/utils'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
@@ -184,7 +185,7 @@ export const ReviewTransactionContainer = ({
     const feeValue = txCost ? balanceToDisplay(txCost, 18) : '0'
     const rbtcFeeValue =
       txCost && rbtcMap.get(feeSymbol)
-        ? formatTokenValues(txCost.toString())
+        ? formatTokenValue(txCost.toString())
         : undefined
     let insufficientFunds = false
 
@@ -203,14 +204,15 @@ export const ReviewTransactionContainer = ({
       Alert.alert(t('transaction_summary_insufficient_funds'))
     }
 
-    // usd values
-    const convertToUSD = (amount: string | BigNumberish, quote: number) =>
-      convertTokenToUSD(Number(amount), quote).toFixed(2)
+    const convertToUSD = (
+      amount: string | BigNumberish,
+      quote: number,
+    ): number => convertTokenToUSD(Number(amount), quote)
 
+    // usd values
     const tokenUsd = convertToUSD(value, tokenQuote)
     const feeUsd = convertToUSD(feeValue, feeQuote)
-    const totalUsd = (Number(tokenUsd) + Number(feeUsd)).toFixed(2)
-    const isAmountSmall = !Number(tokenUsd) && !!Number(value)
+    const totalUsd = tokenUsd + feeUsd
 
     const totalToken =
       symbol === feeSymbol ? Number(value) + Number(feeValue) : Number(value)
@@ -223,17 +225,17 @@ export const ReviewTransactionContainer = ({
           balance: value.toString(),
         },
         usdValue: {
-          symbol: isAmountSmall ? '<' : '$',
+          symbol: '$',
           symbolType: 'usd',
-          balance: isAmountSmall ? '0.01' : tokenUsd,
+          balance: formatUsdValue(tokenUsd),
         },
         fee: {
           symbol: feeSymbol,
           tokenValue: rbtcFeeValue ?? feeValue,
-          usdValue: feeUsd,
+          usdValue: formatUsdValue(feeUsd),
         },
-        totalToken,
-        totalUsd,
+        totalToken: formatTokenValue(totalToken),
+        totalUsd: formatUsdValue(totalUsd),
         time: 'approx 1 min',
         to,
       },

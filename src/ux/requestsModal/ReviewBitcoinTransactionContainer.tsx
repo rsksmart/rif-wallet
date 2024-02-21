@@ -19,7 +19,7 @@ import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { WalletContext } from 'shared/wallet'
 import { useAddress } from 'shared/hooks'
-import { formatTokenValues } from 'shared/utils'
+import { formatTokenValue, formatUsdValue } from 'shared/utils'
 
 import {
   BitcoinMiningFeeContainer,
@@ -79,14 +79,13 @@ export const ReviewBitcoinTransactionContainer = ({
   }, [onCancel, request])
 
   const data: TransactionSummaryScreenProps = useMemo(() => {
-    const convertToUSD = (amount: string) =>
-      convertTokenToUSD(Number(amount), tokenPrices.BTC.price).toFixed(2)
+    const convertToUSD = (amount: string): number =>
+      convertTokenToUSD(Number(amount), tokenPrices.BTC.price)
 
     // usd values
     const amountUsd = convertToUSD(amountToPay)
     const feeUsd = convertToUSD(miningFee)
-    const totalUsd = (Number(amountUsd) + Number(feeUsd)).toFixed(2)
-    const isAmountSmall = !Number(amountUsd) && !!Number(amountToPay)
+    const totalUsd = amountUsd + feeUsd
 
     const totalBtc = Number(amountToPay) + Number(miningFee)
 
@@ -98,17 +97,17 @@ export const ReviewBitcoinTransactionContainer = ({
           symbol: TokenSymbol.BTC,
         },
         usdValue: {
-          symbol: isAmountSmall ? '<' : '$',
+          symbol: '$',
           symbolType: 'usd',
-          balance: isAmountSmall ? '0.01' : amountUsd,
+          balance: formatUsdValue(amountUsd),
         },
         fee: {
           symbol: TokenSymbol.BTC,
           tokenValue: miningFee,
-          usdValue: feeUsd,
+          usdValue: formatUsdValue(feeUsd),
         },
-        totalToken: totalBtc,
-        totalUsd,
+        totalToken: formatTokenValue(totalBtc, 8),
+        totalUsd: formatUsdValue(totalUsd),
         time: 'approx 1 min',
         to: addressToPay,
       },
