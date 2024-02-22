@@ -207,7 +207,7 @@ export const TransactionForm = ({
         setValue('amount', balanceToSet)
         setSecondBalance(prev => ({
           ...prev,
-          balance: formatTokenValue(balanceToSet, 18),
+          balance: formatTokenValue(balanceToSet),
         }))
       } else {
         setValue('amount', numberAmount)
@@ -489,7 +489,6 @@ export const TransactionForm = ({
         <AppButton
           title={`${t('transaction_form_button_send')} ${formatTokenValue(
             amount,
-            18,
           )} ${selectedToken.symbol}`}
           onPress={handleSubmit(handleConfirmClick)}
           accessibilityLabel={'Send'}
