@@ -231,7 +231,7 @@ export const ReviewTransactionContainer = ({
         },
         fee: {
           symbol: feeSymbol,
-          tokenValue: rbtcFeeValue ?? feeValue,
+          tokenValue: formatTokenValue(rbtcFeeValue ?? feeValue),
           usdValue: formatUsdValue(feeUsd),
         },
         totalToken: formatTokenValue(totalToken),
