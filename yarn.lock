@@ -10574,10 +10574,10 @@ react-native-mmkv-flipper-plugin@^1.0.0:
   resolved "https://registry.yarnpkg.com/react-native-mmkv-flipper-plugin/-/react-native-mmkv-flipper-plugin-1.0.0.tgz#f87f747d8cea51d2b12a1e711287feff5f212788"
   integrity sha512-e3owMIBzXez45Wz8Ac84Vf1FmfwMXFVUpf/gCDWDLq19w7iCipVezQjlZo8ISVza8aQf1G4ggaK/r+qqtGmRlg==
 
-react-native-mmkv@2.4.3:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.4.3.tgz#6bb4c2d5e328513da11faab1371d056a189adbd0"
-  integrity sha512-0hYNOTbsjJ5j5cpX+qjwReGIxuYE9MWRsyPQ72fTOvzmEjYXCF4Wr2VQoqx8R6W1/Uinekvln7dGvJ4RExmHhQ==
+react-native-mmkv@2.12.1:
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.12.1.tgz#4b5f219bf0965dd676f9e595a3f172d9b61f219d"
+  integrity sha512-VB0JQc4JoEmmeK134skkce0wwNNUPPLfjO1eXM3o5NS8oeutv2mbUzoLYM3o/1wSIJkMETmT2t0JT4S378RZzA==
 
 react-native-modal@^13.0.1:
   version "13.0.1"
