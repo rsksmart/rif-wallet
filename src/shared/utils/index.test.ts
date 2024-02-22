@@ -48,9 +48,9 @@ describe('formatTokenValue', () => {
   })
 
   test('handles zero as a special case', () => {
-    expect(formatTokenValue(0)).toBe('0.00')
-    expect(formatTokenValue('0')).toBe('0.00')
-    expect(formatTokenValue('0.000000')).toBe('0.00')
+    expect(formatTokenValue(0)).toBe('0')
+    expect(formatTokenValue('0')).toBe('0')
+    expect(formatTokenValue('0.000000')).toBe('0')
   })
 
   test('formats very small token values correctly', () => {

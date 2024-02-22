@@ -78,11 +78,6 @@ const formatNumber = (
     sign = '',
   } = options
 
-  // Immediately return "0.00" for zero values
-  if (num === 0) {
-    return `${sign}0.00`
-  }
-
   // Calculate the minimum value that can be displayed given the number of decimal places
   const minValue = 1 / Math.pow(10, decimalPlaces)
 
