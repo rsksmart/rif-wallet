@@ -25,7 +25,7 @@
     "@hookform/resolvers": "^2.9.11",
     "@json-rpc-tools/utils": "^1.7.6",
     "@react-native-async-storage/async-storage": "^1.19.0",
-    "@react-native-community/clipboard": "^1.5.1",
+    "@react-native-clipboard/clipboard": "^1.13.2",
     "@react-native-community/hooks": "^2.8.1",
     "@react-native-community/netinfo": "^9.4.1",
     "@react-navigation/bottom-tabs": "^6.5.2",
