@@ -83,8 +83,7 @@ const formatNumber = (
 
   // Check for small positive amounts less than the minimum value
   if (num > 0 && num < minValue) {
-    const smallAmountDisplay = `<${sign}0.${'0'.repeat(decimalPlaces - 1)}1`
-    return smallAmountDisplay
+    return `<${sign}0.${'0'.repeat(decimalPlaces - 1)}1`
   }
 
   // Format the number with fixed decimal places

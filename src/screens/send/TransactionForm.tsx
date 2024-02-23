@@ -29,7 +29,7 @@ import {
 } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { defaultIconSize, sharedColors, testIDs } from 'shared/constants'
-import { castStyle, formatTokenValue, formatUsdValue } from 'shared/utils'
+import { castStyle, formatTokenValue } from 'shared/utils'
 import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { Contact, ContactWithAddressRequired } from 'src/shared/types'
@@ -182,9 +182,9 @@ export const TransactionForm = ({
     symbol: selectedToken.symbol,
   })
   const [secondBalance, setSecondBalance] = useState<CurrencyValue>({
-    balance: formatUsdValue(0),
+    balance: '0',
     symbolType: 'usd',
-    symbol: '$',
+    symbol: '',
   })
   const [balanceInverted, setBalanceInverted] = useState(false)
   const [proposedContact, setProposedContact] =
@@ -207,13 +207,13 @@ export const TransactionForm = ({
         setValue('amount', balanceToSet)
         setSecondBalance(prev => ({
           ...prev,
-          balance: formatTokenValue(balanceToSet),
+          balance: balanceToSet,
         }))
       } else {
         setValue('amount', numberAmount)
         setSecondBalance(prev => ({
           ...prev,
-          balance: formatUsdValue(convertTokenToUSD(numberAmount, tokenQuote)),
+          balance: convertTokenToUSD(numberAmount, tokenQuote),
         }))
       }
     },

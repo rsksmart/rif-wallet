@@ -79,9 +79,7 @@ export const ActivityBasicRow = ({
   }
 
   const txSummary: TransactionSummaryScreenProps = useMemo(() => {
-    const tokenUsd = formatUsdValue(usdValue)
-    const feeUsd = formatUsdValue(fee.usdValue)
-    const totalUsd = formatUsdValue(usdValue + Number(fee.usdValue))
+    const totalUsd = usdValue + Number(fee.usdValue)
 
     const totalToken =
       symbol === fee.symbol
@@ -98,15 +96,15 @@ export const ActivityBasicRow = ({
         usdValue: {
           symbol: '$',
           symbolType: 'usd',
-          balance: tokenUsd,
+          balance: usdValue,
         },
         fee: {
           symbol: fee.symbol || symbol,
           tokenValue: fee.tokenValue,
-          usdValue: feeUsd,
+          usdValue: fee.usdValue,
         },
-        totalToken: formatTokenValue(totalToken),
-        totalUsd: totalUsd,
+        totalToken,
+        totalUsd,
         status,
         amIReceiver,
         from,

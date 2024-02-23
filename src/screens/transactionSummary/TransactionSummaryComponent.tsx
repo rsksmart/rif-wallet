@@ -12,7 +12,7 @@ import {
   sharedColors,
   sharedStyles,
 } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { castStyle, formatTokenValue, formatUsdValue } from 'shared/utils'
 import { AppButton, AppTouchable, Typography } from 'components/index'
 import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
@@ -174,7 +174,7 @@ export const TransactionSummaryComponent = ({
                     size={12}
                   />
                   <Typography type={'body2'} style={[sharedStyles.textCenter]}>
-                    {fee.tokenValue} {fee.symbol}
+                    {formatTokenValue(fee.tokenValue)} {fee.symbol}
                   </Typography>
                 </View>
               </View>
@@ -186,7 +186,7 @@ export const TransactionSummaryComponent = ({
                     sharedStyles.textRight,
                     { color: sharedColors.labelLight },
                   ]}>
-                  {fee.usdValue}
+                  {formatUsdValue(fee.usdValue)}
                 </Typography>
               </View>
             </>
@@ -207,7 +207,7 @@ export const TransactionSummaryComponent = ({
             <View style={sharedStyles.row}>
               <TokenImage symbol={tokenValue.symbol} size={12} transparent />
               <Typography type={'body2'} style={[sharedStyles.textCenter]}>
-                {totalToken} {tokenValue.symbol}{' '}
+                {formatTokenValue(totalToken)} {tokenValue.symbol}{' '}
                 {tokenValue.symbol !== fee.symbol &&
                   !amIReceiver &&
                   t('transaction_summary_plus_fees')}
@@ -221,7 +221,7 @@ export const TransactionSummaryComponent = ({
                 sharedStyles.textRight,
                 { color: sharedColors.labelLight },
               ]}>
-              {totalUsd}
+              {formatUsdValue(totalUsd)}
             </Typography>
           </View>
           {/* arrive value */}
