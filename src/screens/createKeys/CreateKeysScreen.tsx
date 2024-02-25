@@ -13,6 +13,7 @@ import {
 } from 'navigation/createKeysNavigator'
 import { WINDOW_HEIGHT, sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
+import { colors } from 'src/styles'
 
 export const CreateKeysScreen = ({
   navigation,
@@ -46,7 +47,7 @@ export const CreateKeysScreen = ({
           accessibilityLabel={'newWallet'}
           title={t('initial_screen_button_create')}
           color={sharedColors.white}
-          textColor={sharedColors.black}
+          textColor={colors.text.secondary}
         />
 
         <AppButton
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
   rifLogoText: castStyle.text({
     fontWeight: '300',
     fontSize: 28,
-    color: sharedColors.black,
+    color: colors.text.secondary,
   }),
   buttonContainer: castStyle.view({
     position: 'absolute',

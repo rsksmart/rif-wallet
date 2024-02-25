@@ -12,12 +12,12 @@ export const colors = {
   lightGray: '#c7cfec',
 
   text: {
-    // primary: '#dbe3ff',
-    // secondary: '#9ca1c3',
+    primary: '#fff',
+    secondary: '#000',
   },
   // PALETTE
   background: {
-    // primary: '#1a1849',
+    primary: '#000',
     secondary: '#2d2d6c',
     bustyBlue: '#4200D8',
   },
