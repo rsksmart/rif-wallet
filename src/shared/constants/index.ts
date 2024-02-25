@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 
 import { castStyle } from '../utils'
 
@@ -38,11 +38,21 @@ export const sharedColors = {
   // lightPurple: '#DAE2FF',
   // blue: '#6053F8',
 
+  background: {
+    primary: '#000',
+    secondary: '#252525',
+  },
+
   text: {
     primary: '#fff',
     secondary: '#000',
     label: '#B8B8B8',
     link: '#4152E6',
+  },
+
+  stepper: {
+    active: '#4B5CF0',
+    inactive: '#3A3A3A',
   },
 }
 
@@ -97,7 +107,7 @@ export const sharedStyles = StyleSheet.create({
   }),
   screen: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
     paddingHorizontal: 24,
   }),
   noPadding: castStyle.view({ padding: 0 }),

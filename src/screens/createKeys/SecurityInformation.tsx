@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   }),
   userAgreementBox: castStyle.view({
     marginTop: 29,
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     paddingVertical: 48,
     paddingHorizontal: 40,
   }),

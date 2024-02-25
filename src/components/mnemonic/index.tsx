@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     width: '100%',
     minHeight: 309,
     justifyContent: 'center',
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     padding: 20,
     borderRadius: 10,
   }),

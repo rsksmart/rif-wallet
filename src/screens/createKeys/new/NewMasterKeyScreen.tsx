@@ -58,7 +58,7 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
       <StepperComponent
         style={sharedStyles.selfCenter}
         width={40}
-        colors={[sharedColors.primary, sharedColors.inputInactive]}
+        colors={[sharedColors.stepper.active, sharedColors.stepper.inactive]}
       />
       <Typography
         style={styles.titleText}
@@ -76,7 +76,7 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
           title={t('new_master_key_button_title')}
           disabled={!isMnemonicVisible}
           color={sharedColors.white}
-          textColor={sharedColors.black}
+          textColor={sharedColors.text.secondary}
           textType={'h4'}
           onPress={() =>
             navigation.navigate(createKeysRouteNames.ConfirmNewMasterKey, {
@@ -87,8 +87,7 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
         <AppButton
           style={styles.secureLaterBtn}
           title={t('new_master_key_secure_later_button')}
-          color={sharedColors.white}
-          textColor={sharedColors.white}
+          textColor={sharedColors.text.primary}
           textType={'h4'}
           backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
           onPress={onSecureLater}
@@ -102,7 +101,7 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   screen: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
     paddingHorizontal: 24,
   }),
   titleText: castStyle.text({
@@ -117,5 +116,7 @@ const styles = StyleSheet.create({
     left: 24,
     right: 24,
   }),
-  secureLaterBtn: castStyle.view({ marginTop: 8 }),
+  secureLaterBtn: castStyle.view({
+    marginTop: 8,
+  }),
 })

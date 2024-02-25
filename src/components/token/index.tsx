@@ -181,7 +181,7 @@ export const TokenBalance = ({
             onPress={onHide}
             accessibilityLabel={testIDs.hide}>
             <View style={styles.badge}>
-              <EyeIcon color={sharedColors.white} size={25} isHidden={hide} />
+              <EyeIcon size={25} isHidden={hide} />
             </View>
           </AppTouchable>
         )}

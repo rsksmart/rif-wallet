@@ -91,7 +91,7 @@ export const ConfirmationModal = ({
   title,
   titleColor,
   description = '',
-  descriptionColor,
+  descriptionColor = sharedColors.labelLight,
   okText = 'OK',
   cancelText,
   onOk,
@@ -118,9 +118,7 @@ export const ConfirmationModal = ({
         {description && (
           <Typography
             type={'body3'}
-            color={
-              descriptionColor ? descriptionColor : sharedColors.labelLight
-            }
+            color={descriptionColor}
             style={styles.description}>
             {description}
           </Typography>
