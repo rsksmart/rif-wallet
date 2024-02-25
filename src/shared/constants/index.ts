@@ -31,12 +31,12 @@ export const sharedColors = {
   primaryDark: '#4250CC',
   labelLight: '#B8B8B8',
   subTitle: '#FBFBFB',
-  tokenBackground: '#1E1E1E',
+  // tokenBackground: '#1E1E1E',
   black: '#000000',
   qrColor: '#DBE3FF',
   errorBackground: '#FF3559',
-  lightPurple: '#DAE2FF',
-  blue: '#6053F8',
+  // lightPurple: '#DAE2FF',
+  // blue: '#6053F8',
 }
 
 export const tokenColors = {
