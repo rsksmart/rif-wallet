@@ -14,7 +14,6 @@ import {
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { SETTINGS } from 'src/core/types'
-import { colors } from 'src/styles'
 
 enum TestID {
   IAgreeCheckbox = 'Checkbox.IAgreeCheckbox',
@@ -92,7 +91,7 @@ export const SecurityInformation = ({
           title={t('security_info_btn')}
           disabled={!isCheckboxActive}
           color={sharedColors.white}
-          textColor={colors.text.secondary}
+          textColor={sharedColors.text.secondary}
           accessibilityLabel={TestID.ContinueButton}
         />
       </View>
@@ -121,14 +120,14 @@ const styles = StyleSheet.create({
     marginTop: 22,
     textAlign: 'center',
     lineHeight: 18,
-    color: colors.text.label,
+    color: sharedColors.text.label,
   }),
   termsAndConditionsView: castStyle.view({
     alignSelf: 'center',
     marginBottom: 22,
   }),
   termsAndConditionsText: castStyle.text({
-    color: colors.text.link,
+    color: sharedColors.text.link,
     textDecorationLine: 'underline',
   }),
   agreementView: castStyle.view({ flexDirection: 'row', alignSelf: 'center' }),

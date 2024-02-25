@@ -1,13 +1,13 @@
 import { ColorValue, StyleSheet, Text, TextProps } from 'react-native'
 
+import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { colors } from 'src/styles'
 
 export const fonts = StyleSheet.create({
   regular: castStyle.text({
     fontFamily: 'Sora-Regular',
     fontWeight: '500',
-    color: colors.text.primary,
+    color: sharedColors.text.primary,
   }),
 })
 

@@ -11,12 +11,6 @@ export const colors = {
   red: '#F89F84',
   lightGray: '#c7cfec',
 
-  text: {
-    primary: '#fff',
-    secondary: '#000',
-    label: '#B8B8B8',
-    link: '#4152E6',
-  },
   // PALETTE
   background: {
     primary: '#000',

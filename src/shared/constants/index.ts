@@ -37,6 +37,13 @@ export const sharedColors = {
   errorBackground: '#FF3559',
   // lightPurple: '#DAE2FF',
   // blue: '#6053F8',
+
+  text: {
+    primary: '#fff',
+    secondary: '#000',
+    label: '#B8B8B8',
+    link: '#4152E6',
+  },
 }
 
 export const tokenColors = {

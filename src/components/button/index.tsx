@@ -18,7 +18,6 @@ import { castStyle } from 'shared/utils'
 
 import { AccessibilityLabelStandards } from '../shared'
 import { AppSpinner } from '../spinner'
-import { colors } from 'src/styles'
 
 export const buttonHeight = 52
 const defaultPadding = 14
@@ -107,7 +106,7 @@ export const AppButton = ({
   accessibilityLabel = '',
   onPress,
   color = sharedColors.inputInactive,
-  textColor = colors.text.primary,
+  textColor = sharedColors.text.primary,
   textType = 'button1',
   backgroundVariety = AppButtonBackgroundVarietyEnum.DEFAULT,
   widthVariety = AppButtonWidthVarietyEnum.FULL,
