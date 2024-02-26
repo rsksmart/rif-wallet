@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useCallback } from 'react'
 import { FC, ReactNode, createContext, useState, useContext } from 'react'
 
 import GlobalErrorHandlerView from './GlobalErrorHandlerView'
@@ -26,10 +26,11 @@ const GlobalErrorHandlerProvider: React.FC<GlobalErrorHandlerProviderType> = ({
 }) => {
   const [globalError, setGlobalError] = useState<string | null>(null)
   const [compKey, setCompKey] = useState(0)
-  const handleReload = () => {
+
+  const handleReload = useCallback(() => {
     setGlobalError(null)
     setCompKey(curKey => curKey + 1)
-  }
+  }, [])
 
   return (
     <GlobalErrorHandlerContext.Provider

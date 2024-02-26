@@ -1,9 +1,9 @@
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import debounce from 'lodash.debounce'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text } from 'react-native'
 import { FieldError } from 'react-hook-form'
+import { RSKRegistrar } from '@rsksmart/rns-sdk'
 
 import {
   AddressValidationMessage,
@@ -18,10 +18,10 @@ import { minDomainLength } from './SearchDomainScreen'
 
 interface Props {
   address: string
-  rskRegistrar: RSKRegistrar
   inputName: string
   domainValue: string
   error: FieldError | undefined
+  rskRegistrar: RSKRegistrar
   onDomainAvailable: (domain: string, valid: boolean) => void
   onDomainOwned: (owned: boolean) => void
   onResetValue: () => void
@@ -45,9 +45,9 @@ const labelColorMap = new Map([
 
 export const DomainInput = ({
   address,
-  rskRegistrar,
   inputName,
   domainValue,
+  rskRegistrar,
   onDomainAvailable,
   onDomainOwned,
   onResetValue,

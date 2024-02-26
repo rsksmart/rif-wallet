@@ -105,6 +105,7 @@ const resources = {
       info_box_close_button: 'close',
       initial_screen_title: 'Wallet',
       initial_screen_button_retry_login: 'Retry unlock',
+      initial_screen_button_reset_app: 'Reset App',
       initial_screen_button_create: 'Create a wallet',
       initial_screen_button_import: 'Import existing wallet',
       initial_screen_welcome_footer:
@@ -390,6 +391,8 @@ const resources = {
         'URI is not valid. Please try with a new URI.',
       popup_message_rns:
         'Register your username to allow others to send you funds without worrying about mistyping or inputting wrong address',
+      popup_not_possible_to_register_rns:
+        'It is not possible to register RNS domain at this time',
       popup_link_text: 'Get username here',
       wallet_deployment_label: 'Rif Wallet Deployment',
       wallet_backup_title: 'Warning!',

@@ -38,6 +38,7 @@ export const ProfileNavigator = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.Profile>) => {
   const { top } = useSafeAreaInsets()
+
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,

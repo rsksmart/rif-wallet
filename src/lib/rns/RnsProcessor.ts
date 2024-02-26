@@ -1,36 +1,69 @@
 import { RSKRegistrar } from '@rsksmart/rns-sdk'
-import { BigNumber } from 'ethers'
+import { BigNumber, utils } from 'ethers'
 
 import {
-  getRnsProcessor,
-  hasRnsProcessor,
-  saveRnsProcessor,
+  getRnsProcessIndex,
+  hasRnsProcessIndex,
+  saveRnsProcessIndex,
 } from 'storage/RnsProcessorStore'
-import { OnSetTransactionStatusChange } from 'screens/send/types'
 import { RNS_ADDRESSES_TYPE } from 'screens/rnsManager/types'
+import {
+  OnSetTransactionStatusChange,
+  TransactionStatus,
+} from 'store/shared/types'
 import { Wallet } from 'shared/wallet'
 
-interface RNSProcessorConstructor {
-  wallet: Wallet
-  address: string
-  onSetTransactionStatusChange?: OnSetTransactionStatusChange
-  rnsAddresses: RNS_ADDRESSES_TYPE
+import { RelayWallet } from '../relayWallet'
+
+interface DomainRegistrationProcess {
+  domain: string
+  secret: string
+  hash: string
+  registrationHash: string
+  duration: number
+  commitmentRequested: boolean
+  commitmentConfirmed: boolean
+  registeringRequested: boolean
+  registeringConfirmed: boolean
+  commitmentRequestedTimestamp: number
+}
+export enum DomainRegistrationEnum {
+  COMMITMENT_REQUESTED = 'COMMITMENT_REQUESTED',
+  COMMITMENT_CONFIRMED = 'COMMITMENT_CONFIRMED',
+  WAITING_COMMITMENT = 'WAITING_COMMITMENT',
+  COMMITMENT_READY = 'COMMITMENT_READY',
+  REGISTERING_REQUESTED = 'REGISTERING_REQUESTED',
+  REGISTERING_CONFIRMED = 'REGISTERING_CONFIRMED',
+}
+
+export interface IDomainRegistrationProcessIndex {
+  [domain: string]: DomainRegistrationProcess
+}
+
+export const calculateRnsDomainPrice = async (
+  rskRegistrar: RSKRegistrar,
+  label: string,
+  years: number,
+) => {
+  return utils.formatUnits(
+    await rskRegistrar.price(label, BigNumber.from(years)),
+  )
 }
 
 export class RnsProcessor {
-  private rskRegistrar
-  private address
+  private address: string
   private index: IDomainRegistrationProcessIndex = {}
   private rnsAddresses: RNS_ADDRESSES_TYPE
+  public rskRegistrar
   onSetTransactionStatusChange?: OnSetTransactionStatusChange
 
-  constructor({
-    wallet,
-    address,
-    onSetTransactionStatusChange,
-    rnsAddresses,
-  }: RNSProcessorConstructor) {
-    this.address = address
+  constructor(
+    wallet: Wallet,
+    onSetTransactionStatusChange: OnSetTransactionStatusChange,
+    rnsAddresses: RNS_ADDRESSES_TYPE,
+  ) {
+    this.address =
+      wallet instanceof RelayWallet ? wallet.smartWalletAddress : wallet.address
     this.rnsAddresses = rnsAddresses
     this.rskRegistrar = new RSKRegistrar(
       this.rnsAddresses.rskOwnerAddress,
@@ -38,22 +71,24 @@ export class RnsProcessor {
       this.rnsAddresses.rifTokenAddress,
       wallet,
     )
-    if (hasRnsProcessor()) {
-      this.index = getRnsProcessor()
+
+    if (hasRnsProcessIndex()) {
+      this.index = getRnsProcessIndex()
     }
+
     this.onSetTransactionStatusChange = onSetTransactionStatusChange
   }
   private setIndex = (
     domain: string,
-    domainRegistrationProcess: IDomainRegistrationProcess,
+    domainRegistrationProcess: DomainRegistrationProcess,
   ) => {
     this.index[domain] = domainRegistrationProcess
-    saveRnsProcessor(this.index)
+    saveRnsProcessIndex(this.index)
   }
 
   public deleteRnsProcess = (domain: string) => {
     delete this.index[domain]
-    saveRnsProcessor(this.index)
+    saveRnsProcessIndex(this.index)
   }
 
   public process = async (domain: string, duration: number) => {
@@ -64,7 +99,7 @@ export class RnsProcessor {
 
         this.onSetTransactionStatusChange?.({
           ...makeCommitmentTransaction,
-          txStatus: 'PENDING',
+          txStatus: TransactionStatus.PENDING,
           value: BigNumber.from('0'),
           finalAddress: this.rnsAddresses.fifsAddrRegistrarAddress,
         })
@@ -84,7 +119,7 @@ export class RnsProcessor {
         makeCommitmentTransaction.wait().then(commitmentTransaction => {
           this.onSetTransactionStatusChange?.({
             ...commitmentTransaction,
-            txStatus: 'CONFIRMED',
+            txStatus: TransactionStatus.USER_CONFIRM,
           })
           this.setIndex(domain, {
             ...this.index[domain],
@@ -120,26 +155,14 @@ export class RnsProcessor {
     return new Date() > timeWithThreeMinutesAdded
   }
 
-  public canReveal = async (
-    domain: string,
-    isWaitingForCommitmentTransaction = true,
-  ) => {
+  public canReveal = async (domain: string) => {
     try {
-      // Fail-safe to only ping rskRegistrar after 3 minutes have passed since the transaction was created
-      // This to avoid request load
-      if (
-        this.index[domain]?.commitmentConfirmed ||
-        (!isWaitingForCommitmentTransaction &&
-          this.isDomainAllowedToPingRskRegistrarCanReveal(domain))
-      ) {
-        const canReveal = await this.rskRegistrar.canReveal(
-          this.index[domain].hash,
-        )
-        if (await canReveal()) {
-          return DomainRegistrationEnum.COMMITMENT_READY
-        } else {
-          return DomainRegistrationEnum.WAITING_COMMITMENT
-        }
+      const canReveal = await this.rskRegistrar.canReveal(
+        this.index[domain].hash,
+      )
+
+      if (await canReveal()) {
+        return DomainRegistrationEnum.COMMITMENT_READY
       } else {
         return DomainRegistrationEnum.WAITING_COMMITMENT
       }
@@ -147,6 +170,7 @@ export class RnsProcessor {
       throw new Error((err as Error).message)
     }
   }
+
   public price = async (domain: string) => {
     if (this.index[domain]) {
       const alias = this.index[domain]?.domain
@@ -165,6 +189,7 @@ export class RnsProcessor {
     try {
       const { hash, duration } = this.index[domain]
       const canReveal = await this.rskRegistrar.canReveal(hash)
+
       if (await canReveal()) {
         const price = await this.rskRegistrar.price(
           domain,
@@ -181,7 +206,7 @@ export class RnsProcessor {
         )
         this.onSetTransactionStatusChange?.({
           ...tx,
-          txStatus: 'PENDING',
+          txStatus: TransactionStatus.PENDING,
           finalAddress: this.rnsAddresses.fifsAddrRegistrarAddress,
         })
         this.setIndex(domain, {
@@ -193,7 +218,7 @@ export class RnsProcessor {
         tx.wait().then(txReceipt => {
           this.onSetTransactionStatusChange?.({
             ...txReceipt,
-            txStatus: 'CONFIRMED',
+            txStatus: TransactionStatus.USER_CONFIRM,
           })
           this.setIndex(domain, {
             ...this.index[domain],
@@ -214,32 +239,7 @@ export class RnsProcessor {
       }
     }
   }
-  public getStatus = (domain: string): IDomainRegistrationProcess => {
+  public getStatus = (domain: string): DomainRegistrationProcess => {
     return this.index[domain]
   }
-}
-
-interface IDomainRegistrationProcess {
-  domain: string
-  secret: string
-  hash: string
-  registrationHash: string
-  duration: number
-  commitmentRequested: boolean
-  commitmentConfirmed: boolean
-  registeringRequested: boolean
-  registeringConfirmed: boolean
-  commitmentRequestedTimestamp: number
-}
-export enum DomainRegistrationEnum {
-  COMMITMENT_REQUESTED = 'COMMITMENT_REQUESTED',
-  COMMITMENT_CONFIRMED = 'COMMITMENT_CONFIRMED',
-  WAITING_COMMITMENT = 'WAITING_COMMITMENT',
-  COMMITMENT_READY = 'COMMITMENT_READY',
-  REGISTERING_REQUESTED = 'REGISTERING_REQUESTED',
-  REGISTERING_CONFIRMED = 'REGISTERING_CONFIRMED',
-}
-
-export interface IDomainRegistrationProcessIndex {
-  [domain: string]: IDomainRegistrationProcess
 }
