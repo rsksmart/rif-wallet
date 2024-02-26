@@ -16,6 +16,7 @@ export const testIDs = {
 
 export const sharedColors = {
   primary: '#4B5CF0',
+  primaryDark: '#4250CC', // used over the primary color
   secondary: '#121212',
   success: '#79C600',
   successLight: '#59FF9C',
@@ -28,7 +29,6 @@ export const sharedColors = {
   inputActive: '#3A3A3A',
   inputLabelColor: '#B8B8B8',
   borderColor: '#575757',
-  primaryDark: '#4250CC',
   labelLight: '#B8B8B8',
   subTitle: '#FBFBFB',
   // tokenBackground: '#1E1E1E',

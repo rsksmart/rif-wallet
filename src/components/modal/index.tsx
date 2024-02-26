@@ -76,7 +76,7 @@ interface ConfirmationModalProps {
   onCancel?: () => void
   titleColor?: ColorValue
   buttons?: [ConfirmationModalButtonConfig, ConfirmationModalButtonConfig]
-  color?: ColorValue
+  backgroundColor?: ColorValue
   imgSource?: ImageSourcePropType
   description?: string
   descriptionColor?: ColorValue
@@ -89,22 +89,22 @@ export type ConfirmationModalConfig = Omit<ConfirmationModalProps, 'isVisible'>
 export const ConfirmationModal = ({
   isVisible = true,
   title,
-  titleColor,
+  titleColor = sharedColors.text.primary,
   description = '',
-  descriptionColor = sharedColors.labelLight,
+  descriptionColor = sharedColors.text.label,
+  backgroundColor = sharedColors.primary,
   okText = 'OK',
   cancelText,
   onOk,
   onCancel,
   imgSource,
-  color,
   buttons,
 }: ConfirmationModalProps) => (
   <Modal isVisible={isVisible}>
     <Modal.Container
       style={[
         styles.confirmationModalContainer,
-        color ? { backgroundColor: color } : null,
+        backgroundColor ? { backgroundColor } : null,
       ]}>
       <View style={styles.footerBarIndicator} />
       <Modal.Body>
@@ -112,7 +112,7 @@ export const ConfirmationModal = ({
         <Typography
           type={'h3'}
           style={sharedStyles.textCenter}
-          color={titleColor ? titleColor : undefined}>
+          color={titleColor}>
           {title}
         </Typography>
         {description && (

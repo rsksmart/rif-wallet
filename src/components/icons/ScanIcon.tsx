@@ -1,11 +1,17 @@
 import Svg, { Path, Rect } from 'react-native-svg'
 
+import { sharedColors } from 'shared/constants'
+
 import { FooterIconInterface } from '.'
 
-export const ScanIcon = ({ active = false, ...props }: FooterIconInterface) => {
+export const ScanIcon = ({
+  active = false,
+  activeColor = sharedColors.primary,
+  ...props
+}: FooterIconInterface) => {
   return (
     <Svg width={52} height={52} fill="none" {...props}>
-      {active && <Rect width={52} height={52} fill="#4B5CF0" rx={26} />}
+      {active && <Rect width={52} height={52} fill={activeColor} rx={26} />}
       <Path
         fill="#fff"
         stroke="#fff"
