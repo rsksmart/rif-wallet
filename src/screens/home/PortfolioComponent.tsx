@@ -1,16 +1,17 @@
-import { BitcoinNetwork } from '@rsksmart/rif-wallet-bitcoin'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleProp, View, ViewStyle } from 'react-native'
 
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
+import { sortBalancesBySymbol } from 'components/token/utils'
 import { getTokenColor } from 'screens/home/tokenColor'
 import { sharedColors } from 'shared/constants'
-import { ITokenWithoutLogo } from 'store/slices/balancesSlice/types'
+import { TokenOrBitcoinNetwork } from 'shared/types'
+import { getCurrentChainId } from 'storage/ChainStorage'
 
 interface Props {
   setSelectedAddress: (token: string | undefined) => void
-  balances: Array<ITokenWithoutLogo | BitcoinNetwork>
+  balances: Array<TokenOrBitcoinNetwork>
   totalUsdBalance: string
   selectedAddress?: string
   showTotalCard?: boolean
@@ -24,10 +25,13 @@ export const PortfolioComponent = ({
   showTotalCard = true,
   style,
 }: Props) => {
+  const chainId = getCurrentChainId()
   const { t } = useTranslation()
   const [isTotalCardSelected, setIsTotalCardSelected] = useState<boolean>(
     showTotalCard && !selectedAddress,
   )
+
+  const usersTokens = sortBalancesBySymbol(balances, chainId)
 
   const handleSelectedAddress = useCallback(
     (contractAddress: string) => {
@@ -59,13 +63,9 @@ export const PortfolioComponent = ({
             isSelected={isTotalCardSelected}
           />
         )}
-        {balances.map(
+        {usersTokens.map(
           (
-            {
-              contractAddress,
-              symbol,
-              balance,
-            }: ITokenWithoutLogo | BitcoinNetwork,
+            { contractAddress, symbol, balance }: TokenOrBitcoinNetwork,
             i: number,
           ) => {
             const isSelected =

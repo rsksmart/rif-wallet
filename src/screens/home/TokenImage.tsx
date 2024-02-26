@@ -8,6 +8,8 @@ import {
   ViewStyle,
 } from 'react-native'
 
+import { ChainID } from 'lib/eoaWallet'
+
 import { FrownFaceIcon } from 'components/icons'
 import { sharedColors } from 'shared/constants'
 interface Props {
@@ -275,5 +277,26 @@ export const getIconSource = (
       return require('@rsksmart/rsk-contract-metadata/images/fish.png')
     default:
       return undefined
+  }
+}
+
+export const getTokenSymbolByChainId = (
+  symbol: string | TokenSymbol,
+  chainId: ChainID,
+) => {
+  const upperSymbol = symbol.toUpperCase()
+  const isMainnet = chainId === 30
+  switch (upperSymbol) {
+    case 'RIF':
+    case 'TRIF':
+      return isMainnet ? TokenSymbol.RIF : TokenSymbol.TRIF
+    case 'RBTC':
+    case 'TRBTC':
+      return isMainnet ? TokenSymbol.RBTC : TokenSymbol.TRBTC
+    case 'BTC':
+    case 'BTCT':
+      return isMainnet ? TokenSymbol.BTC : TokenSymbol.BTCT
+    default:
+      return TokenSymbol[upperSymbol as keyof typeof TokenSymbol] || upperSymbol
   }
 }
