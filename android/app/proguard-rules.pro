@@ -15,4 +15,4 @@
 
 # keep proguard from removing reference to .env
 # https://stackoverflow.com/questions/72709283/react-native-config-not-working-in-release-builds
--keep class org.iovlabs.rif_wallet.BuildConfig { *; }
+-keep class org.iovlabs.rifWallet.BuildConfig { *; }

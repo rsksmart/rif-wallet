@@ -1,4 +1,4 @@
-package org.iovlabs.rif_wallet
+package org.iovlabs.rifWallet
 
 import android.app.Application
 import com.facebook.react.PackageList

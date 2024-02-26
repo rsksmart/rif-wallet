@@ -76,9 +76,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "org.iovlabs.rif_wallet"
+    namespace "org.iovlabs.rifWallet"
     defaultConfig {
-        applicationId "org.iovlabs.rif_wallet"
+        applicationId "org.iovlabs.rifWallet"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
