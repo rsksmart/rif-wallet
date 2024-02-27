@@ -16,7 +16,7 @@
     "test:ci": "jest --coverage --verbose --testTimeout=60000",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --max-warnings=0",
-    "postinstall": "rn-nodeify --install buffer,events,stream,crypto --hack --yarn && patch-package",
+    "postinstall": "rn-nodeify --install buffer,events,stream,crypto --hack --yarn",
     "clean:android": "cd android && ./gradlew clean && ./gradlew cleanBuildCache && cd ..",
     "clean:ios": "cd ios && xcodebuild clean && rm -rf ~/Library/Caches/CocoaPods && rm -rf Pods && rm -rf ~/Library/Developer/Xcode/DerivedData/* && pod cache clean --all && pod deintegrate && pod setup && pod install && cd .."
   },
@@ -58,7 +58,6 @@
     "jail-monkey": "^2.8.0",
     "lodash.debounce": "^4.0.8",
     "moment": "^2.29.4",
-    "patch-package": "^6.5.0",
     "process": "^0.11.10",
     "react": "18.2.0",
     "react-hook-form": "^7.43.0",
