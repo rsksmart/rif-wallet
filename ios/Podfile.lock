@@ -1175,7 +1175,9 @@ PODS:
     - React
   - RNSVG (14.1.0):
     - React-Core
-  - RNVectorIcons (9.2.0):
+  - RNVectorIcons (10.0.3):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - SocketRocket (0.6.1)
   - TrustKit (3.0.3)
@@ -1538,7 +1540,7 @@ SPEC CHECKSUMS:
   RNScreens: b582cb834dc4133307562e930e8fa914b8c04ef2
   RNScreenshotPrevent: cdfbe213203774c7486c6a2f198af8a4ebe10c47
   RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
-  RNVectorIcons: fcc2f6cb32f5735b586e66d14103a74ce6ad61f8
+  RNVectorIcons: 210f910e834e3485af40693ad4615c1ec22fc02b
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   TrustKit: 7858ea59d0e226b1457b2e9cc8b95d77ab21d471
   VisionCamera: 7a5c87805b13adaaa557132b44879ed1e1e39786
