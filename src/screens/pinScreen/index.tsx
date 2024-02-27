@@ -125,7 +125,7 @@ type Props =
 export const PinScreen = ({ navigation, route }: Props) => {
   const initializeWallet = useInitializeWallet()
   const setGlobalError = useSetGlobalError()
-  const insets = useSafeAreaInsets()
+  const { top } = useSafeAreaInsets()
   const isFocused = useIsFocused()
   // const isVisible = useKeyboardIsVisible()
   const { t } = useTranslation()
@@ -360,7 +360,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
 
     navigation.setOptions(
       screenOptionsWithHeader(
-        insets.top,
+        top,
         headerTitle,
         undefined,
         steps ?? undefined,
@@ -370,7 +370,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
     )
   }, [
     navigation,
-    insets,
+    top,
     steps,
     backScreen,
     headerTitle,
@@ -440,7 +440,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
             ]}
             onPress={focusInput}
             title={t('pin_settings_open_keyboard_btn')}
-            textColor={sharedColors.white}
+            textColor={sharedColors.text.primary}
             backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
             accessibilityLabel={TestID.OpenKeyboardButton}
           />
@@ -467,12 +467,15 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.primary,
   }),
   dotInactive: castStyle.view({
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
   }),
   androidInputWorkaround: castStyle.text({
     display: 'flex',
     position: 'absolute',
     bottom: -1000,
   }),
-  errorIcon: castStyle.text({ marginTop: 82, alignSelf: 'center' }),
+  errorIcon: castStyle.text({
+    marginTop: 82,
+    alignSelf: 'center',
+  }),
 })
