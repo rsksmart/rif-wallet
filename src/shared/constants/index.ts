@@ -41,6 +41,8 @@ export const sharedColors = {
   background: {
     primary: '#000',
     secondary: '#252525',
+    accent: '#575757',
+    highlight: '#B8B8B8',
   },
 
   text: {

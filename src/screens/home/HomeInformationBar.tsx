@@ -49,7 +49,7 @@ export const HomeInformationBar = ({
           <Icon
             name="person-circle-sharp"
             size={60}
-            color={sharedColors.white}
+            color={sharedColors.text.primary}
           />
         }
       />,
@@ -83,7 +83,7 @@ export const HomeInformationBar = ({
           <Dots
             length={3}
             active={selectedSlide}
-            activeColor={sharedColors.white}
+            activeColor={sharedColors.text.primary}
             activeDotWidth={8}
             activeDotHeight={8}
             passiveColor={sharedColors.primaryDark}
