@@ -48,7 +48,7 @@
     "@walletconnect/react-native-compat": "^2.10.2",
     "@walletconnect/utils": "^2.10.2",
     "@walletconnect/web3wallet": "^1.9.2",
-    "axios": "^1.6.2",
+    "axios": "^1.6.7",
     "buffer": "^4.9.2",
     "ethers": "5.7.2",
     "eventemitter3": "^5.0.0",
