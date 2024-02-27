@@ -50,7 +50,6 @@
     "@walletconnect/web3wallet": "^1.9.2",
     "axios": "^1.6.2",
     "buffer": "^4.9.2",
-    "deprecated-react-native-prop-types": "^2.3.0",
     "ethers": "5.7.2",
     "eventemitter3": "^5.0.0",
     "events": "^1.1.1",
