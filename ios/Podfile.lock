@@ -1149,7 +1149,7 @@ PODS:
     - React-Core
   - RNCClipboard (1.13.2):
     - React-Core
-  - RNDeviceInfo (10.3.0):
+  - RNDeviceInfo (10.13.1):
     - React-Core
   - RNGestureHandler (2.15.0):
     - glog
@@ -1526,7 +1526,7 @@ SPEC CHECKSUMS:
   RNBootSplash: eff8239c4f795ce42a0604873aef3733aac0dedd
   RNCAsyncStorage: 4b98ac3c64efa4e35c1197cb0c5ca5e9f5d4c666
   RNCClipboard: 60fed4b71560d7bfe40e9d35dea9762b024da86d
-  RNDeviceInfo: 4701f0bf2a06b34654745053db0ce4cb0c53ada7
+  RNDeviceInfo: 4f9c7cfd6b9db1b05eb919620a001cf35b536423
   RNGestureHandler: deda62b8339496ba721a45e0f3e2d7a319932cee
   RNKeychain: f1b48665a4646f61191eb048c4c05c58d9a7596f
   RNQrGenerator: 90461ba3ca88c1d38ef73da50fade35d9648215d
