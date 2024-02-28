@@ -1,6 +1,7 @@
 import Clipboard from '@react-native-community/clipboard'
 import React from 'react'
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 
 import { sharedColors, sharedStyles } from 'src/shared/constants'
 import { castStyle } from 'shared/utils'
@@ -19,6 +20,7 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
   message,
 }) => {
   const { handleReload, globalError } = useGlobalErrorContext()
+  const { t } = useTranslation()
   const messageToShow: string = message || globalError || ''
 
   const onCopyError = React.useCallback(() => {
@@ -36,10 +38,10 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
       <View style={styles.secondView}>
         <View style={styles.textView}>
           <Typography type={'h1'} style={styles.text}>
-            {'Oops... Something went wrong!'}
+            {t('global_error_title')}
           </Typography>
           <Typography type={'body1'} style={styles.text}>
-            {'We are working hard to fix it.'}
+            {t('global_error_subtitle')}
           </Typography>
         </View>
         {messageToShow !== '' && (
@@ -48,7 +50,7 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
               type={'body2'}
               color={sharedColors.white}
               style={styles.errorDetailsText}>
-              {'error details'}
+              {t('global_error_details_title')}
             </Typography>
 
             <TouchableOpacity
@@ -58,7 +60,7 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
                 type={'body3'}
                 color={sharedColors.white}
                 style={sharedStyles.flex}>
-                {messageToShow}
+                {t(messageToShow)}
               </Typography>
               <ContentCopyMaterialIcon color={sharedColors.white} size={25} />
             </TouchableOpacity>

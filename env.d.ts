@@ -7,6 +7,7 @@ declare module 'react-native-config' {
     RIF_WALLET_KEY: string
     WALLETCONNECT2_PROJECT_ID: string
     USE_RELAY: string
+    TRACE_ID: string
   }
 
   export const Config: NativeConfig

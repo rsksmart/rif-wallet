@@ -398,6 +398,10 @@ const resources = {
       wallet_backup_title: 'Warning!',
       wallet_backup_message:
         'We have disabled the ability to take a picture of the mnemonic because it is important that you keep it private. Please write it down instead',
+      global_error_title: 'Oops... Something went wrong!',
+      global_error_subtitle: 'We are working hard to fix it.',
+      global_error_details_title: 'error details',
+      global_trace_id_error: 'Trace Id is not valid',
     },
   },
   es: {

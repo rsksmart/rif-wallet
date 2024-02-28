@@ -11,6 +11,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { SocketsEvents, socketsEvents } from 'src/subscriptions/rifSockets'
 import { useWalletStateSetters } from 'shared/wallet'
+import { useSetGlobalError } from 'components/GlobalErrorHandler'
 
 import { useAppState } from './useAppState'
 import { useIsOffline } from './useIsOffline'
@@ -21,6 +22,7 @@ let timer: TimeoutId
 export const useStateSubscription = () => {
   const { setWallet, setWalletIsDeployed, initializeWallet } =
     useWalletStateSetters()
+  const setGlobalError = useSetGlobalError()
 
   const dispatch = useAppDispatch()
   const isOffline = useIsOffline()
@@ -61,7 +63,7 @@ export const useStateSubscription = () => {
       previousAppState.current === 'background' &&
       active
     ) {
-      dispatch(unlockApp({ isOffline, initializeWallet }))
+      dispatch(unlockApp({ isOffline, initializeWallet, setGlobalError }))
     }
     return () => {
       socketsEvents.emit(SocketsEvents.DISCONNECT)
@@ -77,6 +79,7 @@ export const useStateSubscription = () => {
     initializeWallet,
     setWallet,
     setWalletIsDeployed,
+    setGlobalError,
   ])
 
   useEffect(() => {

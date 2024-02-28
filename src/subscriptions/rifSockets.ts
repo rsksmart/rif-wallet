@@ -4,6 +4,7 @@ import {
   RifWalletServicesSocket,
 } from '@rsksmart/rif-wallet-services'
 import DeviceInfo from 'react-native-device-info'
+import Config from 'react-native-config'
 
 import { ChainID } from 'lib/eoaWallet'
 
@@ -95,6 +96,7 @@ export const rifSockets = ({
         chainId,
         {
           'User-Agent': DeviceInfo.getUserAgentSync(),
+          'x-trace-id': Config.TRACE_ID,
         },
         blockNumber,
       )
