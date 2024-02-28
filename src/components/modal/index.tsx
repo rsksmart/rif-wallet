@@ -157,9 +157,7 @@ export const ConfirmationModal = ({
 const modalStyles = StyleSheet.create({
   container: castStyle.view({
     borderRadius: 25,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderStyle: 'solid',
+    borderWidth: 0,
     padding: 15,
   }),
   header: castStyle.view({

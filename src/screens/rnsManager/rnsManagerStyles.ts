@@ -6,19 +6,13 @@ import { colors } from 'src/styles'
 
 export const rnsManagerStyles = StyleSheet.create({
   scrollContainer: castStyle.view({
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
   }),
   container: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.black,
+    backgroundColor: 'transparent',
     padding: 20,
     paddingTop: 50,
-  }),
-  title: castStyle.text({
-    color: sharedColors.subTitle,
-  }),
-  subtitle: castStyle.text({
-    color: sharedColors.subTitle,
   }),
   profileHeader: castStyle.view({
     flexDirection: 'row',
