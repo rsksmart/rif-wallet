@@ -11,6 +11,7 @@ import {
 import { RelayWallet } from 'lib/relayWallet'
 import { EOAWallet } from 'lib/eoaWallet'
 import { RnsProcessor } from 'lib/rns'
+import { MagicWallet } from 'lib/magicWallet'
 
 import { AppDispatch } from 'store/store'
 import { handleTransactionStatusChange } from 'store/shared/utils'
@@ -20,7 +21,7 @@ import { getCurrentChainId } from 'storage/ChainStorage'
 
 // preparing for having different types of Wallets
 // like EOA Wallet, MAGIC etc
-export type Wallet = RelayWallet | EOAWallet
+export type Wallet = RelayWallet | EOAWallet | MagicWallet
 
 interface WalletIsDeployed {
   loading: boolean

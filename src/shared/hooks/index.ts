@@ -4,6 +4,7 @@ import { RelayWallet } from 'lib/relayWallet'
 
 import { Wallet } from '../wallet'
 
+//@TODO: add check for MagicRelay
 export const addressToUse = (wallet: Wallet) =>
   !(wallet instanceof RelayWallet) ? wallet.address : wallet.smartWalletAddress
 

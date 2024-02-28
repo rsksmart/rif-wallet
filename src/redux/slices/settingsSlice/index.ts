@@ -7,6 +7,7 @@ import { providers } from 'ethers'
 import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 
 import { ChainID, WalletState } from 'lib/eoaWallet'
+import { MagicWallet } from 'lib/magicWallet'
 
 import { deleteDomains } from 'storage/DomainsStore'
 import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
@@ -37,13 +38,14 @@ import {
 } from 'store/slices/persistentDataSlice'
 import { Wallet } from 'shared/wallet'
 import { addressToUse } from 'shared/hooks'
-import { createAppWallet, loadAppWallet } from 'src/shared/utils'
+import { createAppWallet, loadAppWallet } from 'shared/utils'
 import { MMKVStorage } from 'storage/MMKVStorage'
 
 import {
   Bitcoin,
   CreateFirstWalletAction,
   OnRequestAction,
+  ResetAppPayload,
   SettingsSlice,
   UnlockAppAction,
 } from './types'
@@ -55,7 +57,7 @@ export const deleteCache = () => {
   cache.deleteAll()
 }
 
-export const getRifRelayConfig = (chainId: 30 | 31): RifRelayConfig => {
+export const getRifRelayConfig = (chainId: ChainID): RifRelayConfig => {
   return {
     smartWalletFactoryAddress: getWalletSetting(
       SETTINGS.SMART_WALLET_FACTORY_ADDRESS,
@@ -105,7 +107,7 @@ const sslPinning = async (chainId: ChainID) => {
   })
 }
 
-const initializeApp = async (
+export const initializeApp = async (
   mnemonic: string,
   wallet: Wallet,
   chainId: ChainID,
@@ -136,16 +138,18 @@ const initializeApp = async (
 
   socketsEvents.emit(SocketsEvents.CONNECT)
 
-  // initialize bitcoin
-  const bitcoin = initializeBitcoin(
-    mnemonic,
-    dispatch,
-    fetcherInstance,
-    chainId,
-  )
+  if (mnemonic) {
+    // initialize bitcoin
+    const bitcoin = initializeBitcoin(
+      mnemonic,
+      dispatch,
+      fetcherInstance,
+      chainId,
+    )
 
-  // set bitcoin in redux
-  dispatch(setBitcoinState(bitcoin))
+    // set bitcoin in redux
+    dispatch(setBitcoinState(bitcoin))
+  }
 }
 
 export const createWallet = createAsyncThunk<
@@ -326,25 +330,32 @@ export const unlockApp = createAsyncThunk<
   }
 })
 
-export const resetApp = createAsyncThunk(
-  'settings/resetApp',
-  async (_, thunkAPI) => {
-    try {
-      thunkAPI.dispatch(deleteContactsFromRedux())
-      thunkAPI.dispatch(resetKeysAndPin())
-      thunkAPI.dispatch(resetSocketState())
-      thunkAPI.dispatch(deleteProfile())
-      thunkAPI.dispatch(setPreviouslyUnlocked(false))
-      thunkAPI.dispatch(setPinState(null))
-      thunkAPI.dispatch(setKeysExist(false))
-      resetMainStorage()
-      resetReduxStorage()
-      return 'deleted'
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err)
+export const resetApp = createAsyncThunk<
+  string,
+  ResetAppPayload,
+  AsyncThunkWithTypes
+>('settings/resetApp', async (payload, thunkAPI) => {
+  try {
+    thunkAPI.dispatch(deleteContactsFromRedux())
+    thunkAPI.dispatch(resetKeysAndPin())
+    thunkAPI.dispatch(resetSocketState())
+    thunkAPI.dispatch(deleteProfile())
+    thunkAPI.dispatch(setPreviouslyUnlocked(false))
+    thunkAPI.dispatch(setPinState(null))
+    thunkAPI.dispatch(setKeysExist(false))
+    resetMainStorage()
+    resetReduxStorage()
+
+    console.log('BEFORE LOGOUT')
+    if (payload && payload.wallet instanceof MagicWallet) {
+      await payload.wallet.logout()
     }
-  },
-)
+
+    return 'deleted'
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err)
+  }
+})
 
 const initialState: SettingsSlice = {
   isSetup: false,
@@ -358,18 +369,13 @@ const initialState: SettingsSlice = {
   fullscreen: false,
   hideBalance: false,
   bitcoin: null,
-  chainId: 31,
+  chainId: getCurrentChainId(),
   usedBitcoinAddresses: {},
 }
 
-const createInitialState = () => ({
-  ...initialState,
-  chainId: getCurrentChainId(),
-})
-
 const settingsSlice = createSlice({
   name: 'settings',
-  initialState: createInitialState,
+  initialState,
   reducers: {
     setIsSetup: (state, { payload }: PayloadAction<boolean>) => {
       state.isSetup = payload
@@ -400,7 +406,7 @@ const settingsSlice = createSlice({
       deleteKeys()
       deleteDomains()
       deleteCache()
-      return createInitialState()
+      return initialState
     },
     setFullscreen: (state, { payload }: PayloadAction<boolean>) => {
       state.fullscreen = payload

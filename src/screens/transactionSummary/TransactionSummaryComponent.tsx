@@ -20,9 +20,9 @@ import { DollarIcon } from 'components/icons/DollarIcon'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { getContactByAddress } from 'store/slices/contactsSlice'
 import { getWalletSetting } from 'core/config'
-import { SETTINGS } from 'core/types'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { TransactionStatus } from 'store/shared/types'
+import { SETTINGS } from 'core/types'
 
 import { TokenImage } from '../home/TokenImage'
 import {
@@ -97,12 +97,15 @@ export const TransactionSummaryComponent = ({
   }, [amIReceiver, t, status])
 
   const openTransactionHash = () => {
-    const setting = isBitcoinAddressValid(to)
-      ? SETTINGS.BTC_EXPLORER_ADDRESS_URL
-      : SETTINGS.EXPLORER_ADDRESS_URL
+    let explorerUrl = ''
 
-    const explorerUrl = getWalletSetting(setting, chainId)
-    Linking.openURL(`${explorerUrl}/${hashId}`)
+    if (isBitcoinAddressValid(transaction.to)) {
+      explorerUrl = getWalletSetting(SETTINGS.BTC_EXPLORER_ADDRESS_URL, chainId)
+    } else {
+      explorerUrl = getWalletSetting(SETTINGS.EXPLORER_ADDRESS_URL, chainId)
+    }
+
+    Linking.openURL(`${explorerUrl}/tx/${hashId}`)
   }
 
   return (

@@ -22,6 +22,7 @@ import { settingsSliceReducer } from './slices/settingsSlice'
 import { transactionsReducer } from './slices/transactionsSlice'
 import { usdPriceReducer, UsdPricesState } from './slices/usdPricesSlice'
 import { SettingsSlice } from './slices/settingsSlice/types'
+import { seedlessSliceReducer } from './slices/seedlessSlice'
 
 const migrations = {
   // It's on purpose due to state type from redux-persist is PersistedStated.
@@ -106,6 +107,7 @@ export const createRootReducer = () => {
       persistentDataPersistConfig,
       persistentDataReducer,
     ),
+    seedless: seedlessSliceReducer,
   })
 
   return persistReducer(rootPersistConfig, reducers)
