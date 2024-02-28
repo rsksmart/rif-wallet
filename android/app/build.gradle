@@ -215,7 +215,7 @@ android {
             Properties properties = new Properties()
             def localPropertiesFile = project.rootProject.file('local.properties')
 
-            if (localPropertiesFile.exists()) {
+            if (localPropertiesFile.exists() & localPropertiesFile.every {storeFile}) {
                 properties.load(localPropertiesFile.newDataInputStream())
                 storeFile file(properties.getProperty('storeFile'))
                 keyAlias properties.getProperty('keyAlias')
