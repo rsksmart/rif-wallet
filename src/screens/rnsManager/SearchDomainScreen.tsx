@@ -250,9 +250,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
       // it exists for ios but shows error https://reactnative.dev/docs/scrollview#automaticallyadjustkeyboardinsets-ios
       automaticallyAdjustKeyboardInsets>
       <View style={rnsManagerStyles.container}>
-        <Typography
-          type="h2"
-          style={[rnsManagerStyles.subtitle, rnsManagerStyles.marginBottom]}>
+        <Typography type="h2" style={rnsManagerStyles.marginBottom}>
           {t('request_username_title')}
         </Typography>
         <AvatarIconBox text={(domain || '') + '.rsk'} />

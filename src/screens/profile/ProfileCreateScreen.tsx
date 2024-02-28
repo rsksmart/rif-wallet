@@ -190,7 +190,7 @@ export const ProfileCreateScreen = ({
         </View>
       </View>
 
-      <BarButtonGroupContainer backgroundColor={sharedColors.primaryDark}>
+      <BarButtonGroupContainer>
         <BarButtonGroupIcon
           iconName="qr-code"
           IconComponent={MaterialIcon}

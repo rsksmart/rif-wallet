@@ -136,7 +136,7 @@ export const ContactDetails = ({
         </AppTouchable>
       ),
       headerStyle: {
-        backgroundColor: sharedColors.inputActive,
+        backgroundColor: sharedColors.background.accent,
       },
       headerRightContainerStyle: {
         paddingTop: 0,
@@ -197,7 +197,8 @@ export const ContactDetails = ({
             </Typography>
           </View>
         </View>
-        <BarButtonGroupContainer backgroundColor={sharedColors.inputActive}>
+        <BarButtonGroupContainer
+          backgroundColor={sharedColors.background.accent}>
           <BarButtonGroupIcon
             onPress={onSendToContact}
             iconName={'north-east'}

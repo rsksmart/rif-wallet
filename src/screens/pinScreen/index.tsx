@@ -44,19 +44,19 @@ const defaultPin = [null, null, null, null]
 
 // pin exist
 const pinExistNoSteps = [
-  sharedColors.inputActive,
-  sharedColors.inputActive,
-  sharedColors.inputActive,
+  sharedColors.background.accent,
+  sharedColors.background.accent,
+  sharedColors.background.accent,
 ]
 const pinExistFirstStep = [
   sharedColors.successLight,
-  sharedColors.inputActive,
-  sharedColors.inputActive,
+  sharedColors.background.accent,
+  sharedColors.background.accent,
 ]
 const pinExistSecondStep = [
   sharedColors.successLight,
   sharedColors.successLight,
-  sharedColors.inputActive,
+  sharedColors.background.accent,
 ]
 const pinExistComplete = [
   sharedColors.successLight,
@@ -65,10 +65,13 @@ const pinExistComplete = [
 ]
 
 // no pin exist
-const noPinExistNoSteps = [sharedColors.inputActive, sharedColors.inputActive]
+const noPinExistNoSteps = [
+  sharedColors.background.accent,
+  sharedColors.background.accent,
+]
 const noPinExistFirstStep = [
   sharedColors.successLight,
-  sharedColors.inputActive,
+  sharedColors.background.accent,
 ]
 const noPinExistComplete = [
   sharedColors.successLight,

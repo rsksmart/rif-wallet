@@ -60,7 +60,7 @@ export const DappItem = ({
 const styles = StyleSheet.create({
   container: castStyle.view({
     flexDirection: 'row',
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     borderRadius: 10,
     marginBottom: 12,
     alignItems: 'center',

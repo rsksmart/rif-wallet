@@ -24,7 +24,7 @@ export const InfoBox = ({
   description,
   buttonText,
   onPress,
-  backgroundColor = sharedColors.inputInactive,
+  backgroundColor = sharedColors.background.secondary,
   avatarBackgroundColor = sharedColors.qrColor,
 }: InfoBoxProps) => {
   const [shouldHide, setShouldHide] = useState(false)

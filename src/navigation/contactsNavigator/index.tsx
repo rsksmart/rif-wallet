@@ -42,7 +42,7 @@ export const ContactsNavigation = ({
         options={screenOptionsWithHeader(
           top,
           undefined,
-          sharedColors.inputInactive,
+          sharedColors.background.secondary,
         )}
       />
     </Stack.Navigator>

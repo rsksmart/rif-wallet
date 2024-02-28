@@ -186,6 +186,6 @@ const styles = StyleSheet.create({
     paddingTop: 2,
   }),
   disabledButton: castStyle.view({
-    backgroundColor: sharedColors.inputActive,
+    backgroundColor: sharedColors.background.accent,
   }),
 })

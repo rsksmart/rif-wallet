@@ -138,7 +138,9 @@ export const TransactionSummaryComponent = ({
             style={[
               styles.summaryAlignment,
               styles.statusContainer,
-              status ? { backgroundColor: sharedColors.inputInactive } : null,
+              status
+                ? { backgroundColor: sharedColors.background.secondary }
+                : null,
             ]}>
             <Typography type={'h4'}>
               {status ? t('transaction_summary_status') : ''}

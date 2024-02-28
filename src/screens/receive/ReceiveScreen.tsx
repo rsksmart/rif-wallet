@@ -158,7 +158,7 @@ export const ReceiveScreen = ({
 
               const color = isSelected
                 ? getTokenColor(asset.symbol)
-                : sharedColors.inputInactive
+                : sharedColors.background.secondary
 
               return (
                 <PortfolioCard

@@ -23,7 +23,7 @@ export const rnsManagerStyles = StyleSheet.create({
   }),
   profileImageContainer: castStyle.view({
     alignItems: 'center',
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     borderRadius: 10,
     paddingVertical: 20,
   }),
