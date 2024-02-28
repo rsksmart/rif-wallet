@@ -147,35 +147,35 @@ export const SettingsScreen = ({
       </AppTouchable>
       <View style={styles.bottomView}>
         <View style={styles.settingsItem}>
-          <Typography type={'h4'} color={sharedColors.labelLight}>
+          <Typography type={'h4'} color={sharedColors.text.label}>
             {t('settings_screen_version')} {version}-
             {Config.USE_RELAY ? 'relay' : 'eoa'}
           </Typography>
         </View>
 
         <View style={styles.settingsItem}>
-          <Typography type={'h4'} color={sharedColors.labelLight}>
+          <Typography type={'h4'} color={sharedColors.text.label}>
             {t('settings_screen_smart_wallet_factory')}
           </Typography>
-          <Typography type={'h5'} color={sharedColors.labelLight}>
+          <Typography type={'h5'} color={sharedColors.text.label}>
             {smartWalletFactoryAddress}
           </Typography>
         </View>
 
         <View style={styles.settingsItem}>
-          <Typography type={'h4'} color={sharedColors.labelLight}>
+          <Typography type={'h4'} color={sharedColors.text.label}>
             {t('settings_screen_rpc_url')}
           </Typography>
-          <Typography type={'h5'} color={sharedColors.labelLight}>
+          <Typography type={'h5'} color={sharedColors.text.label}>
             {rpcUrl}
           </Typography>
         </View>
 
         <View style={styles.settingsItem}>
-          <Typography type={'h4'} color={sharedColors.labelLight}>
+          <Typography type={'h4'} color={sharedColors.text.label}>
             {t('settings_screen_backend_url')}
           </Typography>
-          <Typography type={'h5'} color={sharedColors.labelLight}>
+          <Typography type={'h5'} color={sharedColors.text.label}>
             {walletServiceUrl}
           </Typography>
         </View>
@@ -187,7 +187,7 @@ export const SettingsScreen = ({
 const styles = StyleSheet.create({
   container: castStyle.view({
     height: '100%',
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
     paddingHorizontal: 24,
   }),
   mainView: castStyle.view({

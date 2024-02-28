@@ -342,17 +342,8 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
             onPress={handleSubmit(onSubmit)}
             accessibilityLabel={t('request_username_button')}
             title={t('request_username_button')}
-            color={
-              !isRequestButtonDisabled
-                ? sharedColors.white
-                : sharedColors.borderColor
-            }
-            textColor={
-              !isRequestButtonDisabled
-                ? sharedColors.black
-                : sharedColors.labelLight
-            }
-            disabledStyle={rnsManagerStyles.disabledButton}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
             loading={isCalculatingPrice}
           />
         ) : (
@@ -362,17 +353,8 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
             onPress={handleSetProfile}
             accessibilityLabel={t('save_username_button')}
             title={t('save_username_button')}
-            color={
-              !isSaveButtonDisabled
-                ? sharedColors.white
-                : sharedColors.borderColor
-            }
-            textColor={
-              !isSaveButtonDisabled
-                ? sharedColors.black
-                : sharedColors.labelLight
-            }
-            disabledStyle={rnsManagerStyles.disabledButton}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
           />
         )}
       </View>

@@ -79,7 +79,7 @@ export const HomeScreen = ({
   const selectedColor = getTokenColor(selected?.symbol || '')
   const backgroundColor = selectedAddress
     ? selectedColor
-    : sharedColors.background.accent
+    : sharedColors.background.highlight
 
   /*const rampConfig = useMemo(
     () => ({

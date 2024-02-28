@@ -86,13 +86,13 @@ export const MnemonicComponent = ({
                 title={pillText}
                 textColor={
                   isMnemonicVisible
-                    ? sharedColors.white
-                    : sharedColors.inputActive
+                    ? sharedColors.text.primary
+                    : sharedColors.background.accent
                 }
                 color={
                   isMnemonicVisible
                     ? sharedColors.primary
-                    : sharedColors.inputActive
+                    : sharedColors.background.accent
                 }
                 widthVariety={AppButtonWidthVarietyEnum.INLINE}
                 accessibilityLabel={`${index}.${word}`}

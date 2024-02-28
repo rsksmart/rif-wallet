@@ -45,8 +45,8 @@ export const CreateKeysScreen = ({
           }
           accessibilityLabel={'newWallet'}
           title={t('initial_screen_button_create')}
-          color={sharedColors.white}
-          textColor={sharedColors.text.secondary}
+          color={sharedColors.button.primaryBackground}
+          textColor={sharedColors.button.primaryText}
         />
 
         <AppButton

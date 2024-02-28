@@ -215,7 +215,7 @@ export const AccountBox = ({
         title={t('wallet_backup_delete_button')}
         onPress={() => setIsDeleteConfirmationVisible(true)}
         backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
-        color={sharedColors.white}
+        color={sharedColors.button.primaryBackground}
         style={styles.deleteButton}
       />
       <DeleteWalletModal

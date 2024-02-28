@@ -55,16 +55,16 @@ export const SignRequestHandlerContainer = ({
           accessibilityLabel="Confirm"
           title={t('transaction_summary_title_confirm_button_title')}
           onPress={onConfirmTap}
-          color={sharedColors.white}
-          textColor={sharedColors.black}
+          color={sharedColors.button.primaryBackground}
+          textColor={sharedColors.button.primaryText}
           style={styles.buttonsStyle}
         />
         <AppButton
           accessibilityLabel="Cancel"
           title={t('transaction_summary_title_cancel_button_title')}
           onPress={onCancelTap}
-          color={sharedColors.white}
-          textColor={sharedColors.black}
+          color={sharedColors.button.primaryBackground}
+          textColor={sharedColors.button.primaryText}
         />
       </View>
     </View>

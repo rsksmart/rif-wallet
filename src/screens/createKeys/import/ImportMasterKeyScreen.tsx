@@ -279,8 +279,8 @@ export const ImportMasterKeyScreen = (
           <AppButton
             accessibilityLabel={'OK'}
             title={t('ok')}
-            color={sharedColors.white}
-            textColor={sharedColors.text.secondary}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
             textType={'body2'}
             textStyle={sharedStyles.fontBoldText}
             onPress={handleImportMnemonic}

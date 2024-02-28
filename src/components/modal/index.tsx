@@ -129,10 +129,8 @@ export const ConfirmationModal = ({
           title={okText}
           onPress={onOk}
           accessibilityLabel={'okText'}
-          color={buttons && buttons[0] ? buttons[0].color : sharedColors.white}
-          textColor={
-            buttons && buttons[0] ? buttons[0].textColor : sharedColors.black
-          }
+          color={buttons?.[0]?.color || sharedColors.button.primaryBackground}
+          textColor={buttons?.[0]?.textColor || sharedColors.button.primaryText}
         />
         {cancelText && (
           <AppButton
@@ -142,10 +140,10 @@ export const ConfirmationModal = ({
             accessibilityLabel={'cancelText'}
             backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
             color={
-              buttons && buttons[1] ? buttons[1].color : sharedColors.white
+              buttons?.[1].color || sharedColors.button.secondaryBackground
             }
             textColor={
-              buttons && buttons[1] ? buttons[1].textColor : sharedColors.white
+              buttons?.[1].textColor || sharedColors.button.secondaryText
             }
           />
         )}

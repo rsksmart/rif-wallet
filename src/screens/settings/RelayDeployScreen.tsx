@@ -128,18 +128,21 @@ export const RelayDeployScreen = ({
     <ScrollView
       style={sharedStyles.screen}
       contentContainerStyle={sharedStyles.flexGrow}>
-      <Typography style={styles.title} type="h2" color={sharedColors.white}>
+      <Typography
+        style={styles.title}
+        type="h2"
+        color={sharedColors.text.primary}>
         {t('wallet_deploy_title')}
       </Typography>
       <Typography
         type="body3"
-        color={sharedColors.labelLight}
+        color={sharedColors.text.label}
         style={styles.description}>
         {t('wallet_deploy_desc1')}
       </Typography>
       <Typography
         type="body3"
-        color={sharedColors.labelLight}
+        color={sharedColors.text.label}
         style={styles.description}>
         {t('wallet_deploy_desc2')}
       </Typography>
@@ -158,7 +161,7 @@ export const RelayDeployScreen = ({
           <Typography
             style={styles.deployingWalletText}
             type="body1"
-            color={sharedColors.labelLight}>
+            color={sharedColors.text.label}>
             {t('wallet_deploy_wallet_deploying')}
           </Typography>
         </View>
@@ -176,7 +179,8 @@ export const RelayDeployScreen = ({
             onPress={deploy}
             style={styles.button}
             accessibilityLabel="deploy"
-            textColor={sharedColors.black}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
           />
         </>
       )}
@@ -215,6 +219,5 @@ const styles = StyleSheet.create({
   button: castStyle.view({
     position: 'absolute',
     bottom: 14,
-    backgroundColor: sharedColors.white,
   }),
 })

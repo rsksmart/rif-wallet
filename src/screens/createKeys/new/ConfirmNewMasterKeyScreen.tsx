@@ -197,8 +197,8 @@ export const ConfirmNewMasterKeyScreen = ({ route }: ConfirmNewMasterKey) => {
         style={styles.button}
         title={t('confirm_key_button')}
         onPress={handleSubmit(onSubmitEditing)}
-        color={sharedColors.white}
-        textColor={sharedColors.black}
+        color={sharedColors.button.primaryBackground}
+        textColor={sharedColors.button.primaryText}
       />
       {!formIsValid || hasFormSuccess ? (
         <View style={StyleSheet.absoluteFill}>

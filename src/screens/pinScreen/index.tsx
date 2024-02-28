@@ -434,13 +434,11 @@ export const PinScreen = ({ navigation, route }: Props) => {
             </View>
           )}
           <AppButton
-            style={[
-              sharedStyles.appButtonBottom,
-              { backgroundColor: sharedColors.black },
-            ]}
+            style={sharedStyles.appButtonBottom}
             onPress={focusInput}
             title={t('pin_settings_open_keyboard_btn')}
-            textColor={sharedColors.text.primary}
+            color={sharedColors.button.secondaryBackground}
+            textColor={sharedColors.button.secondaryText}
             backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
             accessibilityLabel={TestID.OpenKeyboardButton}
           />

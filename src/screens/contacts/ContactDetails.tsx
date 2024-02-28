@@ -117,7 +117,7 @@ export const ContactDetails = ({
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(sharedColors.inputInactive))
+      dispatch(changeTopColor(sharedColors.background.secondary))
     }
   }, [dispatch, isFocused])
 
@@ -261,8 +261,8 @@ export const ContactDetails = ({
             proposed: false,
           })
         }
-        color={sharedColors.white}
-        textColor={sharedColors.black}
+        color={sharedColors.button.primaryBackground}
+        textColor={sharedColors.button.primaryText}
       />
     </View>
   )
@@ -271,13 +271,13 @@ export const ContactDetails = ({
 const styles = StyleSheet.create({
   screen: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
   }),
   scrollviewContainer: castStyle.view({
     paddingBottom: 144,
   }),
   contactDetailsView: castStyle.view({
-    backgroundColor: sharedColors.inputActive,
+    backgroundColor: sharedColors.background.accent,
     justifyContent: 'center',
     alignItems: 'center',
     height: 167,

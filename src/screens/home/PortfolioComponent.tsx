@@ -55,7 +55,7 @@ export const PortfolioComponent = ({
             onPress={onTotalTap}
             color={
               isTotalCardSelected
-                ? sharedColors.background.accent
+                ? sharedColors.background.highlight
                 : sharedColors.background.secondary
             }
             primaryText={t('TOTAL')}

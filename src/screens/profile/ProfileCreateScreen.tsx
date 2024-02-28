@@ -268,8 +268,8 @@ export const ProfileCreateScreen = ({
             style={rnsManagerStyles.button}
             title={t('profile_register_your_username_button_text')}
             accessibilityLabel={'registerYourUserName'}
-            color={sharedColors.white}
-            textColor={sharedColors.black}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
             disabled={isPurchasingProfile ? false : !!username}
             onPress={() => {
               navigation.navigate(profileStackRouteNames.SearchDomain)

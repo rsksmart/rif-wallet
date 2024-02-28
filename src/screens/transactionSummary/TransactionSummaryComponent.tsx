@@ -115,7 +115,7 @@ export const TransactionSummaryComponent = ({
         <Typography
           style={styles.title}
           type={'h4'}
-          color={sharedColors.inputLabelColor}>
+          color={sharedColors.text.label}>
           {title}
         </Typography>
         <TokenBalance
@@ -128,7 +128,7 @@ export const TransactionSummaryComponent = ({
           <Typography
             style={styles.title}
             type={'body1'}
-            color={sharedColors.inputLabelColor}>
+            color={sharedColors.text.label}>
             {t('transaction_summary_function_type')}: {functionName}
           </Typography>
         )}
@@ -311,8 +311,8 @@ export const TransactionSummaryComponent = ({
           <AppButton
             onPress={goBack}
             title={t('transaction_summary_default_button_text')}
-            color={sharedColors.white}
-            textColor={sharedColors.black}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
             accessibilityLabel="Close"
           />
         )}
@@ -324,7 +324,7 @@ export const TransactionSummaryComponent = ({
 const styles = StyleSheet.create({
   screen: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
     paddingHorizontal: 22,
   }),
   contentPadding: castStyle.view({ paddingBottom: 114 }),

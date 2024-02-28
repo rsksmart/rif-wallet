@@ -75,8 +75,8 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
         <AppButton
           title={t('new_master_key_button_title')}
           disabled={!isMnemonicVisible}
-          color={sharedColors.white}
-          textColor={sharedColors.text.secondary}
+          color={sharedColors.button.primaryBackground}
+          textColor={sharedColors.button.primaryText}
           textType={'h4'}
           onPress={() =>
             navigation.navigate(createKeysRouteNames.ConfirmNewMasterKey, {
@@ -87,7 +87,7 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
         <AppButton
           style={styles.secureLaterBtn}
           title={t('new_master_key_secure_later_button')}
-          textColor={sharedColors.text.primary}
+          textColor={sharedColors.button.secondaryText}
           textType={'h4'}
           backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
           onPress={onSecureLater}

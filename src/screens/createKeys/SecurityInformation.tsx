@@ -90,8 +90,8 @@ export const SecurityInformation = ({
           style={styles.button}
           title={t('security_info_btn')}
           disabled={!isCheckboxActive}
-          color={sharedColors.white}
-          textColor={sharedColors.text.secondary}
+          color={sharedColors.button.primaryBackground}
+          textColor={sharedColors.button.primaryText}
           accessibilityLabel={TestID.ContinueButton}
         />
       </View>

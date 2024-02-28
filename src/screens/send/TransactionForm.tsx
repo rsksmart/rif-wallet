@@ -511,8 +511,8 @@ export const TransactionForm = ({
             amount === 0 ||
             hasEnoughBalance
           }
-          color={sharedColors.white}
-          textColor={sharedColors.text.secondary}
+          color={sharedColors.button.primaryBackground}
+          textColor={sharedColors.button.primaryText}
         />
         <AppButton
           style={styles.buttonCancel}

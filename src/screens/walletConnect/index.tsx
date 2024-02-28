@@ -213,8 +213,8 @@ export const WalletConnectScreen = ({ route }: Props) => {
           <AppButton
             title={t('dapps_wc_connect')}
             onPress={onUriSubmitted}
-            textColor={sharedColors.black}
-            color={sharedColors.white}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
             style={styles.subtitle}
             disabled={wcUri.length === 0}
           />

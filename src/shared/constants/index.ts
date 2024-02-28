@@ -41,8 +41,8 @@ export const sharedColors = {
   background: {
     primary: '#000',
     secondary: '#252525',
-    accent: '#575757',
-    highlight: '#B8B8B8',
+    accent: '#3A3A3A',
+    highlight: '#575757',
   },
 
   input: {
@@ -55,6 +55,13 @@ export const sharedColors = {
     secondary: '#000',
     label: '#B8B8B8',
     link: '#4152E6',
+  },
+
+  button: {
+    primaryBackground: '#fff',
+    primaryText: '#000',
+    secondaryBackground: '#252525',
+    secondaryText: '#fff',
   },
 
   stepper: {
@@ -131,7 +138,6 @@ export const sharedStyles = StyleSheet.create({
     fontWeight: 'bold',
   }),
   appButtonBottom: castStyle.view({
-    backgroundColor: sharedColors.white,
     position: 'absolute',
     bottom: 30,
     left: 24,
