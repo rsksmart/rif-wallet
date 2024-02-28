@@ -57,7 +57,7 @@ export const LoginWithEmail = () => {
 
   const methods = useForm<FormValues>({
     defaultValues: {
-      email: 'alexivchenko9@gmail.com',
+      email: '',
     },
     resolver: yupResolver(schema),
   })
