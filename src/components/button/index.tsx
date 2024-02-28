@@ -105,7 +105,7 @@ export const AppButton = ({
   disabledStyle,
   accessibilityLabel = '',
   onPress,
-  color = sharedColors.inputInactive,
+  color = sharedColors.background.secondary,
   textColor = sharedColors.text.primary,
   textType = 'button1',
   backgroundVariety = AppButtonBackgroundVarietyEnum.DEFAULT,

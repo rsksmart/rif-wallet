@@ -410,7 +410,6 @@ export const TransactionForm = ({
             style={styles.marginTop10}
             firstValue={firstBalance}
             secondValue={secondBalance}
-            color={sharedColors.black}
             error={hasEnoughBalance ? t('transaction_form_error_balance') : ''}
             onSwap={onSwapBalance}
             editable
@@ -440,7 +439,7 @@ export const TransactionForm = ({
               <Icon
                 name={showTxSelector ? 'chevron-up' : 'chevron-down'}
                 size={20}
-                color={sharedColors.white}
+                color={sharedColors.text.primary}
               />
             </>
           </AppTouchable>
@@ -513,7 +512,7 @@ export const TransactionForm = ({
             hasEnoughBalance
           }
           color={sharedColors.white}
-          textColor={sharedColors.black}
+          textColor={sharedColors.text.secondary}
         />
         <AppButton
           style={styles.buttonCancel}
@@ -533,7 +532,6 @@ const styles = StyleSheet.create({
   }),
   buttonCancel: castStyle.view({
     marginTop: 10,
-    backgroundColor: sharedColors.black,
   }),
   assetToggleRow: castStyle.view({
     flexDirection: 'row',
