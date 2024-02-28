@@ -9,18 +9,21 @@ export const OfflineScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Typography type="h3" color={sharedColors.white} style={styles.text}>
+        <Typography
+          type="h3"
+          color={sharedColors.text.primary}
+          style={styles.text}>
           {t('offline_screen_title')}
         </Typography>
         <Typography
           type="body2"
-          color={sharedColors.labelLight}
+          color={sharedColors.text.label}
           style={styles.text}>
           {t('offline_screen_description_1')}
         </Typography>
         <Typography
           type="body2"
-          color={sharedColors.labelLight}
+          color={sharedColors.text.label}
           style={styles.text}>
           {t('offline_screen_description_2')}
         </Typography>
@@ -32,7 +35,7 @@ export const OfflineScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
