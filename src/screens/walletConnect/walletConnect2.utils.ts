@@ -36,7 +36,7 @@ const WalletConnect2SdkErrorEnum: { [P in WalletConnect2SdkErrorString]: P } = {
 
 type StorageTypeFromCore = InstanceType<typeof Core>['storage']
 
-const MMKVWC = new MMKVStorage()
+const MMKVWC = new MMKVStorage('WC2')
 export const deleteWCSessions = MMKVWC.deleteAll
 
 class MMKVCoreStorage implements StorageTypeFromCore {
