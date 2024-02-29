@@ -36,12 +36,11 @@ const WalletConnect2SdkErrorEnum: { [P in WalletConnect2SdkErrorString]: P } = {
 
 type StorageTypeFromCore = InstanceType<typeof Core>['storage']
 
-class MMKVCoreStorage implements StorageTypeFromCore {
-  storage: MMKVStorage
+const MMKVWC = new MMKVStorage()
+export const deleteWCSessions = MMKVWC.deleteAll
 
-  constructor(storageKey: string) {
-    this.storage = new MMKVStorage(storageKey)
-  }
+class MMKVCoreStorage implements StorageTypeFromCore {
+  storage = MMKVWC
 
   getEntries<T = never>(): Promise<[string, T][]> {
     const keys = this.storage.getAllKeys()
@@ -71,11 +70,11 @@ class MMKVCoreStorage implements StorageTypeFromCore {
   }
 }
 
-export const createWeb3Wallet = async (storageKey: string) => {
+export const createWeb3Wallet = async () => {
   const projectId = getEnvSetting(SETTINGS.WALLETCONNECT2_PROJECT_ID) // this should change if we need to vary from testnet/mainnet by using getWalletSetting
   const core = new Core({
     projectId,
-    storage: new MMKVCoreStorage(storageKey),
+    storage: new MMKVCoreStorage(),
     // logger: 'info', // info on this: https://github.com/pinojs/pino/blob/master/docs/api.md#levels
   })
 

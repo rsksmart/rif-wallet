@@ -342,7 +342,7 @@ export const WalletConnect2Provider = ({
     async (_wallet: Wallet) => {
       try {
         console.log('onContextFirstLoad')
-        const newWeb3Wallet = await createWeb3Wallet(_wallet.address)
+        const newWeb3Wallet = await createWeb3Wallet()
         setWeb3Wallet(newWeb3Wallet)
         subscribeToEvents(newWeb3Wallet, _wallet)
         setSessions(Object.values(newWeb3Wallet.getActiveSessions()))
