@@ -8,6 +8,8 @@ import { getEnvSetting } from 'core/config'
 import { SETTINGS } from 'core/types'
 import { AcceptedValue, MMKVStorage } from 'storage/MMKVStorage'
 
+const WC2 = 'WC2'
+
 export type WalletConnect2SdkErrorString = Parameters<typeof getSdkError>[0]
 
 const WalletConnect2SdkErrorEnum: { [P in WalletConnect2SdkErrorString]: P } = {
@@ -36,11 +38,13 @@ const WalletConnect2SdkErrorEnum: { [P in WalletConnect2SdkErrorString]: P } = {
 
 type StorageTypeFromCore = InstanceType<typeof Core>['storage']
 
-const MMKVWC = new MMKVStorage('WC2')
-export const deleteWCSessions = MMKVWC.deleteAll
+export const deleteWCSessions = () => {
+  const storage = new MMKVStorage('WC2')
+  storage.deleteAll()
+}
 
 class MMKVCoreStorage implements StorageTypeFromCore {
-  storage = MMKVWC
+  storage = new MMKVStorage(WC2)
 
   getEntries<T = never>(): Promise<[string, T][]> {
     const keys = this.storage.getAllKeys()
