@@ -357,6 +357,7 @@ const resources = {
         'Please, wait for previous transaction to succeed or fail before making the next one',
       send_screen_sending_transaction: 'Sending transaction...',
       send_screen_return_to_home: 'Return to Home Screen',
+      send_transaction_popup: 'Invalid "to" address, rejecting transaction',
       security_info_header: 'Security Information',
       security_info_user_agreement: 'User agreement',
       security_info_disclaimer:
