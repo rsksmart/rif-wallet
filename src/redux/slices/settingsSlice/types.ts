@@ -48,14 +48,8 @@ export interface OnRequestAction {
   request: RequestWithBitcoin
 }
 
-export interface SetWalletIsDeployedAction {
-  address: string
-  value?: boolean
-}
-
-export interface SetNewWalletAction {
-  rifWallet: Wallet
-  isDeployed: boolean
+export interface ResetAppAction {
+  shouldResetUsersData: boolean
 }
 
 export enum ChainTypeEnum {

@@ -16,9 +16,24 @@ export const DeleteWalletModal = ({ isVisible, setVisible }: Props) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
-  const eraseWallet = useCallback(() => {
-    dispatch(resetApp())
-  }, [dispatch])
+  const createEraseUsersDataConfirmationConfig =
+    useCallback((): ConfirmationModalConfig => {
+      return {
+        color: sharedColors.dangerLight,
+        title: t('accounts_screen_users_data_reset_title'),
+        titleColor: sharedColors.black,
+        description: t('accounts_screen_users_data_reset_description'),
+        descriptionColor: sharedColors.black,
+        onOk: () => dispatch(resetApp({ shouldResetUsersData: true })),
+        okText: t('Confirm'),
+        onCancel: () => dispatch(resetApp({ shouldResetUsersData: false })),
+        cancelText: t('accounts_screen_users_data_reset_save_data'),
+        buttons: [
+          { color: sharedColors.black, textColor: sharedColors.white },
+          { color: sharedColors.black, textColor: sharedColors.black },
+        ],
+      }
+    }, [dispatch, t])
 
   const createDeleteDefinitiveConfirmationConfig = useCallback(
     (
@@ -40,7 +55,9 @@ export const DeleteWalletModal = ({ isVisible, setVisible }: Props) => {
           { color: sharedColors.black, textColor: sharedColors.white },
           { color: sharedColors.black, textColor: sharedColors.black },
         ],
-        onOk: eraseWallet,
+        onOk: () => {
+          setConfirmationModalConfig(createEraseUsersDataConfirmationConfig())
+        },
         onCancel: () => {
           console.log('ON CANCEL IN createDeleteDefinitiveConfirmationConfig')
           setVisible(false)
@@ -48,7 +65,7 @@ export const DeleteWalletModal = ({ isVisible, setVisible }: Props) => {
         },
       }
     },
-    [t, eraseWallet, setVisible],
+    [t, setVisible, createEraseUsersDataConfirmationConfig],
   )
 
   const createDeleteConfirmationConfig =

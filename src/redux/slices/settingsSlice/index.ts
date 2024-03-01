@@ -8,7 +8,6 @@ import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 
 import { ChainID, WalletState } from 'lib/eoaWallet'
 
-import { deleteDomains } from 'storage/DomainsStore'
 import { deleteContacts as deleteContactsFromRedux } from 'store/slices/contactsSlice'
 import { resetMainStorage } from 'storage/MainStorage'
 import { deleteKeys, getKeys, saveKeys } from 'storage/SecureStorage'
@@ -29,7 +28,11 @@ import {
   socketsEvents,
 } from 'src/subscriptions/rifSockets'
 import { getCurrentChainId } from 'storage/ChainStorage'
-import { resetReduxStorage } from 'storage/ReduxStorage'
+import {
+  removeAccounts,
+  removeBalances,
+  resetReduxStorage,
+} from 'storage/ReduxStorage'
 import {
   setIsFirstLaunch,
   setKeysExist,
@@ -44,11 +47,13 @@ import {
   Bitcoin,
   CreateFirstWalletAction,
   OnRequestAction,
+  ResetAppAction,
   SettingsSlice,
   UnlockAppAction,
 } from './types'
 import { UsdPricesState } from '../usdPricesSlice'
 import { BalanceState } from '../balancesSlice/types'
+import { resetAccounts } from '../accountsSlice'
 
 export const deleteCache = () => {
   const cache = new MMKVStorage('txs')
@@ -326,25 +331,35 @@ export const unlockApp = createAsyncThunk<
   }
 })
 
-export const resetApp = createAsyncThunk(
-  'settings/resetApp',
-  async (_, thunkAPI) => {
-    try {
+export const resetApp = createAsyncThunk<
+  'deleted',
+  ResetAppAction,
+  AsyncThunkWithTypes
+>('settings/resetApp', async ({ shouldResetUsersData }, thunkAPI) => {
+  try {
+    if (shouldResetUsersData) {
       thunkAPI.dispatch(deleteContactsFromRedux())
-      thunkAPI.dispatch(resetKeysAndPin())
-      thunkAPI.dispatch(resetSocketState())
       thunkAPI.dispatch(deleteProfile())
-      thunkAPI.dispatch(setPreviouslyUnlocked(false))
-      thunkAPI.dispatch(setPinState(null))
-      thunkAPI.dispatch(setKeysExist(false))
       resetMainStorage()
       resetReduxStorage()
-      return 'deleted'
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err)
     }
-  },
-)
+
+    thunkAPI.dispatch(resetSettings())
+    thunkAPI.dispatch(setPreviouslyUnlocked(false))
+    thunkAPI.dispatch(setPinState(null))
+    thunkAPI.dispatch(setKeysExist(false))
+    //remove accounts info from state and storage
+    thunkAPI.dispatch(resetAccounts())
+    removeAccounts()
+    // remove balances from state and storage
+    thunkAPI.dispatch(resetSocketState())
+    removeBalances()
+
+    return 'deleted'
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err)
+  }
+})
 
 const initialState: SettingsSlice = {
   isSetup: false,
@@ -396,10 +411,8 @@ const settingsSlice = createSlice({
     setPreviouslyUnlocked: (state, { payload }: PayloadAction<boolean>) => {
       state.previouslyUnlocked = payload
     },
-    resetKeysAndPin: () => {
+    resetSettings: () => {
       deleteKeys()
-      deleteDomains()
-      deleteCache()
       return createInitialState()
     },
     setFullscreen: (state, { payload }: PayloadAction<boolean>) => {
@@ -449,7 +462,7 @@ export const {
   setAppIsActive,
   setUnlocked,
   setPreviouslyUnlocked,
-  resetKeysAndPin,
+  resetSettings,
   setFullscreen,
   setHideBalance,
   setBitcoinState,

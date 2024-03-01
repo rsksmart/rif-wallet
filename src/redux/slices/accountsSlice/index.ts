@@ -12,10 +12,11 @@ const accountsSlice = createSlice({
       const { index, account } = action.payload
       state[index] = account
     },
+    resetAccounts: () => initialState,
   },
 })
 
-export const { setAccount } = accountsSlice.actions
+export const { setAccount, resetAccounts } = accountsSlice.actions
 
 export const accountsReducer = accountsSlice.reducer
 

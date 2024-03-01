@@ -22,7 +22,6 @@ import { castStyle } from 'shared/utils'
 export const AccountsScreen = ({
   navigation,
 }: SettingsScreenProps<settingsStackRouteNames.AccountsScreen>) => {
-  const dispatch = useAppDispatch()
   const { t } = useTranslation()
   const { wallet, walletIsDeployed } = useWalletState()
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] =
@@ -41,8 +40,6 @@ export const AccountsScreen = ({
         : [],
     [bitcoinCore],
   )
-
-  const onResetApp = useCallback(() => {}, [dispatch])
 
   useEffect(() => {
     navigation.setOptions({
@@ -71,7 +68,6 @@ export const AccountsScreen = ({
       <DeleteWalletModal
         isVisible={isDeleteConfirmationVisible}
         setVisible={setIsDeleteConfirmationVisible}
-        onResetApp={onResetApp}
       />
     </View>
   )
