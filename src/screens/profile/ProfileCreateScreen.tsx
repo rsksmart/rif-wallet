@@ -72,6 +72,7 @@ export const ProfileCreateScreen = ({
   const { t } = useTranslation()
 
   const { displayAddress } = getAddressDisplayText(address, chainId)
+  const isRequestingAlias = status === ProfileStatus.REQUESTING
 
   const onSetEmail = useCallback(
     (_email: string) => {
@@ -246,6 +247,7 @@ export const ProfileCreateScreen = ({
             resetValue={resetPhone}
             autoCorrect={false}
             autoCapitalize={'none'}
+            isReadOnly={isRequestingAlias}
           />
 
           <Input
@@ -257,17 +259,8 @@ export const ProfileCreateScreen = ({
             resetValue={resetEmail}
             autoCorrect={false}
             autoCapitalize={'none'}
+            isReadOnly={isRequestingAlias}
           />
-          {status === ProfileStatus.REQUESTING && (
-            <>
-              <View style={[sharedStylesConstants.contentCenter]}>
-                <AppSpinner size={64} thickness={10} />
-              </View>
-              <Typography type="body1">
-                {t('search_domain_processing_commitment')}
-              </Typography>
-            </>
-          )}
           <AppButton
             style={rnsManagerStyles.button}
             title={t('profile_register_your_username_button_text')}
@@ -278,6 +271,7 @@ export const ProfileCreateScreen = ({
             onPress={() => {
               navigation.navigate(profileStackRouteNames.SearchDomain)
             }}
+            loading={isRequestingAlias}
           />
         </FormProvider>
       </View>
