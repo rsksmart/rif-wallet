@@ -21,14 +21,15 @@ import {
   selectBalances,
   selectTotalUsdValue,
 } from 'store/slices/balancesSlice/selectors'
-import { sharedColors, sharedStyles } from 'shared/constants'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { selectChainId } from 'store/slices/settingsSlice'
+import { TransactionStatus } from 'store/shared/types'
+import { selectRecentRskTransactions } from 'store/slices/transactionsSlice'
+import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { SuccessIcon } from 'components/icons/SuccessIcon'
 import { FeedbackModal } from 'components/feedbackModal'
-import { getContactsAsArrayAndSelected } from 'store/slices/contactsSlice'
-import { selectRecentRskTransactions } from 'store/slices/transactionsSlice'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { useWalletState } from 'shared/wallet'
 
 import { TransactionForm } from './TransactionForm'
@@ -177,15 +178,15 @@ export const SendScreen = ({
     status = error.toString()
   } else if (
     currentTransaction?.status &&
-    currentTransaction.status === 'USER_CONFIRM'
+    currentTransaction.status === TransactionStatus.USER_CONFIRM
   ) {
     status = t('send_screen_sending_transaction')
   }
 
   useEffect(() => {
     if (
-      currentTransaction?.status === 'SUCCESS' ||
-      currentTransaction?.status === 'FAILED'
+      currentTransaction?.status === TransactionStatus.SUCCESS ||
+      currentTransaction?.status === TransactionStatus.FAILED
     ) {
       navigation.navigate(rootTabsRouteNames.Home, {
         screen: homeStackRouteNames.Main,
@@ -239,7 +240,7 @@ export const SendScreen = ({
         status={status}
         bitcoinBalance={bitcoinBalance}
       />
-      {currentTransaction?.status === 'USER_CONFIRM' && (
+      {currentTransaction?.status === TransactionStatus.USER_CONFIRM && (
         <FullScreenSpinner message={{ text: status }} />
       )}
     </KeyboardAvoidingView>

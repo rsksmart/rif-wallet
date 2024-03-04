@@ -15,10 +15,8 @@ import {
 import { castStyle, formatTokenValues } from 'shared/utils'
 import { AppButton, AppTouchable, Typography } from 'components/index'
 import { useAppSelector } from 'store/storeUtils'
-import { isMyAddress } from 'components/address/lib'
 import { DollarIcon } from 'components/icons/DollarIcon'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
-import { getContactByAddress } from 'store/slices/contactsSlice'
 import { getWalletSetting } from 'core/config'
 import { SETTINGS } from 'core/types'
 import { selectChainId } from 'store/slices/settingsSlice'
@@ -44,13 +42,13 @@ type TransactionSummaryComponentProps = Omit<
   Props
 
 export const TransactionSummaryComponent = ({
-  address,
   transaction,
   buttons,
   functionName,
   goBack,
   isLoaded,
   FeeComponent,
+  contact,
 }: TransactionSummaryComponentProps) => {
   const [confirmed, setConfirmed] = useState(false)
   const chainId = useAppSelector(selectChainId)
@@ -64,20 +62,13 @@ export const TransactionSummaryComponent = ({
     time,
     hashId,
     to,
-    from,
     totalToken,
     totalUsd,
+    amIReceiver,
   } = transaction
 
   const iconObject = transactionStatusToIconPropsMap.get(status)
   const transactionStatusText = transactionStatusDisplayText.get(status)
-
-  const amIReceiver = transaction.amIReceiver ?? isMyAddress(address, to)
-  const contactAddress = amIReceiver ? from || '' : to
-  const contact = useAppSelector(
-    getContactByAddress(contactAddress.toLowerCase()),
-  )
-  const contactToUse = contact || { address: contactAddress }
 
   const title = useMemo(() => {
     if (amIReceiver) {
@@ -121,7 +112,7 @@ export const TransactionSummaryComponent = ({
         <TokenBalance
           firstValue={tokenValue}
           secondValue={usdValue}
-          contact={contactToUse}
+          contact={contact}
           amIReceiver={amIReceiver}
         />
         {functionName && (
@@ -247,7 +238,7 @@ export const TransactionSummaryComponent = ({
           {/* separator */}
           <View style={styles.separator} />
           {/* address value */}
-          {contactToUse?.name && (
+          {contact?.name && (
             <View style={[styles.summaryAlignment]}>
               <Typography
                 type={'body2'}
@@ -259,7 +250,7 @@ export const TransactionSummaryComponent = ({
                 style={[sharedStyles.textRight, styles.fullAddress]}
                 numberOfLines={1}
                 ellipsizeMode={'middle'}>
-                {contactToUse.address}
+                {contact.address}
               </Typography>
             </View>
           )}

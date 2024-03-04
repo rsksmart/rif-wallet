@@ -50,6 +50,10 @@ export const checkIfContactExists = (
   name: string,
   searchArray: Contact[],
 ) => {
+  if (!address || !name) {
+    return false
+  }
+
   const index = searchArray.findIndex(c => {
     return (
       c.displayAddress === address.toLowerCase() ||
@@ -166,6 +170,7 @@ export const ContactFormScreen = ({
         address: lAddress,
         displayAddress,
       }
+
       const contactExists = checkIfContactExists(
         displayAddress && lAddress,
         trimmedName,

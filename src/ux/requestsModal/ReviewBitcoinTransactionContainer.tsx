@@ -14,10 +14,11 @@ import { TransactionSummaryComponent } from 'screens/transactionSummary/Transact
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { sharedColors } from 'shared/constants'
+import { getContactByAddress } from 'store/slices/contactsSlice'
 import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { formatTokenValues } from 'shared/utils'
+import { sharedColors } from 'shared/constants'
 
 import {
   BitcoinMiningFeeContainer,
@@ -43,6 +44,8 @@ export const ReviewBitcoinTransactionContainer = ({
   const {
     payload: { addressToPay, payment, ...payload },
   } = request
+
+  const contact = useAppSelector(getContactByAddress(addressToPay))
 
   const [miningFeeState, setMiningFeeState] = useState(payload.miningFee)
 
@@ -85,6 +88,7 @@ export const ReviewBitcoinTransactionContainer = ({
     const feeUsd = convertToUSD(miningFee)
     const isAmountSmall = !Number(amountToPayUsd) && !!Number(amountToPay)
     const totalSent = Number(amountToPay) + Number(miningFee)
+    const contactToUse = contact || { address: addressToPay }
 
     return {
       transaction: {
@@ -114,6 +118,7 @@ export const ReviewBitcoinTransactionContainer = ({
         ),
         to: addressToPay,
       },
+      contact: contactToUse,
       buttons: [
         {
           title: t('transaction_summary_title_confirm_button_title'),
