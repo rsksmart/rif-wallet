@@ -45,15 +45,13 @@ import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { useGetRnsProcessor, useWallet } from 'shared/wallet'
-import { useAddress } from 'shared/hooks'
 
 import { rnsManagerStyles } from '../rnsManager/rnsManagerStyles'
 
 export const ProfileCreateScreen = ({
   navigation,
 }: ProfileStackScreenProps<profileStackRouteNames.ProfileCreateScreen>) => {
-  const wallet = useWallet()
-  const address = useAddress(wallet)
+  const { address } = useWallet()
   const getRnsProcessor = useGetRnsProcessor()
 
   const dispatch = useAppDispatch()

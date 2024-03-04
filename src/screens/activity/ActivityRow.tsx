@@ -15,8 +15,7 @@ import { ActivityMainScreenProps } from 'shared/types'
 import { useAppSelector } from 'store/storeUtils'
 import { getContactByAddress } from 'store/slices/contactsSlice'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
-import { Wallet } from 'shared/wallet'
-import { useAddress } from 'shared/hooks'
+import { Wallet, useWallet } from 'shared/wallet'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -57,7 +56,7 @@ export const ActivityBasicRow = ({
     price,
     id,
   } = activityDetails
-  const walletAddress = useAddress(wallet)
+  const { address: walletAddress } = useWallet()
   const { t } = useTranslation()
 
   // Contact

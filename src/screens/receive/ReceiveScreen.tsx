@@ -33,7 +33,6 @@ import { getIconSource } from 'screens/home/TokenImage'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
 import { getPopupMessage } from 'shared/popupMessage'
 import { useWallet } from 'shared/wallet'
-import { useAddress } from 'shared/hooks'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 
 export enum TestID {
@@ -68,8 +67,7 @@ export const ReceiveScreen = ({
 
   const [shouldShowAssets, setShouldShowAssets] = useState(false)
 
-  const wallet = useWallet()
-  const walletAddress = useAddress(wallet)
+  const { address: walletAddress } = useWallet()
   const chainId = useAppSelector(selectChainId)
   const profile = useAppSelector(selectProfile)
 

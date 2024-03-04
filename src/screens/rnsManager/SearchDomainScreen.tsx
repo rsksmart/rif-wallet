@@ -31,8 +31,7 @@ import { AppSpinner } from 'components/index'
 import { rootTabsRouteNames } from 'src/navigation/rootNavigator'
 import { settingsStackRouteNames } from 'src/navigation/settingsNavigator/types'
 import { ConfirmationModal } from 'components/modal'
-import { useGetRnsProcessor, useWalletState } from 'shared/wallet'
-import { useAddress } from 'shared/hooks'
+import { useGetRnsProcessor, useWallet } from 'shared/wallet'
 import { getPopupMessage } from 'shared/popupMessage'
 
 import { DomainInput } from './DomainInput'
@@ -50,8 +49,7 @@ interface FormValues {
 export const SearchDomainScreen = ({ navigation }: Props) => {
   const getRnsProcessor = useGetRnsProcessor()
   const rnsProcessor = getRnsProcessor()
-  const { wallet, walletIsDeployed } = useWalletState()
-  const address = useAddress(wallet)
+  const { walletIsDeployed, address } = useWallet()
   const { isDeployed, loading } = walletIsDeployed
 
   const [isDomainOwned, setIsDomainOwned] = useState<boolean>(false)
@@ -103,7 +101,6 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
 
   const selectedDomainPriceInUsd = formatTokenValues(
     rifToken.price * Number(selectedDomainPrice),
-    4,
   )
 
   const isRequestButtonDisabled = hasErrors || !validDomain

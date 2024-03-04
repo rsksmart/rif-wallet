@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers'
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, StyleSheet, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -28,8 +28,7 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { addRecentContact } from 'store/slices/contactsSlice'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { selectRecentRskTransactions } from 'store/slices/transactionsSlice'
-import { WalletContext } from 'shared/wallet'
-import { useAddress } from 'shared/hooks'
+import { Wallet } from 'shared/wallet'
 import {
   EnhancedTransactionRequest,
   enhanceWithGas,
@@ -44,12 +43,16 @@ const tokenToBoolMap = new Map([
 ])
 
 interface Props {
+  wallet: Wallet
+  address: string
   request: SendTransactionRequest
   onConfirm: () => void
   onCancel: () => void
 }
 
 export const ReviewTransactionContainer = ({
+  wallet,
+  address,
   request,
   onCancel,
   onConfirm,
@@ -58,8 +61,7 @@ export const ReviewTransactionContainer = ({
   const insets = useSafeAreaInsets()
   const tokenPrices = useAppSelector(selectUsdPrices)
   // enhance the transaction to understand what it is:
-  const { wallet } = useContext(WalletContext)
-  const address = useAddress(wallet)
+
   const chainId = getCurrentChainId()
   const balances = useAppSelector(selectBalances)
   const pendingTransactions = useAppSelector(selectRecentRskTransactions)
@@ -68,11 +70,6 @@ export const ReviewTransactionContainer = ({
     useState<EnhancedTransactionRequest>({})
   const [isLoaded, setIsLoaded] = useState(false)
   const { t } = useTranslation()
-
-  // this is for typescript, and should not happen as the transaction was created by the wallet instance.
-  if (!wallet) {
-    throw new Error('no wallet')
-  }
 
   const txRequest = request.payload
 

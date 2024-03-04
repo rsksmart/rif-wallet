@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState, useCallback } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import {
   convertSatoshiToBtcHuman,
   SendBitcoinRequest,
@@ -17,8 +17,6 @@ import { useAppSelector } from 'store/storeUtils'
 import { sharedColors } from 'shared/constants'
 import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
-import { WalletContext } from 'shared/wallet'
-import { useAddress } from 'shared/hooks'
 import { formatTokenValues } from 'shared/utils'
 
 import {
@@ -27,18 +25,18 @@ import {
 } from './BitcoinMiningFeeContainer'
 
 interface ReviewBitcoinTransactionContainerProps {
+  address: string
   request: SendBitcoinRequest
   onConfirm: () => void
   onCancel: () => void
 }
 
 export const ReviewBitcoinTransactionContainer = ({
+  address,
   request,
   onConfirm,
   onCancel,
 }: ReviewBitcoinTransactionContainerProps) => {
-  const { wallet } = useContext(WalletContext)
-  const address = useAddress(wallet)
   const insets = useSafeAreaInsets()
   const { t } = useTranslation()
   const tokenPrices = useAppSelector(selectUsdPrices)
