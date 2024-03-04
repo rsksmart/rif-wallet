@@ -39,6 +39,7 @@ export const getKeysFromMMKV = (): string | undefined =>
   MainStorage.get(keyManagement)
 export const saveKeysInMMKV = (value: string) =>
   MainStorage.set(keyManagement, value)
+export const removeKeysFromMMKV = () => MainStorage.delete(keyManagement)
 
 // keyVerificationReminder functions
 export const hasKeyVerificationReminder = () =>
