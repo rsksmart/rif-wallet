@@ -24,11 +24,7 @@ import {
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
-import {
-  defaultIconSize,
-  sharedColors,
-  sharedStyles as sharedStylesConstants,
-} from 'shared/constants'
+import { defaultIconSize, sharedColors } from 'shared/constants'
 import { sharedStyles } from 'shared/styles'
 import { castStyle } from 'shared/utils'
 import {
@@ -41,7 +37,6 @@ import {
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { selectChainId, selectRequests } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { AppSpinner } from 'components/index'
 import { AvatarIcon } from 'components/icons/AvatarIcon'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { useGetRnsProcessor, useWallet } from 'shared/wallet'
@@ -72,6 +67,9 @@ export const ProfileCreateScreen = ({
   const { t } = useTranslation()
 
   const { displayAddress } = getAddressDisplayText(address, chainId)
+  const isRequestingAlias = status === ProfileStatus.REQUESTING
+  const isPurchasingProfile = status === ProfileStatus.PURCHASING
+  const isWaitingForCommit = status === ProfileStatus.WAITING_FOR_USER_COMMIT
 
   const onSetEmail = useCallback(
     (_email: string) => {
@@ -138,7 +136,7 @@ export const ProfileCreateScreen = ({
 
   useEffect(() => {
     const fn = async () => {
-      if (alias && status === ProfileStatus.REQUESTING) {
+      if (alias && isRequestingAlias) {
         await dispatch(
           commitment({
             alias: alias.split('.rsk')[0],
@@ -148,18 +146,26 @@ export const ProfileCreateScreen = ({
       }
 
       if (requests.length === 0) {
-        if (status === ProfileStatus.WAITING_FOR_USER_COMMIT) {
+        if (isWaitingForCommit) {
           // User got stuck in requesting the commit - set profileStatus back to 0
           dispatch(setStatus(ProfileStatus.NONE))
         }
-        if (status === ProfileStatus.PURCHASING) {
+        if (isPurchasingProfile) {
           // User got stuck in requesting the purchase - set profileStatus back to 3
           dispatch(setStatus(ProfileStatus.READY_TO_PURCHASE))
         }
       }
     }
     fn()
-  }, [dispatch, getRnsProcessor, alias, status, requests.length])
+  }, [
+    dispatch,
+    getRnsProcessor,
+    alias,
+    isRequestingAlias,
+    isWaitingForCommit,
+    isPurchasingProfile,
+    requests.length,
+  ])
 
   return (
     <ScrollView
@@ -246,6 +252,7 @@ export const ProfileCreateScreen = ({
             resetValue={resetPhone}
             autoCorrect={false}
             autoCapitalize={'none'}
+            isReadOnly={isRequestingAlias}
           />
 
           <Input
@@ -257,27 +264,19 @@ export const ProfileCreateScreen = ({
             resetValue={resetEmail}
             autoCorrect={false}
             autoCapitalize={'none'}
+            isReadOnly={isRequestingAlias}
           />
-          {status === ProfileStatus.REQUESTING && (
-            <>
-              <View style={[sharedStylesConstants.contentCenter]}>
-                <AppSpinner size={64} thickness={10} />
-              </View>
-              <Typography type="body1">
-                {t('search_domain_processing_commitment')}
-              </Typography>
-            </>
-          )}
           <AppButton
             style={rnsManagerStyles.button}
             title={t('profile_register_your_username_button_text')}
             accessibilityLabel={'registerYourUserName'}
             color={sharedColors.white}
             textColor={sharedColors.black}
-            disabled={status === ProfileStatus.PURCHASING ? false : !!username}
+            disabled={isPurchasingProfile ? false : !!username}
             onPress={() => {
               navigation.navigate(profileStackRouteNames.SearchDomain)
             }}
+            loading={isRequestingAlias}
           />
         </FormProvider>
       </View>
