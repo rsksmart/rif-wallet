@@ -7,6 +7,8 @@ import {
   setPreviouslyUnlocked,
   setUnlocked as setIsUnlocked,
   unlockApp,
+  closeRequest,
+  setFullscreen,
 } from 'store/slices/settingsSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { SocketsEvents, socketsEvents } from 'src/subscriptions/rifSockets'
@@ -50,6 +52,9 @@ export const useStateSubscription = () => {
 
           setUnlocked(false)
           dispatch(setPreviouslyUnlocked(true))
+          // request needs to be reset when gracePeriod is over
+          dispatch(closeRequest())
+          dispatch(setFullscreen(false))
           //reset wallet state
           setWallet(null)
           setWalletIsDeployed(null)

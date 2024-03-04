@@ -34,7 +34,7 @@ export const Core = () => {
   const requests = useAppSelector(selectRequests)
   const topColor = useAppSelector(selectTopColor)
   const isOffline = useIsOffline()
-  const { active } = useStateSubscription()
+  const { active, unlocked } = useStateSubscription()
   const { wallet, initializeWallet } = useContext(WalletContext)
 
   const unlockAppFn = useCallback(async () => {
@@ -58,7 +58,7 @@ export const Core = () => {
           <WalletConnect2Provider wallet={wallet}>
             <>
               <RootNavigationComponent />
-              {requests.length !== 0 && (
+              {requests.length !== 0 && unlocked && (
                 <RequestHandler
                   request={requests[0]}
                   closeRequest={() => dispatch(closeRequest())}
