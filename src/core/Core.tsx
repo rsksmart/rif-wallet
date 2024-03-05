@@ -58,8 +58,9 @@ export const Core = () => {
           <WalletConnect2Provider wallet={wallet}>
             <>
               <RootNavigationComponent />
-              {requests.length !== 0 && (
+              {requests.length !== 0 && wallet && (
                 <RequestHandler
+                  wallet={wallet}
                   request={requests[0]}
                   closeRequest={() => dispatch(closeRequest())}
                 />

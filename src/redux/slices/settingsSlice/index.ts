@@ -35,8 +35,7 @@ import {
   setKeysExist,
   setPinState,
 } from 'store/slices/persistentDataSlice'
-import { Wallet } from 'shared/wallet'
-import { addressToUse } from 'shared/hooks'
+import { addressToUse, Wallet } from 'shared/wallet'
 import { createAppWallet, loadAppWallet } from 'shared/utils'
 import { MMKVStorage } from 'storage/MMKVStorage'
 
