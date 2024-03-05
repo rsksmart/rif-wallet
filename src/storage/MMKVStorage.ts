@@ -7,7 +7,7 @@ export class MMKVStorage {
   private id: string
   private storage: MMKV
 
-  constructor(id = 'main_storage', encryptionKey?: string) {
+  constructor(id = 'mmkv.default', encryptionKey?: string) {
     this.id = id
     this.storage = new MMKV({
       id,
