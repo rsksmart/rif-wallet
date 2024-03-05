@@ -1,4 +1,4 @@
-package org.iovlabs.rif_wallet;
+package org.iovlabs.rifWallet;
 
 // src/main/java/com/swallet/SplashActivity.java
 import android.app.Activity;

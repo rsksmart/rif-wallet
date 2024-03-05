@@ -1,4 +1,4 @@
-import { Camera, useCameraDevices } from 'react-native-vision-camera'
+import { Camera, useCameraDevice } from 'react-native-vision-camera'
 import { Alert, StyleSheet, View } from 'react-native'
 import { useRef, useState } from 'react'
 import RNQR from 'rn-qr-generator'
@@ -17,9 +17,8 @@ export const AndroidQRScanner = ({
   onCodeRead,
   onClose,
 }: QRCodeScannerProps) => {
-  const devices = useCameraDevices()
+  const device = useCameraDevice('back')
   const camera = useRef<Camera>(null)
-  const device = devices.back
   const [isProcessingImage, setIsProcessingImage] = useState(false)
   const { t } = useTranslation()
   const isFocused = useIsFocused()

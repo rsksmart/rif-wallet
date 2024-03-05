@@ -12,7 +12,7 @@ import {
   View,
 } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
-import Clipboard from '@react-native-community/clipboard'
+import Clipboard from '@react-native-clipboard/clipboard'
 
 import { AppButton, AppTouchable, Input, Typography } from 'components/index'
 import { ConfirmationModal } from 'components/modal'
