@@ -151,6 +151,7 @@ export const ReviewBitcoinTransactionContainer = ({
     tokenPrices,
     payload.miningFee,
     onMiningFeeChange,
+    contact,
   ])
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
