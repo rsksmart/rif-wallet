@@ -37,6 +37,7 @@ export interface UnlockAppAction {
   initializeWallet: InitializeWallet
   isOffline?: boolean
   pinUnlocked?: boolean
+  setGlobalError: (value: string) => void
 }
 
 export interface SetKeysAction {

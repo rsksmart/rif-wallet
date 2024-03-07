@@ -5,6 +5,7 @@ import { initializeSslPinning } from 'react-native-ssl-public-key-pinning'
 import { RifWalletServicesFetcher } from '@rsksmart/rif-wallet-services'
 import { providers } from 'ethers'
 import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
+import Config from 'react-native-config'
 
 import { ChainID, WalletState } from 'lib/eoaWallet'
 
@@ -227,6 +228,13 @@ export const unlockApp = createAsyncThunk<
   AsyncThunkWithTypes
 >('settings/unlockApp', async (payload, thunkAPI) => {
   try {
+    if (!Config.TRACE_ID) {
+      const { setGlobalError } = payload
+      const errorMessage = 'global_trace_id_error'
+      setGlobalError(errorMessage)
+      return thunkAPI.rejectWithValue(errorMessage)
+    }
+
     const {
       persistentData: { isFirstLaunch },
       settings: { chainId },

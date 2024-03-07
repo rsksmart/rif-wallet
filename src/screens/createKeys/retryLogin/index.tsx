@@ -7,15 +7,17 @@ import { sharedColors, sharedStyles } from 'shared/constants'
 import { resetApp, unlockApp } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { useInitializeWallet } from 'shared/wallet'
+import { useSetGlobalError } from 'components/GlobalErrorHandler'
 
 export const RetryLogin = () => {
   const initializeWallet = useInitializeWallet()
+  const setGlobalError = useSetGlobalError()
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
 
   const retryLogin = useCallback(() => {
-    dispatch(unlockApp({ initializeWallet }))
-  }, [dispatch, initializeWallet])
+    dispatch(unlockApp({ initializeWallet, setGlobalError }))
+  }, [dispatch, initializeWallet, setGlobalError])
 
   return (
     <View style={[sharedStyles.screen, sharedStyles.contentCenter]}>
