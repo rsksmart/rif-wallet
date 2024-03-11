@@ -1,7 +1,5 @@
 import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
-import { Platform } from 'react-native'
-import { useIsFocused } from '@react-navigation/native'
 
 import { QRCodeScanner } from 'components/QRCodeScanner'
 import { getWalletSetting } from 'core/config'
@@ -13,13 +11,11 @@ import {
 } from 'navigation/rootNavigator'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { useAppSelector } from 'store/storeUtils'
-import { AndroidQRScanner } from 'screens/walletConnect/AndroidQRScanner'
 
 export const ScanQRScreen = ({
   navigation,
 }: RootTabsScreenProps<rootTabsRouteNames.ScanQR>) => {
   const chainId = useAppSelector(selectChainId)
-  const isFocused = useIsFocused()
   const onCodeRead = (data: string) => {
     // Metamask QR
     const decodedString = decodeString(data)
@@ -63,8 +59,5 @@ export const ScanQRScreen = ({
     }
   }
 
-  if (Platform.OS === 'android' && isFocused) {
-    return <AndroidQRScanner onCodeRead={onCodeRead} onClose={onClose} />
-  }
   return <QRCodeScanner onCodeRead={onCodeRead} onClose={onClose} />
 }
