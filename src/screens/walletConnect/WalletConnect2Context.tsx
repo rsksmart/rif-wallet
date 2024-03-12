@@ -168,7 +168,9 @@ export const WalletConnect2Provider = ({
           eth_signTypedDataResolver.validate = ({ domain }) => {
             // if address = relay address - throw error
             const { verifyingContract } = domain
-            if ([address].includes(verifyingContract.toLowerCase())) {
+            if (
+              [address?.toLowerCase()].includes(verifyingContract.toLowerCase())
+            ) {
               throw new Error(
                 'Error: Unauthorized Contract Address - Signing not permitted. This address is exclusive to the relay contract.',
               )
