@@ -91,6 +91,7 @@ const resources = {
       Connect: 'Connect',
       Reject: 'Reject',
       Delete: 'Delete',
+      Confirm: 'I Confirm',
       Cancel: 'Cancel',
       TOTAL: 'TOTAL',
       search_placeholder: 'Search by username or email',
@@ -252,6 +253,10 @@ const resources = {
       accounts_screen_smart_wallet_address_label: 'Smart Wallet Address',
       accounts_screen_public_key_label: 'Public Key',
       accounts_screen_edit_name_label: 'Edit name',
+      accounts_screen_users_data_reset_title: 'Do you wish to reset your data?',
+      accounts_screen_users_data_reset_description:
+        'This action will delete all your saved domains, profile data, contacts, account data.',
+      accounts_screen_users_data_reset_save_data: 'Save my data',
       contacts_screen_title: 'Contacts',
       contacts_empty_list: 'Your contact list is empty.',
       contacts_empty_start: 'Start by creating a new contact.',

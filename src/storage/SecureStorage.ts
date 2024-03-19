@@ -13,7 +13,11 @@ import DeviceInfo from 'react-native-device-info'
 
 import { WalletState } from 'lib/eoaWallet'
 
-import { getKeysFromMMKV, saveKeysInMMKV } from './MainStorage'
+import {
+  getKeysFromMMKV,
+  removeKeysFromMMKV,
+  saveKeysInMMKV,
+} from './MainStorage'
 
 const keyManagement = 'KEY_MANAGEMENT'
 
@@ -89,4 +93,16 @@ export const saveKeys = async (privateKey: string, mnemonic?: string) => {
   }
 }
 
-export const deleteKeys = () => resetGenericPassword()
+export const deleteKeys = async () => {
+  try {
+    const isEmulator = await DeviceInfo.isEmulator()
+
+    if (isEmulator) {
+      removeKeysFromMMKV()
+    }
+
+    resetGenericPassword()
+  } catch (err) {
+    throw err
+  }
+}

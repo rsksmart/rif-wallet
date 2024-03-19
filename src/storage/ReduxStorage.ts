@@ -52,4 +52,7 @@ export const reduxStorage: (chainId: number) => Storage = (
   },
 })*/
 
+export const removeBalances = () => storage.delete('balances')
+export const removeAccounts = () => storage.delete('accounts')
+
 export const resetReduxStorage = () => storage.deleteAll()
