@@ -29,7 +29,7 @@ export const ContactsNavigation = ({
       <Stack.Screen
         name={contactsStackRouteNames.ContactsList}
         component={ContactsScreen}
-        options={{ header: props => <AppHeader {...props} /> }}
+        options={{ header: AppHeader }}
       />
       <Stack.Screen
         name={contactsStackRouteNames.ContactForm}

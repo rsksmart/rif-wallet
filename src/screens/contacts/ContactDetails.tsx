@@ -46,6 +46,20 @@ import { WalletContext } from 'src/shared/wallet'
 
 const copyButtonConfig = { name: 'copy', size: 18, color: sharedColors.white }
 
+const HeaderRight = (onDeleteContact: () => void) => () =>
+  (
+    <AppTouchable
+      width={24}
+      onPress={onDeleteContact}
+      style={sharedStyles.marginRight24}>
+      <FontAwesome5Icon
+        name={'trash-alt'}
+        size={20}
+        color={sharedColors.white}
+      />
+    </AppTouchable>
+  )
+
 export const ContactDetails = ({
   navigation,
   route: {
@@ -123,18 +137,7 @@ export const ContactDetails = ({
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: _ => (
-        <AppTouchable
-          width={24}
-          onPress={onDeleteContact}
-          style={sharedStyles.marginRight24}>
-          <FontAwesome5Icon
-            name={'trash-alt'}
-            size={20}
-            color={sharedColors.white}
-          />
-        </AppTouchable>
-      ),
+      headerRight: HeaderRight(onDeleteContact),
       headerStyle: {
         backgroundColor: sharedColors.inputActive,
       },

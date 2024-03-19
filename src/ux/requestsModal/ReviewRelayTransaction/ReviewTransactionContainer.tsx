@@ -25,7 +25,10 @@ import {
 } from 'shared/utils'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
-import { addRecentContact } from 'store/slices/contactsSlice'
+import {
+  addRecentContact,
+  getContactByAddress,
+} from 'store/slices/contactsSlice'
 import { selectBalances } from 'store/slices/balancesSlice'
 import { selectRecentRskTransactions } from 'store/slices/transactionsSlice'
 import { Wallet } from 'shared/wallet'
@@ -81,6 +84,8 @@ export const ReviewTransactionContainer = ({
     gasPrice,
     gasLimit,
   } = enhancedTransactionRequest
+
+  const contact = useAppSelector(getContactByAddress(to))
 
   const getTokenBySymbol = useCallback(
     (symb: string) => {
@@ -239,6 +244,7 @@ export const ReviewTransactionContainer = ({
         time: 'approx 1 min',
         to,
       },
+      contact: contact || { address: to },
       buttons: [
         {
           title: t('transaction_summary_title_confirm_button_title'),
@@ -272,6 +278,7 @@ export const ReviewTransactionContainer = ({
     cancelTransaction,
     functionName,
     wallet,
+    contact,
   ])
 
   return (
