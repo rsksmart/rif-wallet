@@ -113,14 +113,15 @@ const formatNumber = (
  * Formats a number or a numeric string as a USD value with a dollar sign.
  * Should be used only at the end when showing values.
  * @param value The number or string to format.
+ * @param sign The currency sign to use.
  * @returns The formatted USD value with a dollar sign as a string.
  */
-export const formatUsdValue = (value: number | string): string =>
+export const formatFiatValue = (value: number | string, sign = '$'): string =>
   formatNumber(value, {
     decimalPlaces: 2,
     useThousandSeparator: true,
     isCurrency: true,
-    sign: '$',
+    sign,
   })
 
 /**

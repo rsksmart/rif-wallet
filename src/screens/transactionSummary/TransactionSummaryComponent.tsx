@@ -12,7 +12,7 @@ import {
   sharedColors,
   sharedStyles,
 } from 'shared/constants'
-import { castStyle, formatTokenValue, formatUsdValue } from 'shared/utils'
+import { castStyle, formatTokenValue, formatFiatValue } from 'shared/utils'
 import { AppButton, AppTouchable, Typography } from 'components/index'
 import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
@@ -186,7 +186,7 @@ export const TransactionSummaryComponent = ({
                     sharedStyles.textRight,
                     { color: sharedColors.labelLight },
                   ]}>
-                  {formatUsdValue(fee.usdValue)}
+                  {formatFiatValue(fee.usdValue)}
                 </Typography>
               </View>
             </>
@@ -221,7 +221,7 @@ export const TransactionSummaryComponent = ({
                 sharedStyles.textRight,
                 { color: sharedColors.labelLight },
               ]}>
-              {formatUsdValue(totalUsd)}
+              {formatFiatValue(totalUsd)}
             </Typography>
           </View>
           {/* arrive value */}

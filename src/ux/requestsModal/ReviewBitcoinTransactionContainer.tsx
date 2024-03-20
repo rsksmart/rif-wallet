@@ -19,7 +19,6 @@ import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
 import { WalletContext } from 'shared/wallet'
 import { useAddress } from 'shared/hooks'
-import { formatTokenValue, formatUsdValue } from 'shared/utils'
 
 import {
   BitcoinMiningFeeContainer,

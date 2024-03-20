@@ -1,34 +1,34 @@
-import { formatTokenValue, formatUsdValue } from './index'
+import { formatTokenValue, formatFiatValue } from './index'
 
-describe('formatUsdValue', () => {
+describe('formatFiatValue', () => {
   test('formats basic USD values correctly', () => {
-    expect(formatUsdValue('5678.90')).toBe('$5,678.90')
-    expect(formatUsdValue(1234567.89123)).toBe('$1,234,567.89')
-    expect(formatUsdValue(1234567.89)).toBe('$1,234,567.89')
-    expect(formatUsdValue(1234567)).toBe('$1,234,567.00')
-    expect(formatUsdValue(1234.5)).toBe('$1,234.50')
-    expect(formatUsdValue(1234)).toBe('$1,234.00')
+    expect(formatFiatValue('5678.90')).toBe('$5,678.90')
+    expect(formatFiatValue(1234567.89123)).toBe('$1,234,567.89')
+    expect(formatFiatValue(1234567.89)).toBe('$1,234,567.89')
+    expect(formatFiatValue(1234567)).toBe('$1,234,567.00')
+    expect(formatFiatValue(1234.5)).toBe('$1,234.50')
+    expect(formatFiatValue(1234)).toBe('$1,234.00')
   })
 
   test('handles zero as a special case', () => {
-    expect(formatUsdValue(0)).toBe('$0.00')
-    expect(formatUsdValue('0')).toBe('$0.00')
+    expect(formatFiatValue(0)).toBe('$0.00')
+    expect(formatFiatValue('0')).toBe('$0.00')
   })
 
   test('formats negative USD values correctly', () => {
-    expect(formatUsdValue(-1234.56)).toBe('-$1,234.56')
+    expect(formatFiatValue(-1234.56)).toBe('-$1,234.56')
   })
 
   test('rounds to two decimal places', () => {
-    expect(formatUsdValue(1234.567)).toBe('$1,234.57')
+    expect(formatFiatValue(1234.567)).toBe('$1,234.57')
   })
 
   test('small amounts', () => {
-    expect(formatUsdValue(0.0000000099)).toBe('<$0.01')
-    expect(formatUsdValue(0.009)).toBe('<$0.01')
-    expect(formatUsdValue(0.0100000001)).toBe('$0.01')
-    expect(formatUsdValue(0.01)).toBe('$0.01')
-    expect(formatUsdValue(0.1)).toBe('$0.10')
+    expect(formatFiatValue(0.0000000099)).toBe('<$0.01')
+    expect(formatFiatValue(0.009)).toBe('<$0.01')
+    expect(formatFiatValue(0.0100000001)).toBe('$0.01')
+    expect(formatFiatValue(0.01)).toBe('$0.01')
+    expect(formatFiatValue(0.1)).toBe('$0.10')
   })
 })
 

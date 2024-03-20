@@ -17,7 +17,7 @@ import { getContactByAddress } from 'store/slices/contactsSlice'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
 import { Wallet } from 'shared/wallet'
 import { useAddress } from 'shared/hooks'
-import { formatTokenValue, formatUsdValue } from 'src/shared/utils'
+import { formatTokenValue, formatFiatValue } from 'shared/utils'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -131,7 +131,7 @@ export const ActivityBasicRow = ({
 
   const amount = symbol.startsWith('BTC') ? value : formatTokenValue(value)
   const isUnknownToken = !usdValue && Number(value) > 0
-  const usdAmount = isUnknownToken ? '' : formatUsdValue(usdValue)
+  const usdAmount = isUnknownToken ? '' : formatFiatValue(usdValue)
 
   const handlePress = useCallback(() => {
     if (txSummary) {

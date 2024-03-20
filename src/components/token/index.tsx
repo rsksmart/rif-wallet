@@ -18,7 +18,7 @@ import { ContactCard } from 'screens/contacts/components'
 import { TokenImage, TokenSymbol } from 'screens/home/TokenImage'
 import { noop, sharedColors, sharedStyles, testIDs } from 'shared/constants'
 import { ContactWithAddressRequired } from 'shared/types'
-import { castStyle, formatTokenValue, formatUsdValue } from 'shared/utils'
+import { castStyle, formatTokenValue, formatFiatValue } from 'shared/utils'
 
 import { DollarIcon } from '../icons/DollarIcon'
 import { EyeIcon } from '../icons/EyeIcon'
@@ -128,7 +128,7 @@ export const TokenBalance = ({
               {hide
                 ? '\u002A\u002A\u002A\u002A\u002A'
                 : secondValue.symbolType === 'usd'
-                ? formatUsdValue(secondValue.balance)
+                ? formatFiatValue(secondValue.balance)
                 : formatTokenValue(secondValue.balance)}
             </Typography>
           )}

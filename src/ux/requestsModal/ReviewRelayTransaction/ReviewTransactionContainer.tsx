@@ -22,7 +22,6 @@ import {
   castStyle,
   errorHandler,
   formatTokenValue,
-  formatUsdValue,
   rbtcMap,
 } from 'shared/utils'
 import { selectUsdPrices } from 'store/slices/usdPricesSlice'
