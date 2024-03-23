@@ -29,7 +29,15 @@ import {
 } from 'components/index'
 import { CurrencyValue, TokenBalance } from 'components/token'
 import { defaultIconSize, sharedColors, testIDs } from 'shared/constants'
-import { castStyle, formatTokenValue } from 'shared/utils'
+import {
+  bitcoinFeeMap,
+  castStyle,
+  formatTokenValue,
+  getAllowedFees,
+  getDefaultFeeEOA,
+  getDefaultFeeRelay,
+  isRelayWallet,
+} from 'shared/utils'
 import { IPrice } from 'src/subscriptions/types'
 import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { Contact, ContactWithAddressRequired } from 'src/shared/types'
@@ -75,16 +83,6 @@ interface FormValues {
 
 export type ProposedContact = Omit<Contact, 'name'>
 
-const bitcoinFeeMap = new Map([
-  [TokenSymbol.BTC, true],
-  [TokenSymbol.BTCT, true],
-])
-
-const rifFeeMap = new Map([
-  [TokenSymbol.TRIF, true],
-  [TokenSymbol.RIF, true],
-])
-
 const transactionSchema = yup.object().shape({
   amount: yup.number().min(0.000000001),
   to: yup.object({
@@ -111,10 +109,6 @@ export const TransactionForm = ({
   status,
   contactList,
 }: Props) => {
-  const rifToken = useMemo(
-    () => tokenList.filter(tk => rifFeeMap.get(tk.symbol as TokenSymbol))[0],
-    [tokenList],
-  )
   const insets = useSafeAreaInsets()
   const { recipient, asset, amount: initialAmount } = initialValues
   const { t } = useTranslation()
@@ -123,20 +117,39 @@ export const TransactionForm = ({
   const [selectedToken, setSelectedToken] = useState<TokenBalanceObject>(
     asset || tokenList[0],
   )
+
+  // when we're able to change fee token
+  // use selectedFeeToken instead of selectedToken
+  const feeToken = useMemo(() => {
+    if (bitcoinFeeMap.get(selectedToken.symbol as TokenSymbol)) {
+      return selectedToken
+    }
+
+    if (!isRelayWallet) {
+      return getDefaultFeeEOA()
+    }
+
+    const contractAddress = getAllowedFees(chainId).find(
+      af => af.contractAddress === selectedToken.contractAddress,
+    )?.contractAddress
+
+    if (!contractAddress) {
+      return getDefaultFeeRelay(chainId)
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return tokenList.find(
+      tok =>
+        tok.contractAddress.toLowerCase() === contractAddress.toLowerCase(),
+    )!
+  }, [chainId, selectedToken, tokenList])
+
   const [selectedTokenAddress, setSelectedTokenAddress] = useState<
     string | undefined
   >(selectedToken.contractAddress)
 
   // const [selectedFeeToken, setSelectedFeeToken] =
   //   useState<TokenBalanceObject>(selectedToken)
-
-  const feeToken = useMemo((): TokenBalanceObject => {
-    if (bitcoinFeeMap.get(selectedToken.symbol as TokenSymbol)) {
-      return selectedToken
-    } else {
-      return rifToken
-    }
-  }, [selectedToken, rifToken])
 
   const tokenQuote = selectedToken.contractAddress.startsWith('BITCOIN')
     ? tokenPrices.BTC.price

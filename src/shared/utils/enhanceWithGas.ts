@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react'
 import { TransactionRequest } from '@ethersproject/providers'
 import { BigNumber } from 'ethers'
 import { AbiEnhancer } from '@rsksmart/rif-wallet-abi-enhancer'
 import { isAddress } from '@rsksmart/rsk-utils'
 
-import { ChainID } from 'lib/eoaWallet'
-
-import { TokenSymbol } from 'screens/home/TokenImage'
+import { ChainTypesByIdType } from 'shared/constants/chainConstants'
 import { Wallet } from 'shared/wallet'
+import { TokenSymbol } from 'screens/home/TokenImage'
 
+// enhanceWithGas
 const abiEnhancer = new AbiEnhancer()
 
 const convertValueToString = (value?: object | boolean | string) =>
@@ -31,24 +30,19 @@ export interface EnhancedTransactionRequest extends TransactionRequest {
   functionParameters?: string[]
 }
 
-export const useEnhancedWithGas = (
+export const enhanceWithGas = async (
   wallet: Wallet,
   tx: TransactionRequest,
-  chainId: ChainID,
-) => {
-  const [enhancedTransactionRequest, setEnhancedTransactionRequest] =
-    useState<EnhancedTransactionRequest>({
-      gasPrice: '0',
-      gasLimit: '0',
-    })
-  const [isLoaded, setIsLoaded] = useState<boolean>(false)
-
-  useEffect(() => {
+  chainId: ChainTypesByIdType,
+): Promise<EnhancedTransactionRequest | TransactionRequest> => {
+  try {
     // avoid to call estimateGas if the tx.to address is not valid
     if (tx.to && !isAddress(tx.to)) {
-      return
+      console.log(`TRANSACTION TO VALUE IS NOT A VALID ADDRESS: ${tx.to}`)
+      return tx
     }
-    const gasLimitEstimate = wallet
+
+    const gasLimitEstimate = await wallet
       .estimateGas({ to: tx.to || '0x', data: tx.data || '0x' })
       .then((estimate: BigNumber) => {
         if (tx.gasLimit && estimate.lt(tx.gasLimit)) {
@@ -58,7 +52,7 @@ export const useEnhancedWithGas = (
         }
       })
 
-    const gasPriceEstimate = wallet.provider
+    const gasPriceEstimate = await wallet.provider
       ?.getGasPrice()
       .then((gp: BigNumber) => gp.mul('101').div('100'))
       .then((estimate: BigNumber) => {
@@ -69,24 +63,16 @@ export const useEnhancedWithGas = (
         }
       })
 
-    const enhancer = abiEnhancer.enhance(chainId, tx)
+    const enhancedTx = await abiEnhancer.enhance(chainId, tx)
 
-    Promise.all([gasLimitEstimate, gasPriceEstimate, enhancer]).then(result => {
-      const txEnhanced = convertTransactionToStrings({
-        ...result[2],
-        gasLimit: result[0] || 0,
-        gasPrice: result[1] || 0,
-      })
-
-      setEnhancedTransactionRequest(txEnhanced)
-      setIsLoaded(true)
+    const txEnhanced = convertTransactionToStrings({
+      ...enhancedTx,
+      gasLimit: gasLimitEstimate || 0,
+      gasPrice: gasPriceEstimate || 0,
     })
-  }, [tx, wallet, chainId])
 
-  const setGasLimit = (gasLimit: string) =>
-    setEnhancedTransactionRequest({ ...enhancedTransactionRequest, gasLimit })
-  const setGasPrice = (gasPrice: string) =>
-    setEnhancedTransactionRequest({ ...enhancedTransactionRequest, gasPrice })
-
-  return { enhancedTransactionRequest, isLoaded, setGasLimit, setGasPrice }
+    return txEnhanced
+  } catch (err) {
+    throw err
+  }
 }

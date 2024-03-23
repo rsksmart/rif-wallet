@@ -21,6 +21,7 @@ import {
 import { sharedStyles } from 'shared/constants'
 import { WalletConnect2Provider } from 'screens/walletConnect/WalletConnect2Context'
 import { WalletContext } from 'shared/wallet'
+import { useSetGlobalError } from 'components/GlobalErrorHandler'
 
 import { useStateSubscription } from './hooks/useStateSubscription'
 import { Cover } from './components/Cover'
@@ -33,17 +34,20 @@ export const Core = () => {
   const dispatch = useAppDispatch()
   const requests = useAppSelector(selectRequests)
   const topColor = useAppSelector(selectTopColor)
+  const setGlobalError = useSetGlobalError()
   const isOffline = useIsOffline()
   const { active } = useStateSubscription()
   const { wallet, initializeWallet } = useContext(WalletContext)
 
   const unlockAppFn = useCallback(async () => {
     try {
-      await dispatch(unlockApp({ isOffline, initializeWallet })).unwrap()
+      await dispatch(
+        unlockApp({ isOffline, initializeWallet, setGlobalError }),
+      ).unwrap()
     } catch (err) {
       console.log('ERR CORE', err)
     }
-  }, [dispatch, isOffline, initializeWallet])
+  }, [dispatch, isOffline, initializeWallet, setGlobalError])
 
   useEffect(() => {
     unlockAppFn()
@@ -58,8 +62,9 @@ export const Core = () => {
           <WalletConnect2Provider wallet={wallet}>
             <>
               <RootNavigationComponent />
-              {requests.length !== 0 && (
+              {requests.length !== 0 && wallet && (
                 <RequestHandler
+                  wallet={wallet}
                   request={requests[0]}
                   closeRequest={() => dispatch(closeRequest())}
                 />

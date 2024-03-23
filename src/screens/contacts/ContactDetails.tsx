@@ -12,7 +12,7 @@ import { useCallback, useContext, useEffect, useState } from 'react'
 import { useIsFocused } from '@react-navigation/native'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
-import Clipboard from '@react-native-community/clipboard'
+import Clipboard from '@react-native-clipboard/clipboard'
 
 import { shortAddress } from 'lib/utils'
 

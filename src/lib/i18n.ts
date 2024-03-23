@@ -357,6 +357,7 @@ const resources = {
         'Please, wait for previous transaction to succeed or fail before making the next one',
       send_screen_sending_transaction: 'Sending transaction...',
       send_screen_return_to_home: 'Return to Home Screen',
+      send_transaction_popup: 'Invalid "to" address, rejecting transaction',
       security_info_header: 'Security Information',
       security_info_user_agreement: 'User agreement',
       security_info_disclaimer:
@@ -398,6 +399,10 @@ const resources = {
       wallet_backup_title: 'Warning!',
       wallet_backup_message:
         'We have disabled the ability to take a picture of the mnemonic because it is important that you keep it private. Please write it down instead',
+      global_error_title: 'Oops... Something went wrong!',
+      global_error_subtitle: 'We are working hard to fix it.',
+      global_error_details_title: 'error details',
+      global_trace_id_error: 'Trace Id is not valid',
     },
   },
   es: {

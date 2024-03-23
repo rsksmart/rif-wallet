@@ -4,10 +4,8 @@ import {
 } from '@ethersproject/abstract-provider'
 import { TypedDataSigner } from '@ethersproject/abstract-signer'
 import { fromSeed, mnemonicToSeedSync } from '@rsksmart/rif-id-mnemonic'
-import { RelayPayment } from '@rsksmart/rif-relay-light-sdk'
 import { getDPathByChainId } from '@rsksmart/rlogin-dpath'
 import {
-  BigNumberish,
   Bytes,
   BytesLike,
   TypedDataDomain,
@@ -33,38 +31,42 @@ const generatePrivateKey = (mnemonic: string, chainId: ChainID) => {
   return privateKey
 }
 
+export enum RequestType {
+  SEND_TRANSACTION = 'sendTransaction',
+  SIGN_MESSAGE = 'signMessage',
+  SIGN_TYPED_DATA = 'signTypedData',
+}
+
 export type Request =
   | SendTransactionRequest
   | SignMessageRequest
   | SignTypedDataRequest
+
 export type OnRequest = (request: Request) => void
 
 export interface IncomingRequest<Type, Payload, ConfirmArgs> {
   type: Type
   payload: Payload
-  confirm: (args?: ConfirmArgs) => Promise<void>
+  confirm: (args: ConfirmArgs) => Promise<void>
   reject: (reason?: any) => void
 }
 
-export type SignMessageRequest = IncomingRequest<'signMessage', BytesLike, void>
-
-export interface OverriddableTransactionOptions {
-  gasLimit: BigNumberish
-  gasPrice: BigNumberish
-  tokenPayment?: RelayPayment
-  pendingTxsCount?: number
-}
+export type SignMessageRequest = IncomingRequest<
+  RequestType.SIGN_MESSAGE,
+  BytesLike,
+  void
+>
 
 export type SendTransactionRequest = IncomingRequest<
-  'sendTransaction',
+  RequestType.SEND_TRANSACTION,
   TransactionRequest,
-  Partial<OverriddableTransactionOptions>
+  unknown
 >
 
 export type SignTypedDataArgs = Parameters<TypedDataSigner['_signTypedData']>
 
 export type SignTypedDataRequest = IncomingRequest<
-  'signTypedData',
+  RequestType.SIGN_TYPED_DATA,
   SignTypedDataArgs,
   void
 >
@@ -124,11 +126,12 @@ export class EOAWallet extends Wallet {
 
     return new Promise((resolve, reject) => {
       const nextRequest = Object.freeze<SendTransactionRequest>({
-        type: 'sendTransaction',
+        type: RequestType.SEND_TRANSACTION,
         payload: transactionRequest,
         confirm: async () => {
           try {
             const obj = await super.sendTransaction(transactionRequest)
+
             resolve(obj)
           } catch (err) {
             reject(err)
@@ -151,7 +154,7 @@ export class EOAWallet extends Wallet {
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       const nextRequest = Object.freeze<SignTypedDataRequest>({
-        type: 'signTypedData',
+        type: RequestType.SIGN_TYPED_DATA,
         payload: [domain, types, value],
         confirm: async () => {
           try {
@@ -174,7 +177,7 @@ export class EOAWallet extends Wallet {
   signMessage(message: string | Bytes): Promise<string> {
     return new Promise((resolve, reject) => {
       const nextRequest = Object.freeze<SignMessageRequest>({
-        type: 'signMessage',
+        type: RequestType.SIGN_MESSAGE,
         payload: message,
         confirm: async () => {
           try {

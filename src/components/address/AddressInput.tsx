@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { ScrollView, StyleSheet, TextStyle } from 'react-native'
-import Clipboard from '@react-native-community/clipboard'
+import Clipboard from '@react-native-clipboard/clipboard'
 import { decodeString } from '@rsksmart/rif-wallet-eip681'
 import { useTranslation } from 'react-i18next'
 import { isBitcoinAddressValid } from '@rsksmart/rif-wallet-bitcoin'

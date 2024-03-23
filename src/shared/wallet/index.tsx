@@ -104,14 +104,23 @@ export const WalletProvider = ({
   )
 }
 
+export const addressToUse = (wallet: Wallet) =>
+  !(wallet instanceof RelayWallet) ? wallet.address : wallet.smartWalletAddress
+
 export const useWallet = () => {
-  const { wallet } = useContext(WalletContext)
+  const { wallet, walletIsDeployed } = useContext(WalletContext)
 
   if (!wallet) {
     throw new Error('Wallet Has Not Been Set!')
   }
 
-  return wallet
+  if (!walletIsDeployed) {
+    throw new Error('WalletIsDeployed Has Not Been Set!')
+  }
+
+  const address = addressToUse(wallet)
+
+  return { wallet, address, walletIsDeployed }
 }
 
 export const useWalletIsDeployed = () => {

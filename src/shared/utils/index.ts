@@ -14,14 +14,7 @@ import {
 } from 'react-native-screenshot-prevent'
 import { useTranslation } from 'react-i18next'
 import { useIsFocused } from '@react-navigation/native'
-import Config from 'react-native-config'
-import { providers } from 'ethers'
-import { RifRelayConfig } from '@rsksmart/rif-relay-light-sdk'
 
-import { ChainID, EOAWallet, OnRequest, WalletState } from 'lib/eoaWallet'
-import { RelayWallet } from 'lib/relayWallet'
-
-import { Wallet } from '../wallet'
 import { ErrorWithMessage } from '../types'
 
 export const delay = (delayMs: number) => {
@@ -202,105 +195,5 @@ export const usePreventScreenshot = (
   }, [isFocused])
 }
 
-export const getFormattedTokenValue = (tokenValue: string) => {
-  if (!tokenValue.includes('.')) {
-    return tokenValue
-  }
-  const tokenValueArr = tokenValue.split('.')
-  const decimals = tokenValueArr[1].length
-
-  if (decimals < 8) {
-    return tokenValue
-  }
-
-  const restDecimals = tokenValueArr[1].split('').slice(7, decimals)
-
-  let moreThanZeroIndex = 0
-
-  for (let i = 0; i < restDecimals.length; i++) {
-    if (Number(restDecimals[i]) > 0) {
-      moreThanZeroIndex = i
-      break
-    }
-  }
-
-  const hasOneMoreDigit = !!restDecimals[moreThanZeroIndex + 1]
-  const lastAfterZero = restDecimals.slice(
-    0,
-    hasOneMoreDigit ? moreThanZeroIndex + 2 : moreThanZeroIndex + 1,
-  )
-  const ending = restDecimals[moreThanZeroIndex + 2] ? '...' : ''
-
-  return (
-    tokenValueArr[0] +
-    '.' +
-    tokenValueArr[1].slice(0, 7).concat(...lastAfterZero) +
-    ending
-  )
-}
-
-export const createAppWallet = async (
-  mnemonic: string,
-  chainId: ChainID,
-  jsonRpcProvider: providers.StaticJsonRpcProvider,
-  onRequest: OnRequest,
-  config: RifRelayConfig,
-  cache?: (privateKey: string, mnemonic?: string) => void,
-) => {
-  const useRelay = Config.USE_RELAY === 'true'
-  console.log('USE RELAY createAppWallet', useRelay)
-  let wallet: Wallet
-
-  if (useRelay) {
-    wallet = await RelayWallet.create(
-      mnemonic,
-      chainId,
-      jsonRpcProvider,
-      onRequest,
-      config,
-      cache,
-    )
-  } else {
-    wallet = EOAWallet.create(
-      mnemonic,
-      chainId,
-      jsonRpcProvider,
-      onRequest,
-      cache,
-    )
-  }
-
-  return wallet
-}
-
-export const loadAppWallet = async (
-  keys: WalletState,
-  chainId: ChainID,
-  jsonRpcProvider: providers.StaticJsonRpcProvider,
-  onRequest: OnRequest,
-  config: RifRelayConfig,
-) => {
-  const useRelay = Config.USE_RELAY === 'true'
-  console.log('USE RELAY loadAppWallet', useRelay)
-
-  let wallet: Wallet
-
-  if (useRelay) {
-    wallet = await RelayWallet.fromWalletState(
-      keys,
-      chainId,
-      jsonRpcProvider,
-      onRequest,
-      config,
-    )
-  } else {
-    wallet = EOAWallet.fromWalletState(
-      keys,
-      chainId,
-      jsonRpcProvider,
-      onRequest,
-    )
-  }
-
-  return wallet
-}
+export * from './tokenValues'
+export * from './wallet'
