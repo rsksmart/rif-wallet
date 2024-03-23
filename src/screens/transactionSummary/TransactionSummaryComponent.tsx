@@ -12,11 +12,10 @@ import {
   sharedColors,
   sharedStyles,
 } from 'shared/constants'
-import { castStyle, formatTokenValues } from 'shared/utils'
+import { castStyle, formatTokenValue, formatFiatValue } from 'shared/utils'
 import { AppButton, AppTouchable, Typography } from 'components/index'
 import { useAppSelector } from 'store/storeUtils'
 import { isMyAddress } from 'components/address/lib'
-import { DollarIcon } from 'components/icons/DollarIcon'
 import { FullScreenSpinner } from 'components/fullScreenSpinner'
 import { getContactByAddress } from 'store/slices/contactsSlice'
 import { getWalletSetting } from 'core/config'
@@ -175,20 +174,19 @@ export const TransactionSummaryComponent = ({
                     size={12}
                   />
                   <Typography type={'body2'} style={[sharedStyles.textCenter]}>
-                    {formatTokenValues(fee.tokenValue)} {fee.symbol}
+                    {formatTokenValue(fee.tokenValue)} {fee.symbol}
                   </Typography>
                 </View>
               </View>
 
               <View style={styles.dollarAmountWrapper}>
-                <DollarIcon size={14} color={sharedColors.labelLight} />
                 <Typography
                   type={'body2'}
                   style={[
                     sharedStyles.textRight,
                     { color: sharedColors.labelLight },
                   ]}>
-                  {formatTokenValues(fee.usdValue)}
+                  {formatFiatValue(fee.usdValue)}
                 </Typography>
               </View>
             </>
@@ -209,7 +207,7 @@ export const TransactionSummaryComponent = ({
             <View style={sharedStyles.row}>
               <TokenImage symbol={tokenValue.symbol} size={12} transparent />
               <Typography type={'body2'} style={[sharedStyles.textCenter]}>
-                {formatTokenValues(totalToken)} {tokenValue.symbol}{' '}
+                {formatTokenValue(totalToken)} {tokenValue.symbol}{' '}
                 {tokenValue.symbol !== fee.symbol &&
                   !amIReceiver &&
                   t('transaction_summary_plus_fees')}
@@ -217,19 +215,13 @@ export const TransactionSummaryComponent = ({
             </View>
           </View>
           <View style={styles.dollarAmountWrapper}>
-            {usdValue.symbol === '<' && Number(totalUsd) <= 0.01 && (
-              <Typography type="body1" color={sharedColors.labelLight}>
-                {'<'}
-              </Typography>
-            )}
-            <DollarIcon size={14} color={sharedColors.labelLight} />
             <Typography
               type={'body2'}
               style={[
                 sharedStyles.textRight,
                 { color: sharedColors.labelLight },
               ]}>
-              {formatTokenValues(totalUsd)}
+              {formatFiatValue(totalUsd)}
             </Typography>
           </View>
           {/* arrive value */}

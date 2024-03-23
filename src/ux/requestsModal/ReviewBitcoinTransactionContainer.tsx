@@ -17,7 +17,6 @@ import { useAppSelector } from 'store/storeUtils'
 import { sharedColors } from 'shared/constants'
 import { AppButtonBackgroundVarietyEnum, Input } from 'components/index'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
-import { formatTokenValues } from 'shared/utils'
 
 import {
   BitcoinMiningFeeContainer,
@@ -77,14 +76,15 @@ export const ReviewBitcoinTransactionContainer = ({
   }, [onCancel, request])
 
   const data: TransactionSummaryScreenProps = useMemo(() => {
-    const convertToUSD = (amount: string) =>
-      convertTokenToUSD(Number(amount), tokenPrices.BTC.price).toFixed(2)
+    const convertToUSD = (amount: string): number =>
+      convertTokenToUSD(Number(amount), tokenPrices.BTC.price)
 
     // usd values
-    const amountToPayUsd = convertToUSD(amountToPay)
+    const amountUsd = convertToUSD(amountToPay)
     const feeUsd = convertToUSD(miningFee)
-    const isAmountSmall = !Number(amountToPayUsd) && !!Number(amountToPay)
-    const totalSent = Number(amountToPay) + Number(miningFee)
+    const totalUsd = amountUsd + feeUsd
+
+    const totalBtc = Number(amountToPay) + Number(miningFee)
 
     return {
       transaction: {
@@ -94,24 +94,18 @@ export const ReviewBitcoinTransactionContainer = ({
           symbol: TokenSymbol.BTC,
         },
         usdValue: {
-          balance: isAmountSmall ? '0.01' : amountToPayUsd,
+          symbol: '$',
           symbolType: 'usd',
-          symbol: isAmountSmall ? '<' : '$',
+          balance: amountUsd,
         },
         fee: {
+          symbol: TokenSymbol.BTC,
           tokenValue: miningFee,
           usdValue: feeUsd,
-          symbol: TokenSymbol.BTC,
         },
+        totalToken: totalBtc,
+        totalUsd: totalUsd,
         time: 'approx 1 min',
-        total: {
-          tokenValue: amountToPay,
-          usdValue: formatTokenValues(Number(amountToPayUsd) + Number(feeUsd)),
-        },
-        totalToken: totalSent,
-        totalUsd: Number(
-          formatTokenValues(Number(amountToPayUsd) + Number(feeUsd)),
-        ),
         to: addressToPay,
       },
       buttons: [

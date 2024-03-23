@@ -31,7 +31,7 @@ import {
 } from 'storage/MainStorage'
 import { selectTransactions } from 'store/slices/transactionsSlice'
 import { sharedColors } from 'shared/constants'
-import { castStyle } from 'shared/utils'
+import { castStyle, formatFiatValue } from 'shared/utils'
 import { ActivityBasicRow } from 'screens/activity/ActivityRow'
 import { useWallet } from 'shared/wallet'
 
@@ -187,7 +187,7 @@ export const HomeScreen = ({
       setSelectedTokenBalanceUsd({
         symbolType: 'usd',
         symbol,
-        balance: usdBalance.toFixed(2),
+        balance: formatFiatValue(usdBalance),
       })
     }
   }, [selectedToken])

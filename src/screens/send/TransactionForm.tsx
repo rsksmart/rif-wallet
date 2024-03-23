@@ -32,6 +32,7 @@ import { defaultIconSize, sharedColors, testIDs } from 'shared/constants'
 import {
   bitcoinFeeMap,
   castStyle,
+  formatTokenValue,
   getAllowedFees,
   getDefaultFeeEOA,
   getDefaultFeeRelay,
@@ -219,13 +220,13 @@ export const TransactionForm = ({
         setValue('amount', balanceToSet)
         setSecondBalance(prev => ({
           ...prev,
-          balance: balanceToSet.toString(),
+          balance: balanceToSet,
         }))
       } else {
         setValue('amount', numberAmount)
         setSecondBalance(prev => ({
           ...prev,
-          balance: convertTokenToUSD(numberAmount, tokenQuote).toFixed(2),
+          balance: convertTokenToUSD(numberAmount, tokenQuote),
         }))
       }
     },
@@ -499,9 +500,9 @@ export const TransactionForm = ({
           </Typography>
         )}
         <AppButton
-          title={`${t('transaction_form_button_send')} ${amount} ${
-            selectedToken.symbol
-          }`}
+          title={`${t('transaction_form_button_send')} ${formatTokenValue(
+            amount,
+          )} ${selectedToken.symbol}`}
           onPress={handleSubmit(handleConfirmClick)}
           accessibilityLabel={'Send'}
           disabled={

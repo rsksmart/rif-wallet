@@ -18,7 +18,7 @@ import {
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
-import { castStyle, formatTokenValues } from 'shared/utils'
+import { castStyle, formatTokenValue } from 'shared/utils'
 import { colors } from 'src/styles'
 import {
   recoverAlias,
@@ -99,7 +99,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
   const years = watch('years')
   const hasErrors = Object.keys(errors).length > 0
 
-  const selectedDomainPriceInUsd = formatTokenValues(
+  const selectedDomainPriceInUsd = formatTokenValue(
     rifToken.price * Number(selectedDomainPrice),
   )
 
