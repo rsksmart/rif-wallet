@@ -17,6 +17,7 @@ import { getContactByAddress } from 'store/slices/contactsSlice'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
 import { formatTokenValue, formatFiatValue } from 'shared/utils'
 import { Wallet, useWallet } from 'shared/wallet'
+import { TransactionStatus } from 'store/shared/types'
 
 const getStatus = (status: string) => {
   switch (status) {
@@ -104,7 +105,7 @@ export const ActivityBasicRow = ({
         },
         totalToken,
         totalUsd,
-        status,
+        status: status.toUpperCase() as TransactionStatus,
         amIReceiver,
         from,
         to,
@@ -134,6 +135,7 @@ export const ActivityBasicRow = ({
 
   const handlePress = useCallback(() => {
     if (txSummary) {
+      console.log('txSummary.transaction.status', txSummary.transaction.status)
       navigation.navigate(rootTabsRouteNames.TransactionSummary, {
         ...txSummary,
         backScreen,
