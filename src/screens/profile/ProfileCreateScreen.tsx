@@ -184,7 +184,7 @@ export const ProfileCreateScreen = ({
             accessibilityLabel={'username'}>
             {username || t('no_username')}
           </Typography>
-          <Typography type={'h4'} color={sharedColors.labelLight}>
+          <Typography type={'h4'} color={sharedColors.text.label}>
             {displayAddress}
           </Typography>
         </View>
@@ -237,7 +237,7 @@ export const ProfileCreateScreen = ({
           />
           <Typography
             type={'h3'}
-            color={sharedColors.labelLight}
+            color={sharedColors.text.label}
             style={sharedStyles.marginTop20}>
             {t('profile_contact_details_subtitle')}
           </Typography>

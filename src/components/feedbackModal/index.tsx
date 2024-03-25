@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   }),
   subtitle: castStyle.text({
     marginTop: 5,
-    color: sharedColors.labelLight,
+    color: sharedColors.text.label,
   }),
   button: castStyle.view({
     marginTop: 8,

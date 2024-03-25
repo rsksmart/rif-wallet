@@ -108,7 +108,7 @@ export const AccountBox = ({
             />
             <TouchableOpacity onPress={onSubmit}>
               <CheckIcon
-                color={sharedColors.labelLight}
+                color={sharedColors.text.label}
                 width={35}
                 height={35}
               />
@@ -259,10 +259,10 @@ const styles = StyleSheet.create({
   }),
 
   accountInput: castStyle.text({
-    color: sharedColors.labelLight,
+    color: sharedColors.text.label,
     fontSize: 22,
     borderWidth: 1,
-    borderColor: sharedColors.labelLight,
+    borderColor: sharedColors.text.label,
     borderRadius: 5,
     paddingHorizontal: 5,
     paddingTop: 0,

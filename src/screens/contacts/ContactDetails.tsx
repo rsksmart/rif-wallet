@@ -192,7 +192,7 @@ export const ContactDetails = ({
             <Typography type={'h2'} color={sharedColors.white}>
               {contact.name}
             </Typography>
-            <Typography type={'h4'} color={sharedColors.labelLight}>
+            <Typography type={'h4'} color={sharedColors.text.label}>
               {contact.displayAddress || contact.address}
             </Typography>
           </View>
@@ -231,7 +231,7 @@ export const ContactDetails = ({
           </FormProvider>
           <Typography
             type={'h3'}
-            color={sharedColors.labelLight}
+            color={sharedColors.text.label}
             style={styles.transactionsLabel}>
             {t('contacts_details_transactions')}
           </Typography>

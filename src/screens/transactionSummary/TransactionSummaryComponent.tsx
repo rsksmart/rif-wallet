@@ -183,12 +183,12 @@ export const TransactionSummaryComponent = ({
               </View>
 
               <View style={styles.dollarAmountWrapper}>
-                <DollarIcon size={14} color={sharedColors.labelLight} />
+                <DollarIcon size={14} color={sharedColors.text.label} />
                 <Typography
                   type={'body2'}
                   style={[
                     sharedStyles.textRight,
-                    { color: sharedColors.labelLight },
+                    { color: sharedColors.text.label },
                   ]}>
                   {formatTokenValues(fee.usdValue)}
                 </Typography>
@@ -220,16 +220,16 @@ export const TransactionSummaryComponent = ({
           </View>
           <View style={styles.dollarAmountWrapper}>
             {usdValue.symbol === '<' && Number(totalUsd) <= 0.01 && (
-              <Typography type="body1" color={sharedColors.labelLight}>
+              <Typography type="body1" color={sharedColors.text.label}>
                 {'<'}
               </Typography>
             )}
-            <DollarIcon size={14} color={sharedColors.labelLight} />
+            <DollarIcon size={14} color={sharedColors.text.label} />
             <Typography
               type={'body2'}
               style={[
                 sharedStyles.textRight,
-                { color: sharedColors.labelLight },
+                { color: sharedColors.text.label },
               ]}>
               {formatTokenValues(totalUsd)}
             </Typography>

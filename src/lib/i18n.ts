@@ -11,9 +11,9 @@ const resources = {
       device_compomised_description:
         'Any "rooted" app can access your private keys and steal your funds. Wipe this wallet immediately and restore it on a secure device.',
       no_selected_wallet: 'No selected wallet',
-      address_copied_to_keyboard: 'Address copied to Clipboard',
-      mnemonic_copied: 'Mnemonic has been copied to Clipboard!',
-      message_copied_to_clipboard: 'Copied to Clipboard',
+      address_copied_to_keyboard: 'Address copied to clipboard',
+      mnemonic_copied: 'Mnemonic has been copied to clipboard!',
+      message_copied_to_clipboard: 'Copied to clipboard',
       ok: 'OK',
       back: 'Go Back',
       basic_row_pending: '• Pending',
