@@ -62,7 +62,7 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
         refreshControl={
           <RefreshControl
             refreshing={loading}
-            tintColor="white"
+            tintColor={sharedColors.text.primary}
             onRefresh={onRefresh}
           />
         }

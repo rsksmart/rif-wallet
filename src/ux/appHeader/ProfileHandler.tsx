@@ -37,7 +37,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
           <Icon
             name="person-circle-sharp"
             size={20}
-            color={sharedColors.white}
+            color={sharedColors.text.primary}
           />
 
           <View style={styles.textAlignment}>
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     paddingLeft: 6,
   }),
   underline: castStyle.text({
-    textDecorationColor: sharedColors.white,
+    textDecorationColor: sharedColors.text.primary,
     textDecorationLine: 'underline',
     paddingLeft: 6,
   }),

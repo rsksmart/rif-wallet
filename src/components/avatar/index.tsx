@@ -32,7 +32,7 @@ export const Avatar = ({
   name,
   letterColor,
 }: Props) => {
-  const halfSize = useMemo(() => size / 2, [size])
+  const halfSize = size / 2
   const firstCapital = useMemo(() => {
     if (name) {
       const letters = name.split('')
@@ -56,10 +56,10 @@ export const Avatar = ({
       {(!icon && !imageSource) || (icon && imageSource) ? (
         <Text
           style={[
-            styles.letter,
+            fonts.regular,
             {
               fontSize: halfSize,
-              color: letterColor ? letterColor : sharedColors.white,
+              color: letterColor || sharedColors.text.primary,
             },
           ]}>
           {firstCapital}
@@ -78,8 +78,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
-  }),
-  letter: castStyle.text({
-    ...fonts.regular,
   }),
 })

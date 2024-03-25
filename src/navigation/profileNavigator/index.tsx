@@ -30,7 +30,7 @@ const ProfileStack = createStackNavigator<ProfileStackParamsList>()
 
 export const headerLeftOption = (goBack: () => void) => (
   <AppTouchable width={20} onPress={goBack} style={sharedStyles.marginLeft24}>
-    <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
+    <Icon name={'chevron-left'} size={20} color={sharedColors.text.primary} />
   </AppTouchable>
 )
 
