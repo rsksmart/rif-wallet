@@ -25,6 +25,7 @@ import { castStyle } from 'shared/utils'
 import { changeTopColor } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { WalletContext } from 'shared/wallet'
+import NoDappsImage from 'components/icons/NoDappsImage'
 
 import { DappItem } from './DappItem'
 import {
@@ -148,10 +149,9 @@ export const WalletConnectScreen = ({ route }: Props) => {
       </View>
 
       {wc2Sessions.length === 0 ? (
-        <Image
-          source={require('src/images/empty-dapps.png')}
-          style={styles.noDappsImage}
-        />
+        <View style={styles.noDappsImage}>
+          <NoDappsImage />
+        </View>
       ) : (
         <ScrollView style={styles.dappsList}>
           {wc2Sessions.map(session => (
@@ -243,9 +243,8 @@ const styles = StyleSheet.create({
   }),
   noDappsImage: castStyle.image({
     flex: 4,
-    alignSelf: 'center',
-    width: '80%',
-    resizeMode: 'contain',
+    alignItems: 'center',
+    justifyContent: 'center',
   }),
   dappsList: castStyle.view({
     flex: 1,

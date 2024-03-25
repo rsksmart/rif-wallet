@@ -40,6 +40,7 @@ export const sharedColors = {
     secondary: '#252525',
     accent: '#3A3A3A',
     highlight: '#575757',
+    light: '#FBFBFB',
   },
 
   input: {
