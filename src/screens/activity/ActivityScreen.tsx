@@ -37,7 +37,7 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(sharedColors.black))
+      dispatch(changeTopColor(sharedColors.background.primary))
     }
   }, [dispatch, isFocused])
 
@@ -49,6 +49,7 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
         keyExtractor={item => item.id}
         onEndReachedThreshold={0.2}
         refreshing={loading}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <ActivityBasicRow
             wallet={wallet}
