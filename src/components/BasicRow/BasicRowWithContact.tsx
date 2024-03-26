@@ -1,6 +1,5 @@
 import { BasicRow, BasicRowProps } from 'components/BasicRow/index'
 import { Contact } from 'shared/types'
-import { sharedColors } from 'shared/constants'
 
 import UserIcon from '../icons/UserIcon'
 
@@ -16,12 +15,7 @@ export const BasicRowWithContact = ({
     {...props}
     avatar={{
       name: contact?.name,
-      icon: contact ? undefined : (
-        <UserIcon
-          backgroundColor={sharedColors.background.secondary}
-          color={sharedColors.text.label}
-        />
-      ),
+      icon: contact ? undefined : <UserIcon />,
     }}
   />
 )

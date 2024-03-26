@@ -1,5 +1,7 @@
 import Svg, { Path, Rect, SvgProps } from 'react-native-svg'
 
+import { sharedColors } from 'shared/constants'
+
 interface Props extends SvgProps {
   color?: string
   backgroundColor?: string
@@ -8,8 +10,8 @@ interface Props extends SvgProps {
 export const UserIcon = ({
   width = 44,
   height = 46,
-  color = '#B8B8B8',
-  backgroundColor = '#252525',
+  color = sharedColors.text.label,
+  backgroundColor = sharedColors.background.secondary,
   ...props
 }: Props) => (
   <Svg width={width} height={height} viewBox="0 0 32 33" {...props}>
