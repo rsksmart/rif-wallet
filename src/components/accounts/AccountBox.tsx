@@ -151,7 +151,7 @@ export const AccountBox = ({
           <Icon
             name={'copy'}
             style={styles.copyIcon}
-            color={sharedColors.white}
+            color={sharedColors.text.primary}
             size={defaultIconSize}
             onPress={() =>
               Clipboard.setString(eoaAddressObject.checksumAddress || '')
@@ -171,7 +171,7 @@ export const AccountBox = ({
             <Icon
               name={'copy'}
               style={styles.copyIcon}
-              color={sharedColors.white}
+              color={sharedColors.text.primary}
               size={defaultIconSize}
               onPress={() =>
                 Clipboard.setString(
@@ -200,7 +200,7 @@ export const AccountBox = ({
             <Icon
               name={'copy'}
               style={styles.copyIcon}
-              color={sharedColors.white}
+              color={sharedColors.text.primary}
               size={defaultIconSize}
               onPress={() => Clipboard.setString(publicKey.publicKey || '')}
             />
