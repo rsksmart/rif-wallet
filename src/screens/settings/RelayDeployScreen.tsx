@@ -157,7 +157,7 @@ export const RelayDeployScreen = ({
       ) : null}
       {loading ? (
         <View style={styles.spinner}>
-          <AppSpinner color="white" size={174} />
+          <AppSpinner size={174} />
           <Typography
             style={styles.deployingWalletText}
             type="body1"

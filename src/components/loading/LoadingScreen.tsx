@@ -17,7 +17,7 @@ export const LoadingScreen = ({ isVisible }: Props) => {
           sharedStyles.contentCenter,
           styles.activityIndicatorViewStyle,
         ]}>
-        <AppSpinner color={sharedColors.text.primary} size={150} />
+        <AppSpinner size={150} />
       </View>
     </Modal>
   )

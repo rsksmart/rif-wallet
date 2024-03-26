@@ -153,7 +153,7 @@ export const AppButton = ({
         ) : (
           <AppSpinner
             size={buttonHeight - defaultPadding * 2}
-            color={sharedColors.black}
+            color={textColor as string}
           />
         )}
         {rightIcon ? (
