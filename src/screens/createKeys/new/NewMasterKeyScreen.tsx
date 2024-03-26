@@ -92,6 +92,7 @@ export const NewMasterKeyScreen = ({ navigation }: Props) => {
           backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
           onPress={onSecureLater}
           accessibilityLabel={TestID.SecureLaterButton}
+          color={sharedColors.button.primaryBackground}
         />
       </View>
     </View>
