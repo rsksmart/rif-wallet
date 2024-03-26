@@ -33,7 +33,10 @@ export const CreateKeysScreen = ({
           {t('initial_screen_title')}
         </Typography>
       </View>
-      <Typography type={'body3'} style={styles.footerText}>
+      <Typography
+        type={'body3'}
+        style={styles.footerText}
+        color={sharedColors.white}>
         {t('initial_screen_welcome_footer')}
       </Typography>
       <View style={[styles.buttonContainer]}>
@@ -45,8 +48,8 @@ export const CreateKeysScreen = ({
           }
           accessibilityLabel={'newWallet'}
           title={t('initial_screen_button_create')}
-          color={sharedColors.button.primaryBackground}
-          textColor={sharedColors.button.primaryText}
+          color={sharedColors.white}
+          textColor={sharedColors.black}
         />
 
         <AppButton
@@ -59,6 +62,8 @@ export const CreateKeysScreen = ({
           title={t('initial_screen_button_import')}
           style={styles.importWalletButton}
           backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+          color={sharedColors.white}
+          textColor={sharedColors.white}
         />
       </View>
     </View>
