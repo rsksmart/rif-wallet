@@ -39,8 +39,8 @@ const labelColorMap = new Map([
   [DomainStatus.AVAILABLE, colors.green],
   [DomainStatus.TAKEN, colors.red],
   [DomainStatus.OWNED, colors.green],
-  [DomainStatus.NO_VALID, sharedColors.subTitle],
-  [DomainStatus.NONE, sharedColors.subTitle],
+  [DomainStatus.NO_VALID, sharedColors.text.placeholder],
+  [DomainStatus.NONE, sharedColors.text.placeholder],
 ])
 
 export const DomainInput = ({
@@ -181,11 +181,11 @@ const styles = StyleSheet.create({
   }),
   domainPlaceholder: castStyle.text({
     fontSize: 14,
-    color: sharedColors.subTitle,
+    color: sharedColors.text.placeholder,
   }),
   domainSuffix: castStyle.text({
     paddingRight: 10,
-    color: sharedColors.subTitle,
+    color: sharedColors.text.placeholder,
   }),
   errorText: castStyle.text({
     color: colors.red,

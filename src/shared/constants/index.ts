@@ -51,6 +51,7 @@ export const sharedColors = {
     primary: '#fff',
     secondary: '#000',
     label: '#B8B8B8',
+    placeholder: '#FBFBFB',
     link: '#4152E6',
   },
 
