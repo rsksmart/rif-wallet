@@ -268,10 +268,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   }),
   nameContent: castStyle.text({
-    color: sharedColors.primary,
+    color: sharedColors.text.link,
   }),
   addressContent: castStyle.text({
-    color: sharedColors.primary,
+    color: sharedColors.text.link,
     paddingTop: 6,
   }),
 })

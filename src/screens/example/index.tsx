@@ -53,7 +53,11 @@ export const ExampleScreen = ({
             inputName={'ex2'}
             placeholder={'Example 2'}
             label={'Example 2'}
-            rightIcon={{ name: 'copy', size: 20, color: sharedColors.white }}
+            rightIcon={{
+              name: 'copy',
+              size: 20,
+              color: sharedColors.text.primary,
+            }}
           />
           <Input
             inputName={'ex3'}

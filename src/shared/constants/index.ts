@@ -26,7 +26,7 @@ export const sharedColors = {
   dangerLight: '#ED6060',
   white: '#FFFFFF',
   borderColor: '#575757',
-  subTitle: '#FBFBFB',
+  // subTitle: '#FBFBFB',
   // tokenBackground: '#1E1E1E',
   black: '#000000',
   qrColor: '#DBE3FF',
