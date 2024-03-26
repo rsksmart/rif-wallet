@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.warning,
   }),
   dappUrl: castStyle.text({
-    color: sharedColors.qrColor,
+    color: sharedColors.text.placeholder,
     opacity: 0.6,
   }),
   dappButton: castStyle.image({

@@ -29,7 +29,7 @@ export const sharedColors = {
   // subTitle: '#FBFBFB',
   // tokenBackground: '#1E1E1E',
   black: '#000000',
-  qrColor: '#DBE3FF',
+  // qrColor: '#DBE3FF',
   errorBackground: '#FF3559',
   // lightPurple: '#DAE2FF',
   // blue: '#6053F8',
