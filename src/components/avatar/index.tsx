@@ -32,7 +32,7 @@ export const Avatar = ({
   name,
   letterColor,
 }: Props) => {
-  const halfSize = size / 2
+  const halfSize = useMemo(() => size / 2, [size])
   const firstCapital = useMemo(() => {
     if (name) {
       const letters = name.split('')

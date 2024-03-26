@@ -140,10 +140,10 @@ export const ConfirmationModal = ({
             accessibilityLabel={'cancelText'}
             backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
             color={
-              buttons?.[1].color || sharedColors.button.secondaryBackground
+              buttons?.[1]?.color || sharedColors.button.secondaryBackground
             }
             textColor={
-              buttons?.[1].textColor || sharedColors.button.secondaryText
+              buttons?.[1]?.textColor || sharedColors.button.secondaryText
             }
           />
         )}
