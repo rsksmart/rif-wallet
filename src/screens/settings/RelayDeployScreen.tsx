@@ -208,7 +208,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   }),
-  noDeployImage: castStyle.image({ height: 352, width: 232, marginTop: 38 }),
+  noDeployImage: castStyle.image({
+    height: 352,
+    width: 232,
+    marginTop: 38,
+    alignSelf: 'center',
+  }),
   walletDeployedWrapper: castStyle.view({
     flex: 1,
     justifyContent: 'center',
