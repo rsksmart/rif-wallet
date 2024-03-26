@@ -175,12 +175,17 @@ export const ProfileCreateScreen = ({
         {username ? (
           <AvatarIcon size={50} value={username} />
         ) : (
-          <Avatar size={50} name="username" style={styles.avatarBackground} />
+          <Avatar
+            size={50}
+            name="username"
+            style={styles.avatarBackground}
+            letterColor={sharedColors.text.secondary}
+          />
         )}
         <View style={styles.username}>
           <Typography
             type={'h3'}
-            color={sharedColors.white}
+            color={sharedColors.text.primary}
             accessibilityLabel={'username'}>
             {username || t('no_username')}
           </Typography>
@@ -212,8 +217,6 @@ export const ProfileCreateScreen = ({
             title={t('info_box_title_search_domain')}
             description={t('info_box_description_search_domain')}
             buttonText={t('info_box_close_button')}
-            backgroundColor={sharedColors.primary}
-            avatarBackgroundColor={sharedColors.secondary}
             onPress={closeInfoBox}
           />
         ) : null}
@@ -226,7 +229,7 @@ export const ProfileCreateScreen = ({
               <Icon
                 name={'copy'}
                 style={styles.copyIcon}
-                color={sharedColors.white}
+                color={sharedColors.text.primary}
                 size={defaultIconSize}
                 onPress={onCopyAddress}
               />
@@ -305,7 +308,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   }),
   avatarBackground: castStyle.view({
-    backgroundColor: sharedColors.white,
+    backgroundColor: sharedColors.text.primary,
   }),
   flexCenter: castStyle.view({
     alignItems: 'center',

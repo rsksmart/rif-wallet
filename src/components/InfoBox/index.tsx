@@ -14,6 +14,7 @@ interface InfoBoxProps {
   description?: string
   buttonText?: string
   onPress?: () => void
+  textColor?: string
   backgroundColor?: string
   avatarBackgroundColor?: string
 }
@@ -24,8 +25,9 @@ export const InfoBox = ({
   description,
   buttonText,
   onPress,
-  backgroundColor = sharedColors.background.secondary,
-  avatarBackgroundColor = sharedColors.qrColor,
+  textColor = sharedColors.text.primary,
+  backgroundColor = sharedColors.primary,
+  avatarBackgroundColor = sharedColors.text.secondary,
 }: InfoBoxProps) => {
   const [shouldHide, setShouldHide] = useState(false)
   const handleOnPress = useCallback(() => {
@@ -47,22 +49,31 @@ export const InfoBox = ({
             sharedStyles.marginBottom,
             { backgroundColor: avatarBackgroundColor },
           ]}
+          letterColor={textColor}
           name={avatar}
           size={80}
         />
       ) : null}
 
       {title ? (
-        <Typography style={sharedStyles.marginBottom} type={'h3'}>
+        <Typography
+          style={sharedStyles.marginBottom}
+          type={'h3'}
+          color={textColor}>
           {title}
         </Typography>
       ) : null}
       {description ? (
-        <Typography type={'body3'}>{description}</Typography>
+        <Typography type={'body3'} color={textColor}>
+          {description}
+        </Typography>
       ) : null}
       {buttonText ? (
         <AppTouchable style={styles.button} onPress={handleOnPress} width={50}>
-          <Typography style={styles.buttonText} type={'body2'}>
+          <Typography
+            style={styles.buttonText}
+            type={'body2'}
+            color={textColor}>
             {buttonText}
           </Typography>
         </AppTouchable>
