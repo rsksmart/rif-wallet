@@ -150,9 +150,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
                   onPress={() =>
                     navigation.navigate(
                       contactsStackRouteNames.ContactDetails,
-                      {
-                        contact,
-                      },
+                      { contact },
                     )
                   }>
                   <BasicRow
