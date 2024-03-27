@@ -61,11 +61,13 @@ export const screenOptionsWithHeader = (
   }
 }
 
-export const screenOptionsWithAppHeader: HeaderProps = {
-  headerShown: true,
+export const screenOptionsWithAppHeader = (
+  headerShown = true,
+): HeaderProps => ({
+  headerShown,
   header: props => <AppHeader {...props} />,
   tabBarHideOnKeyboard: true,
-}
+})
 
 export const headerStyles = StyleSheet.create({
   headerStyle: castStyle.view({
