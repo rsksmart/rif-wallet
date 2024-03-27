@@ -6,7 +6,7 @@ import { constants } from 'ethers'
 
 import { ChainID } from 'lib/eoaWallet'
 
-import { chainTypesById } from 'shared/constants/chainConstants'
+import { chainTypesById } from 'shared/constants'
 import { SETTINGS } from 'core/types'
 import { TokenSymbol } from 'screens/home/TokenImage'
 import { rbtcMap } from 'shared/utils'

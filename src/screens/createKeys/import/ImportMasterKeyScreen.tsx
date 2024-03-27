@@ -48,7 +48,7 @@ const StatusIcon = ({ status }: { status: StatusActions }) => {
     backgroundColor:
       status === StatusActions.SUCCESS
         ? sharedColors.successLight
-        : sharedColors.errorBackground,
+        : sharedColors.error,
     borderRadius: 50,
   }
   switch (status) {
