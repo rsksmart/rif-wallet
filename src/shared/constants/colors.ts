@@ -19,10 +19,6 @@ export const sharedColors = {
     highlight: '#575757',
     light: '#FBFBFB',
   },
-  input: {
-    active: '#3A3A3A',
-    inactive: '#252525',
-  },
   text: {
     primary: '#fff',
     secondary: '#000',

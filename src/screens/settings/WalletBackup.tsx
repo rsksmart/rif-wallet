@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
 
-import { sharedColors, sharedStyles } from 'shared/constants'
 import { MnemonicComponent, Typography } from 'components/index'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
+import { sharedStyles } from 'shared/constants'
 import { castStyle, usePreventScreenshot } from 'shared/utils'
 import { getKeys } from 'storage/SecureStorage'
 

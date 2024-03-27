@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     minHeight: 80,
   }),
   containerActive: castStyle.view({
-    backgroundColor: sharedColors.input.active,
+    backgroundColor: sharedColors.background.accent,
   }),
   contentPadding: castStyle.view({
     paddingBottom: 18,
