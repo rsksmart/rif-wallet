@@ -294,14 +294,22 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
                       width={40}
                       accessibilityLabel="decrease"
                       onPress={() => handleYearsChange(years - 1)}>
-                      <Icon name="minus" size={16} color={colors.white} />
+                      <Icon
+                        name="minus"
+                        size={16}
+                        color={sharedColors.text.primary}
+                      />
                     </AppTouchable>
                   )}
                   <AppTouchable
                     width={40}
                     accessibilityLabel="increase"
                     onPress={() => handleYearsChange(years + 1)}>
-                    <Icon name="plus" size={16} color={colors.white} />
+                    <Icon
+                      name="plus"
+                      size={16}
+                      color={sharedColors.text.primary}
+                    />
                   </AppTouchable>
                 </View>
               }

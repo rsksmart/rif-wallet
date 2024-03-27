@@ -37,17 +37,6 @@ export const rnsManagerStyles = StyleSheet.create({
     padding: 10,
     paddingBottom: 0,
   }),
-  aliasRequestInfo: castStyle.text({
-    color: colors.lightPurple,
-    alignSelf: 'center',
-    padding: 5,
-    paddingTop: 10,
-  }),
-  aliasRequestInfo2: castStyle.text({
-    color: colors.gray,
-    alignSelf: 'center',
-    padding: 5,
-  }),
   marginTop: castStyle.view({
     marginTop: 10,
   }),

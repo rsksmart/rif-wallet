@@ -9,7 +9,6 @@ import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
-import { colors } from 'src/styles'
 import {
   selectBalances,
   selectTotalUsdValue,
@@ -306,9 +305,5 @@ const styles = StyleSheet.create({
   transactionsLabel: castStyle.text({
     padding: 6,
     color: sharedColors.text.label,
-  }),
-  text: castStyle.text({
-    textAlign: 'center',
-    color: colors.lightPurple,
   }),
 })

@@ -36,9 +36,9 @@ enum DomainStatus {
 }
 
 const labelColorMap = new Map([
-  [DomainStatus.AVAILABLE, colors.green],
-  [DomainStatus.TAKEN, colors.red],
-  [DomainStatus.OWNED, colors.green],
+  [DomainStatus.AVAILABLE, sharedColors.successLight],
+  [DomainStatus.TAKEN, sharedColors.danger],
+  [DomainStatus.OWNED, sharedColors.successLight],
   [DomainStatus.NO_VALID, sharedColors.text.placeholder],
   [DomainStatus.NONE, sharedColors.text.placeholder],
 ])
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     color: sharedColors.text.placeholder,
   }),
   errorText: castStyle.text({
-    color: colors.red,
+    color: sharedColors.dangerLight,
     paddingLeft: 5,
   }),
 })

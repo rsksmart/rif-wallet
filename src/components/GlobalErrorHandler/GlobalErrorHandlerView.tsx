@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { sharedColors, sharedStyles } from 'src/shared/constants'
 import { castStyle } from 'shared/utils'
 
-import { colors } from '../../styles'
 import ContentCopyMaterialIcon from '../icons/ContentCopyMaterialIcon'
 import { Typography } from '../typography'
 import { useGlobalErrorContext } from './GlobalErrorHandlerContext'
@@ -85,14 +84,6 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
 }
 
 const styles = StyleSheet.create({
-  container: castStyle.view({
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.darkPurple3,
-    paddingHorizontal: 40,
-  }),
   firstView: castStyle.view({
     flex: 0.8,
     justifyContent: 'flex-end',
@@ -100,10 +91,6 @@ const styles = StyleSheet.create({
   secondView: castStyle.view({
     flex: 1,
     width: '100%',
-  }),
-  imageView: castStyle.view({
-    flex: 3,
-    justifyContent: 'flex-end',
   }),
   textView: castStyle.view({
     flex: 1,
@@ -131,9 +118,6 @@ const styles = StyleSheet.create({
     left: 16,
     fontSize: 10,
     marginBottom: 4,
-  }),
-  exclamation: castStyle.text({
-    fontSize: 32,
   }),
   imageStyle: castStyle.image({
     width: '100%',
