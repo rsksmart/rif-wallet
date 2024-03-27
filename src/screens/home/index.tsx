@@ -311,8 +311,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: colors.lightPurple,
   }),
-  noBalance: castStyle.image({
-    width: '100%',
-    resizeMode: 'contain',
-  }),
 })

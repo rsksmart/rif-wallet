@@ -26,8 +26,6 @@ import { AppTouchable } from 'components/appTouchable'
 
 import { Typography } from '../typography'
 
-export { CustomInput } from './CustomInput'
-
 enum TestID {
   InputLabel = 'InputLabel',
 }
