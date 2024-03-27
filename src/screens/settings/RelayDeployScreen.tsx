@@ -20,6 +20,7 @@ import { sharedHeaderLeftOptions } from 'navigation/index'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { useWholeWalletWithSetters } from 'shared/wallet'
+import DeployWalletImage from 'src/components/icons/DeployWalletImage'
 
 import { TokenSymbol } from '../home/TokenImage'
 
@@ -168,12 +169,9 @@ export const RelayDeployScreen = ({
       ) : null}
       {!isDeployed && !loading && (
         <>
-          <Image
-            source={require('assets/images/deploy-wallet.png')}
-            style={styles.noDeployImage}
-            resizeMethod={'resize'}
-            resizeMode={'contain'}
-          />
+          <View style={styles.noDeployImage}>
+            <DeployWalletImage />
+          </View>
           <AppButton
             title={t('wallet_deploy_button_title')}
             onPress={deploy}
@@ -209,10 +207,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   }),
   noDeployImage: castStyle.image({
-    height: 352,
-    width: 232,
     marginTop: 38,
-    alignSelf: 'center',
+    alignItems: 'center',
   }),
   walletDeployedWrapper: castStyle.view({
     flex: 1,
