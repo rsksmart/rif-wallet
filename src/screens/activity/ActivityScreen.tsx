@@ -22,6 +22,7 @@ import {
 } from 'store/slices/transactionsSlice/selectors'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { useWallet } from 'shared/wallet'
+import NoTransactionsImage from 'src/components/icons/NoTransactionsImage'
 
 import { ActivityBasicRow } from './ActivityRow'
 
@@ -79,11 +80,9 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
         ListEmptyComponent={
           <>
             {!loading && (
-              <Image
-                source={require('/assets/images/no-transactions.png')}
-                resizeMode="contain"
-                style={styles.noTransactionImage}
-              />
+              <View style={styles.noTransactionImage}>
+                <NoTransactionsImage />
+              </View>
             )}
           </>
         }
@@ -98,11 +97,6 @@ const styles = StyleSheet.create({
     marginBottom: 300,
     minHeight: '100%',
   }),
-  refreshButtonView: castStyle.view({
-    paddingVertical: 15,
-    alignContent: 'center',
-    borderBottomColor: '#CCCCCC',
-  }),
   title: castStyle.view({
     marginTop: 18,
   }),
@@ -110,8 +104,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   }),
   noTransactionImage: castStyle.image({
+    justifyContent: 'center',
     alignSelf: 'center',
-    width: '80%',
     height: 500,
   }),
 })
