@@ -66,7 +66,7 @@ export const RootNavigationComponent = () => {
           />
         ) : (
           <>
-            <RootTabs.Group screenOptions={screenOptionsWithAppHeader(false)}>
+            <RootTabs.Group screenOptions={screenOptionsWithAppHeader(isShown)}>
               <RootTabs.Screen
                 name={rootTabsRouteNames.Home}
                 component={HomeNavigator}
