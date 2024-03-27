@@ -370,6 +370,7 @@ const styles = StyleSheet.create({
   buttons: castStyle.view({
     justifyContent: 'space-between',
     minHeight: 114,
+    marginBottom: 20,
   }),
   statusIcon: castStyle.text({ marginLeft: 10 }),
   nextButton: castStyle.view({ marginTop: 10 }),
