@@ -230,7 +230,9 @@ export const ImportMasterKeyScreen = (
   return (
     <FormProvider {...form}>
       {errorTimeout()}
-      <ScrollView style={styles.parent} keyboardShouldPersistTaps={'always'}>
+      <ScrollView
+        style={sharedStyles.screen}
+        keyboardShouldPersistTaps={'always'}>
         <Typography
           style={styles.titleText}
           type="h3"
@@ -265,7 +267,7 @@ export const ImportMasterKeyScreen = (
           <Dots
             length={4}
             active={selectedSlide}
-            activeColor={sharedColors.white}
+            activeColor={sharedColors.text.primary}
             activeDotWidth={8}
             activeDotHeight={8}
             passiveColor={sharedColors.background.accent}
@@ -295,11 +297,6 @@ export const ImportMasterKeyScreen = (
 }
 
 const styles = StyleSheet.create({
-  parent: castStyle.view({
-    backgroundColor: sharedColors.black,
-    flex: 1,
-    paddingHorizontal: 24,
-  }),
   wordsContainer: castStyle.view({
     marginTop: 20,
   }),
