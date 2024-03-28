@@ -1,4 +1,5 @@
 import Svg, { SvgProps, Path, G, Defs, ClipPath } from 'react-native-svg'
+
 import { sharedColors } from 'src/shared/constants'
 
 const NoTransactionsImage = ({
