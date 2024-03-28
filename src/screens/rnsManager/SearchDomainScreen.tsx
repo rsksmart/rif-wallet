@@ -19,7 +19,6 @@ import {
 } from 'navigation/profileNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle, formatTokenValues } from 'shared/utils'
-import { colors } from 'src/styles'
 import {
   recoverAlias,
   requestUsername,

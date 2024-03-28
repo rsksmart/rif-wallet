@@ -2,7 +2,6 @@ import { StyleSheet } from 'react-native'
 
 import { castStyle } from 'shared/utils/index'
 import { sharedColors } from 'shared/constants'
-import { colors } from 'src/styles'
 
 export const rnsManagerStyles = StyleSheet.create({
   scrollContainer: castStyle.view({

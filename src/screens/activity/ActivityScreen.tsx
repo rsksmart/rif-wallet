@@ -3,7 +3,7 @@ import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 import { ethers } from 'ethers'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FlatList, Image, RefreshControl, StyleSheet, View } from 'react-native'
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native'
 import { useIsFocused } from '@react-navigation/native'
 
 import { ChainID } from 'lib/eoaWallet'
