@@ -253,6 +253,7 @@ export const ReviewTransactionContainer = ({
           title: t('transaction_summary_title_cancel_button_title'),
           onPress: cancelTransaction,
           backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
+          color: sharedColors.button.primaryBackground,
           accessibilityLabel: 'Cancel',
         },
       ],

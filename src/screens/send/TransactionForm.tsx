@@ -519,6 +519,7 @@ export const TransactionForm = ({
           onPress={onCancel}
           accessibilityLabel={'Cancel'}
           backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+          color={sharedColors.button.primaryBackground}
         />
       </View>
     </>
@@ -537,11 +538,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 16,
   }),
-  txSelector: castStyle.view({ marginTop: 22 }),
+  txSelector: castStyle.view({
+    marginTop: 22,
+  }),
   statusText: castStyle.text({
     marginBottom: 10,
     textAlign: 'center',
   }),
-  proposedContact: castStyle.view({ marginTop: 6 }),
-  infoIcon: castStyle.text({ color: sharedColors.inputLabelColor }),
+  proposedContact: castStyle.view({
+    marginTop: 6,
+  }),
+  infoIcon: castStyle.text({
+    color: sharedColors.text.label,
+  }),
 })
