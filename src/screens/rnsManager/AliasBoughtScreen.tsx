@@ -58,8 +58,8 @@ export const AliasBoughtScreen = ({
       </View>
       <AppButton
         title={t('alias_bought_close_button')}
-        color={sharedColors.white}
-        textColor={sharedColors.black}
+        color={sharedColors.button.primaryBackground}
+        textColor={sharedColors.button.primaryText}
         onPress={onCloseButtonPressed}
         accessibilityLabel={'close'}
       />

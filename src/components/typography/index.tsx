@@ -7,7 +7,7 @@ export const fonts = StyleSheet.create({
   regular: castStyle.text({
     fontFamily: 'Sora-Regular',
     fontWeight: '500',
-    color: sharedColors.white,
+    color: sharedColors.text.primary,
   }),
 })
 

@@ -11,7 +11,7 @@ interface Props extends Omit<IconProps, 'name'> {
 export const EyeIcon = ({
   isHidden,
   size = defaultIconSize,
-  color = sharedColors.white,
+  color = sharedColors.text.primary,
 }: Props) => {
   return (
     <Icon name={isHidden ? 'eye-slash' : 'eye'} size={size} color={color} />

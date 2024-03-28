@@ -55,8 +55,8 @@ export const PortfolioComponent = ({
             onPress={onTotalTap}
             color={
               isTotalCardSelected
-                ? sharedColors.borderColor
-                : sharedColors.inputInactive
+                ? sharedColors.background.highlight
+                : sharedColors.background.secondary
             }
             primaryText={t('TOTAL')}
             secondaryText={totalUsdBalance}
@@ -72,7 +72,7 @@ export const PortfolioComponent = ({
               selectedAddress === contractAddress && !isTotalCardSelected
             const color = isSelected
               ? getTokenColor(symbol)
-              : sharedColors.inputInactive
+              : sharedColors.background.secondary
             return (
               <PortfolioCard
                 key={i}

@@ -86,13 +86,13 @@ export const MnemonicComponent = ({
                 title={pillText}
                 textColor={
                   isMnemonicVisible
-                    ? sharedColors.white
-                    : sharedColors.inputActive
+                    ? sharedColors.text.primary
+                    : sharedColors.background.accent
                 }
                 color={
                   isMnemonicVisible
                     ? sharedColors.primary
-                    : sharedColors.inputActive
+                    : sharedColors.background.accent
                 }
                 widthVariety={AppButtonWidthVarietyEnum.INLINE}
                 accessibilityLabel={`${index}.${word}`}
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     width: '100%',
     minHeight: 309,
     justifyContent: 'center',
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     padding: 20,
     borderRadius: 10,
   }),

@@ -3,7 +3,6 @@ import { ComponentType, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Alert,
-  Image,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -25,6 +24,7 @@ import { castStyle } from 'shared/utils'
 import { changeTopColor } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { WalletContext } from 'shared/wallet'
+import NoDappsImage from 'components/icons/NoDappsImage'
 
 import { DappItem } from './DappItem'
 import {
@@ -128,7 +128,7 @@ export const WalletConnectScreen = ({ route }: Props) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(sharedColors.black))
+      dispatch(changeTopColor(sharedColors.background.primary))
     }
   }, [dispatch, isFocused])
 
@@ -148,10 +148,9 @@ export const WalletConnectScreen = ({ route }: Props) => {
       </View>
 
       {wc2Sessions.length === 0 ? (
-        <Image
-          source={require('src/images/empty-dapps.png')}
-          style={styles.noDappsImage}
-        />
+        <View style={styles.noDappsImage}>
+          <NoDappsImage />
+        </View>
       ) : (
         <ScrollView style={styles.dappsList}>
           {wc2Sessions.map(session => (
@@ -213,8 +212,8 @@ export const WalletConnectScreen = ({ route }: Props) => {
           <AppButton
             title={t('dapps_wc_connect')}
             onPress={onUriSubmitted}
-            textColor={sharedColors.black}
-            color={sharedColors.white}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
             style={styles.subtitle}
             disabled={wcUri.length === 0}
           />
@@ -243,9 +242,8 @@ const styles = StyleSheet.create({
   }),
   noDappsImage: castStyle.image({
     flex: 4,
-    alignSelf: 'center',
-    width: '80%',
-    resizeMode: 'contain',
+    alignItems: 'center',
+    justifyContent: 'center',
   }),
   dappsList: castStyle.view({
     flex: 1,

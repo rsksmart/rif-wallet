@@ -15,6 +15,7 @@ export interface MaterialIconInterface extends TextProps {
 
 export interface FooterIconInterface extends SvgProps {
   active?: boolean
+  activeColor?: string
 }
 
 export { Arrow } from './Arrow'

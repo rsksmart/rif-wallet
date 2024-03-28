@@ -48,7 +48,7 @@ const StatusIcon = ({ status }: { status: StatusActions }) => {
     backgroundColor:
       status === StatusActions.SUCCESS
         ? sharedColors.successLight
-        : sharedColors.errorBackground,
+        : sharedColors.error,
     borderRadius: 50,
   }
   switch (status) {
@@ -230,7 +230,9 @@ export const ImportMasterKeyScreen = (
   return (
     <FormProvider {...form}>
       {errorTimeout()}
-      <ScrollView style={styles.parent} keyboardShouldPersistTaps={'always'}>
+      <ScrollView
+        style={sharedStyles.screen}
+        keyboardShouldPersistTaps={'always'}>
         <Typography
           style={styles.titleText}
           type="h3"
@@ -265,10 +267,10 @@ export const ImportMasterKeyScreen = (
           <Dots
             length={4}
             active={selectedSlide}
-            activeColor={sharedColors.white}
+            activeColor={sharedColors.text.primary}
             activeDotWidth={8}
             activeDotHeight={8}
-            passiveColor={sharedColors.inputActive}
+            passiveColor={sharedColors.background.accent}
             passiveDotHeight={6}
             passiveDotWidth={6}
             marginHorizontal={6}
@@ -279,8 +281,8 @@ export const ImportMasterKeyScreen = (
           <AppButton
             accessibilityLabel={'OK'}
             title={t('ok')}
-            color={sharedColors.white}
-            textColor={sharedColors.black}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
             textType={'body2'}
             textStyle={sharedStyles.fontBoldText}
             onPress={handleImportMnemonic}
@@ -295,11 +297,6 @@ export const ImportMasterKeyScreen = (
 }
 
 const styles = StyleSheet.create({
-  parent: castStyle.view({
-    backgroundColor: sharedColors.black,
-    flex: 1,
-    paddingHorizontal: 24,
-  }),
   wordsContainer: castStyle.view({
     marginTop: 20,
   }),

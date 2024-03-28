@@ -118,14 +118,15 @@ export const ReviewBitcoinTransactionContainer = ({
         {
           title: t('transaction_summary_title_confirm_button_title'),
           onPress: onConfirmTransaction,
-          color: sharedColors.white,
-          textColor: sharedColors.black,
+          color: sharedColors.button.primaryBackground,
+          textColor: sharedColors.button.primaryText,
           accessibilityLabel: 'Confirm',
         },
         {
           title: t('transaction_summary_title_cancel_button_title'),
           onPress: onCancelTransaction,
           backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
+          color: sharedColors.button.primaryBackground,
           accessibilityLabel: 'Cancel',
         },
       ],

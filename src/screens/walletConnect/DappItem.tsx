@@ -60,7 +60,7 @@ export const DappItem = ({
 const styles = StyleSheet.create({
   container: castStyle.view({
     flexDirection: 'row',
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     borderRadius: 10,
     marginBottom: 12,
     alignItems: 'center',
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   dappIcon: castStyle.view({
     width: 30,
     height: 30,
-    backgroundColor: sharedColors.white,
+    backgroundColor: sharedColors.text.primary,
     borderRadius: 15,
   }),
   content: castStyle.view({
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.warning,
   }),
   dappUrl: castStyle.text({
-    color: sharedColors.qrColor,
+    color: sharedColors.text.placeholder,
     opacity: 0.6,
   }),
   dappButton: castStyle.image({

@@ -9,7 +9,6 @@ import {
   homeStackRouteNames,
   HomeStackScreenProps,
 } from 'navigation/homeNavigator/types'
-import { colors } from 'src/styles'
 import {
   selectBalances,
   selectTotalUsdValue,
@@ -77,9 +76,9 @@ export const HomeScreen = ({
   // token or undefined
   const selected = selectedAddress ? tokenBalances[selectedAddress] : undefined
   const selectedColor = getTokenColor(selected?.symbol || '')
-  const backgroundColor = {
-    backgroundColor: selectedAddress ? selectedColor : sharedColors.borderColor,
-  }
+  const backgroundColor = selectedAddress
+    ? selectedColor
+    : sharedColors.background.highlight
 
   /*const rampConfig = useMemo(
     () => ({
@@ -155,9 +154,9 @@ export const HomeScreen = ({
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(selectedColor))
+      dispatch(changeTopColor(backgroundColor))
     }
-  }, [selectedColor, dispatch, isFocused])
+  }, [dispatch, isFocused, backgroundColor])
 
   const selectedToken = useMemo(() => {
     if (selected) {
@@ -225,12 +224,12 @@ export const HomeScreen = ({
         hideable={true}
         hide={hideBalance}
         onHide={() => dispatch(setHideBalance(!hideBalance))}
-        color={backgroundColor.backgroundColor}
+        color={backgroundColor}
       />
       <HomeBarButtonGroup
         onPress={handleSendReceive}
         isSendDisabled={balancesArray.length === 0}
-        color={backgroundColor.backgroundColor}
+        color={backgroundColor}
       />
 
       {showInfoBar && !closed && <HomeInformationBar onClose={onClose} />}
@@ -280,6 +279,10 @@ export const HomeScreen = ({
 }
 
 const styles = StyleSheet.create({
+  container: castStyle.view({
+    flex: 1,
+    backgroundColor: sharedColors.background.primary,
+  }),
   bodyContainer: castStyle.view({
     padding: 12,
   }),
@@ -294,25 +297,13 @@ const styles = StyleSheet.create({
   portfolioLabel: castStyle.text({
     padding: 6,
     paddingTop: 10,
-    color: sharedColors.inputLabelColor,
+    color: sharedColors.text.label,
   }),
   transactionItem: castStyle.view({
     paddingHorizontal: 6,
   }),
   transactionsLabel: castStyle.text({
     padding: 6,
-    color: sharedColors.inputLabelColor,
-  }),
-  container: castStyle.view({
-    flex: 1,
-    backgroundColor: sharedColors.black,
-  }),
-  text: castStyle.text({
-    textAlign: 'center',
-    color: colors.lightPurple,
-  }),
-  noBalance: castStyle.image({
-    width: '100%',
-    resizeMode: 'contain',
+    color: sharedColors.text.label,
   }),
 })

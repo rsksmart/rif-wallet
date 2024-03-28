@@ -3,7 +3,7 @@ import { IApiTransaction } from '@rsksmart/rif-wallet-services'
 import { ethers } from 'ethers'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FlatList, Image, RefreshControl, StyleSheet, View } from 'react-native'
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native'
 import { useIsFocused } from '@react-navigation/native'
 
 import { ChainID } from 'lib/eoaWallet'
@@ -22,6 +22,7 @@ import {
 } from 'store/slices/transactionsSlice/selectors'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { useWallet } from 'shared/wallet'
+import NoTransactionsImage from 'src/components/icons/NoTransactionsImage'
 
 import { ActivityBasicRow } from './ActivityRow'
 
@@ -37,7 +38,7 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(sharedColors.black))
+      dispatch(changeTopColor(sharedColors.background.primary))
     }
   }, [dispatch, isFocused])
 
@@ -49,6 +50,7 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
         keyExtractor={item => item.id}
         onEndReachedThreshold={0.2}
         refreshing={loading}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <ActivityBasicRow
             wallet={wallet}
@@ -61,7 +63,7 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
         refreshControl={
           <RefreshControl
             refreshing={loading}
-            tintColor="white"
+            tintColor={sharedColors.text.primary}
             onRefresh={onRefresh}
           />
         }
@@ -78,11 +80,9 @@ export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
         ListEmptyComponent={
           <>
             {!loading && (
-              <Image
-                source={require('/assets/images/no-transactions.png')}
-                resizeMode="contain"
-                style={styles.noTransactionImage}
-              />
+              <View style={styles.noTransactionImage}>
+                <NoTransactionsImage />
+              </View>
             )}
           </>
         }
@@ -97,11 +97,6 @@ const styles = StyleSheet.create({
     marginBottom: 300,
     minHeight: '100%',
   }),
-  refreshButtonView: castStyle.view({
-    paddingVertical: 15,
-    alignContent: 'center',
-    borderBottomColor: '#CCCCCC',
-  }),
   title: castStyle.view({
     marginTop: 18,
   }),
@@ -109,8 +104,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   }),
   noTransactionImage: castStyle.image({
+    justifyContent: 'center',
     alignSelf: 'center',
-    width: '80%',
     height: 500,
   }),
 })

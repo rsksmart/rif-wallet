@@ -115,7 +115,7 @@ export const TransactionSummaryComponent = ({
         <Typography
           style={styles.title}
           type={'h4'}
-          color={sharedColors.inputLabelColor}>
+          color={sharedColors.text.label}>
           {title}
         </Typography>
         <TokenBalance
@@ -128,7 +128,7 @@ export const TransactionSummaryComponent = ({
           <Typography
             style={styles.title}
             type={'body1'}
-            color={sharedColors.inputLabelColor}>
+            color={sharedColors.text.label}>
             {t('transaction_summary_function_type')}: {functionName}
           </Typography>
         )}
@@ -138,7 +138,9 @@ export const TransactionSummaryComponent = ({
             style={[
               styles.summaryAlignment,
               styles.statusContainer,
-              status ? { backgroundColor: sharedColors.inputInactive } : null,
+              status
+                ? { backgroundColor: sharedColors.background.secondary }
+                : null,
             ]}>
             <Typography type={'h4'}>
               {status ? t('transaction_summary_status') : ''}
@@ -181,12 +183,12 @@ export const TransactionSummaryComponent = ({
               </View>
 
               <View style={styles.dollarAmountWrapper}>
-                <DollarIcon size={14} color={sharedColors.labelLight} />
+                <DollarIcon size={14} color={sharedColors.text.label} />
                 <Typography
                   type={'body2'}
                   style={[
                     sharedStyles.textRight,
-                    { color: sharedColors.labelLight },
+                    { color: sharedColors.text.label },
                   ]}>
                   {formatTokenValues(fee.usdValue)}
                 </Typography>
@@ -218,16 +220,16 @@ export const TransactionSummaryComponent = ({
           </View>
           <View style={styles.dollarAmountWrapper}>
             {usdValue.symbol === '<' && Number(totalUsd) <= 0.01 && (
-              <Typography type="body1" color={sharedColors.labelLight}>
+              <Typography type="body1" color={sharedColors.text.label}>
                 {'<'}
               </Typography>
             )}
-            <DollarIcon size={14} color={sharedColors.labelLight} />
+            <DollarIcon size={14} color={sharedColors.text.label} />
             <Typography
               type={'body2'}
               style={[
                 sharedStyles.textRight,
-                { color: sharedColors.labelLight },
+                { color: sharedColors.text.label },
               ]}>
               {formatTokenValues(totalUsd)}
             </Typography>
@@ -311,8 +313,8 @@ export const TransactionSummaryComponent = ({
           <AppButton
             onPress={goBack}
             title={t('transaction_summary_default_button_text')}
-            color={sharedColors.white}
-            textColor={sharedColors.black}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
             accessibilityLabel="Close"
           />
         )}
@@ -324,7 +326,7 @@ export const TransactionSummaryComponent = ({
 const styles = StyleSheet.create({
   screen: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
     paddingHorizontal: 22,
   }),
   contentPadding: castStyle.view({ paddingBottom: 114 }),
@@ -346,16 +348,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   }),
-  summaryWrapper: castStyle.view({
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: sharedColors.white,
-    paddingBottom: 16,
-  }),
   separator: castStyle.view({
     marginTop: 16,
     height: 1,
     width: '100%',
-    backgroundColor: sharedColors.white,
+    backgroundColor: sharedColors.text.primary,
     opacity: 0.4,
   }),
   fullAddress: castStyle.view({
@@ -368,6 +365,7 @@ const styles = StyleSheet.create({
   buttons: castStyle.view({
     justifyContent: 'space-between',
     minHeight: 114,
+    marginBottom: 20,
   }),
   statusIcon: castStyle.text({ marginLeft: 10 }),
   nextButton: castStyle.view({ marginTop: 10 }),

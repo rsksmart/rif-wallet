@@ -11,9 +11,9 @@ const resources = {
       device_compomised_description:
         'Any "rooted" app can access your private keys and steal your funds. Wipe this wallet immediately and restore it on a secure device.',
       no_selected_wallet: 'No selected wallet',
-      address_copied_to_keyboard: 'Address copied to Clipboard',
-      mnemonic_copied: 'Mnemonic has been copied to Clipboard!',
-      message_copied_to_clipboard: 'Copied to Clipboard',
+      address_copied_to_keyboard: 'Address copied to clipboard',
+      mnemonic_copied: 'Mnemonic has been copied to clipboard!',
+      message_copied_to_clipboard: 'Copied to clipboard',
       ok: 'OK',
       back: 'Go Back',
       basic_row_pending: '• Pending',
@@ -127,7 +127,7 @@ const resources = {
       mnemonic_body_copy:
         'We strongly recommend you to write the phrase also on a piece of paper.',
       new_master_key_title: 'Save your phrase',
-      new_master_key_button_title: 'Phrase secured, Continue',
+      new_master_key_button_title: 'Phrase secured, continue',
       new_master_key_secure_later_button: 'Secure later',
       change_asset: 'Change asset',
       loading_qr: 'Loading QR',

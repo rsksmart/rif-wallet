@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { sharedColors, sharedStyles } from 'src/shared/constants'
 import { castStyle } from 'shared/utils'
 
-import { colors } from '../../styles'
 import ContentCopyMaterialIcon from '../icons/ContentCopyMaterialIcon'
 import { Typography } from '../typography'
 import { useGlobalErrorContext } from './GlobalErrorHandlerContext'
@@ -21,13 +20,14 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
 }) => {
   const { handleReload, globalError } = useGlobalErrorContext()
   const { t } = useTranslation()
-  const messageToShow: string = message || globalError || ''
+  const messageToShow = message || globalError || ''
 
   const onCopyError = React.useCallback(() => {
     Clipboard.setString(messageToShow)
   }, [messageToShow])
+
   return (
-    <View style={styles.container}>
+    <View style={sharedStyles.screen}>
       <View style={styles.firstView}>
         <Image
           source={require('../../images/error-image.png')}
@@ -48,7 +48,7 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
           <View style={sharedStyles.flex}>
             <Typography
               type={'body2'}
-              color={sharedColors.white}
+              color={sharedColors.text.primary}
               style={styles.errorDetailsText}>
               {t('global_error_details_title')}
             </Typography>
@@ -58,11 +58,14 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
               onPress={onCopyError}>
               <Typography
                 type={'body3'}
-                color={sharedColors.white}
+                color={sharedColors.text.primary}
                 style={sharedStyles.flex}>
                 {t(messageToShow)}
               </Typography>
-              <ContentCopyMaterialIcon color={sharedColors.white} size={25} />
+              <ContentCopyMaterialIcon
+                color={sharedColors.text.primary}
+                size={25}
+              />
             </TouchableOpacity>
           </View>
         )}
@@ -71,7 +74,8 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
             title={'reload'}
             accessibilityLabel={'reload'}
             onPress={handleReload}
-            style={styles.reload}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
           />
         </View>
       </View>
@@ -80,14 +84,6 @@ const GlobalErrorHandlerView: React.FC<GlobalErrorHandlerViewType> = ({
 }
 
 const styles = StyleSheet.create({
-  container: castStyle.view({
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.darkPurple3,
-    paddingHorizontal: 40,
-  }),
   firstView: castStyle.view({
     flex: 0.8,
     justifyContent: 'flex-end',
@@ -95,10 +91,6 @@ const styles = StyleSheet.create({
   secondView: castStyle.view({
     flex: 1,
     width: '100%',
-  }),
-  imageView: castStyle.view({
-    flex: 3,
-    justifyContent: 'flex-end',
   }),
   textView: castStyle.view({
     flex: 1,
@@ -109,12 +101,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   }),
   text: castStyle.text({
-    color: sharedColors.white,
+    color: sharedColors.text.primary,
     marginBottom: 10,
     textAlign: 'center',
   }),
   errorDetailsTouch: castStyle.view({
-    backgroundColor: colors.darkPurple5,
+    backgroundColor: sharedColors.background.secondary,
     height: 65,
     borderRadius: 17,
     padding: 10,
@@ -127,17 +119,10 @@ const styles = StyleSheet.create({
     fontSize: 10,
     marginBottom: 4,
   }),
-  exclamation: castStyle.text({
-    fontSize: 32,
-  }),
   imageStyle: castStyle.image({
     width: '100%',
     height: undefined,
     aspectRatio: 1,
-  }),
-  reload: castStyle.view({
-    backgroundColor: colors.background.bustyBlue,
-    width: 150,
   }),
 })
 

@@ -7,11 +7,11 @@ import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import HomeIcon from 'src/components/icons/HomeIcon'
-import NetworkIcon from 'src/components/icons/NetworkIcon'
-import { ScanIcon } from 'src/components/icons/ScanIcon'
-import TransactionsIcon from 'src/components/icons/TransactionsIcon'
-import UsersIcon from 'src/components/icons/UsersIcon'
+import HomeIcon from 'components/icons/HomeIcon'
+import NetworkIcon from 'components/icons/NetworkIcon'
+import { ScanIcon } from 'components/icons/ScanIcon'
+import TransactionsIcon from 'components/icons/TransactionsIcon'
+import UsersIcon from 'components/icons/UsersIcon'
 
 const buttonWidth = 52
 
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
   }),
   walletIcon: {
     height: 20,

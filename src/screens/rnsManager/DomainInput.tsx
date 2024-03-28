@@ -1,9 +1,9 @@
+import { RSKRegistrar } from '@rsksmart/rns-sdk'
 import debounce from 'lodash.debounce'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FieldError } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text } from 'react-native'
-import { FieldError } from 'react-hook-form'
-import { RSKRegistrar } from '@rsksmart/rns-sdk'
 
 import {
   AddressValidationMessage,
@@ -12,7 +12,6 @@ import {
 import { Input, Typography } from 'components/index'
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { colors } from 'src/styles'
 
 import { minDomainLength } from './SearchDomainScreen'
 
@@ -36,11 +35,11 @@ enum DomainStatus {
 }
 
 const labelColorMap = new Map([
-  [DomainStatus.AVAILABLE, colors.green],
-  [DomainStatus.TAKEN, colors.red],
-  [DomainStatus.OWNED, colors.green],
-  [DomainStatus.NO_VALID, sharedColors.subTitle],
-  [DomainStatus.NONE, sharedColors.subTitle],
+  [DomainStatus.AVAILABLE, sharedColors.successLight],
+  [DomainStatus.TAKEN, sharedColors.danger],
+  [DomainStatus.OWNED, sharedColors.successLight],
+  [DomainStatus.NO_VALID, sharedColors.text.placeholder],
+  [DomainStatus.NONE, sharedColors.text.placeholder],
 ])
 
 export const DomainInput = ({
@@ -181,14 +180,14 @@ const styles = StyleSheet.create({
   }),
   domainPlaceholder: castStyle.text({
     fontSize: 14,
-    color: sharedColors.subTitle,
+    color: sharedColors.text.placeholder,
   }),
   domainSuffix: castStyle.text({
     paddingRight: 10,
-    color: sharedColors.subTitle,
+    color: sharedColors.text.placeholder,
   }),
   errorText: castStyle.text({
-    color: colors.red,
+    color: sharedColors.dangerLight,
     paddingLeft: 5,
   }),
 })

@@ -2,34 +2,23 @@ import { StyleSheet } from 'react-native'
 
 import { castStyle } from 'shared/utils/index'
 import { sharedColors } from 'shared/constants'
-import { colors } from 'src/styles'
 
 export const rnsManagerStyles = StyleSheet.create({
   scrollContainer: castStyle.view({
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
   }),
   container: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.black,
+    backgroundColor: 'transparent',
     padding: 20,
     paddingTop: 50,
   }),
-  title: castStyle.text({
-    color: sharedColors.subTitle,
-  }),
   subtitle: castStyle.text({
-    color: sharedColors.subTitle,
-  }),
-  profileHeader: castStyle.view({
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    backgroundColor: sharedColors.black,
+    color: sharedColors.text.placeholder,
   }),
   profileImageContainer: castStyle.view({
     alignItems: 'center',
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     borderRadius: 10,
     paddingVertical: 20,
   }),
@@ -42,17 +31,6 @@ export const rnsManagerStyles = StyleSheet.create({
     alignSelf: 'center',
     padding: 10,
     paddingBottom: 0,
-  }),
-  aliasRequestInfo: castStyle.text({
-    color: colors.lightPurple,
-    alignSelf: 'center',
-    padding: 5,
-    paddingTop: 10,
-  }),
-  aliasRequestInfo2: castStyle.text({
-    color: colors.gray,
-    alignSelf: 'center',
-    padding: 5,
   }),
   marginTop: castStyle.view({
     marginTop: 10,

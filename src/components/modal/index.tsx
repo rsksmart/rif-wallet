@@ -76,7 +76,7 @@ interface ConfirmationModalProps {
   onCancel?: () => void
   titleColor?: ColorValue
   buttons?: [ConfirmationModalButtonConfig, ConfirmationModalButtonConfig]
-  color?: ColorValue
+  backgroundColor?: ColorValue
   imgSource?: ImageSourcePropType
   description?: string
   descriptionColor?: ColorValue
@@ -89,22 +89,22 @@ export type ConfirmationModalConfig = Omit<ConfirmationModalProps, 'isVisible'>
 export const ConfirmationModal = ({
   isVisible = true,
   title,
-  titleColor,
+  titleColor = sharedColors.text.primary,
   description = '',
-  descriptionColor,
+  descriptionColor = sharedColors.text.label,
+  backgroundColor = sharedColors.primary,
   okText = 'OK',
   cancelText,
   onOk,
   onCancel,
   imgSource,
-  color,
   buttons,
 }: ConfirmationModalProps) => (
   <Modal isVisible={isVisible}>
     <Modal.Container
       style={[
         styles.confirmationModalContainer,
-        color ? { backgroundColor: color } : null,
+        backgroundColor ? { backgroundColor } : null,
       ]}>
       <View style={styles.footerBarIndicator} />
       <Modal.Body>
@@ -112,15 +112,13 @@ export const ConfirmationModal = ({
         <Typography
           type={'h3'}
           style={sharedStyles.textCenter}
-          color={titleColor ? titleColor : undefined}>
+          color={titleColor}>
           {title}
         </Typography>
         {description && (
           <Typography
             type={'body3'}
-            color={
-              descriptionColor ? descriptionColor : sharedColors.labelLight
-            }
+            color={descriptionColor}
             style={styles.description}>
             {description}
           </Typography>
@@ -131,10 +129,8 @@ export const ConfirmationModal = ({
           title={okText}
           onPress={onOk}
           accessibilityLabel={'okText'}
-          color={buttons && buttons[0] ? buttons[0].color : sharedColors.white}
-          textColor={
-            buttons && buttons[0] ? buttons[0].textColor : sharedColors.black
-          }
+          color={buttons?.[0]?.color || sharedColors.button.primaryBackground}
+          textColor={buttons?.[0]?.textColor || sharedColors.button.primaryText}
         />
         {cancelText && (
           <AppButton
@@ -143,11 +139,9 @@ export const ConfirmationModal = ({
             onPress={onCancel}
             accessibilityLabel={'cancelText'}
             backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
-            color={
-              buttons && buttons[1] ? buttons[1].color : sharedColors.white
-            }
+            color={buttons?.[1]?.color || sharedColors.button.primaryBackground}
             textColor={
-              buttons && buttons[1] ? buttons[1].textColor : sharedColors.white
+              buttons?.[1]?.textColor || sharedColors.button.secondaryText
             }
           />
         )}
@@ -159,9 +153,7 @@ export const ConfirmationModal = ({
 const modalStyles = StyleSheet.create({
   container: castStyle.view({
     borderRadius: 25,
-    borderWidth: 1,
-    borderColor: '#000',
-    borderStyle: 'solid',
+    borderWidth: 0,
     padding: 15,
   }),
   header: castStyle.view({

@@ -44,19 +44,19 @@ const defaultPin = [null, null, null, null]
 
 // pin exist
 const pinExistNoSteps = [
-  sharedColors.inputActive,
-  sharedColors.inputActive,
-  sharedColors.inputActive,
+  sharedColors.background.accent,
+  sharedColors.background.accent,
+  sharedColors.background.accent,
 ]
 const pinExistFirstStep = [
   sharedColors.successLight,
-  sharedColors.inputActive,
-  sharedColors.inputActive,
+  sharedColors.background.accent,
+  sharedColors.background.accent,
 ]
 const pinExistSecondStep = [
   sharedColors.successLight,
   sharedColors.successLight,
-  sharedColors.inputActive,
+  sharedColors.background.accent,
 ]
 const pinExistComplete = [
   sharedColors.successLight,
@@ -65,10 +65,13 @@ const pinExistComplete = [
 ]
 
 // no pin exist
-const noPinExistNoSteps = [sharedColors.inputActive, sharedColors.inputActive]
+const noPinExistNoSteps = [
+  sharedColors.background.accent,
+  sharedColors.background.accent,
+]
 const noPinExistFirstStep = [
   sharedColors.successLight,
-  sharedColors.inputActive,
+  sharedColors.background.accent,
 ]
 const noPinExistComplete = [
   sharedColors.successLight,
@@ -125,7 +128,7 @@ type Props =
 export const PinScreen = ({ navigation, route }: Props) => {
   const initializeWallet = useInitializeWallet()
   const setGlobalError = useSetGlobalError()
-  const insets = useSafeAreaInsets()
+  const { top } = useSafeAreaInsets()
   const isFocused = useIsFocused()
   // const isVisible = useKeyboardIsVisible()
   const { t } = useTranslation()
@@ -360,7 +363,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
 
     navigation.setOptions(
       screenOptionsWithHeader(
-        insets.top,
+        top,
         headerTitle,
         undefined,
         steps ?? undefined,
@@ -370,7 +373,7 @@ export const PinScreen = ({ navigation, route }: Props) => {
     )
   }, [
     navigation,
-    insets,
+    top,
     steps,
     backScreen,
     headerTitle,
@@ -434,13 +437,11 @@ export const PinScreen = ({ navigation, route }: Props) => {
             </View>
           )}
           <AppButton
-            style={[
-              sharedStyles.appButtonBottom,
-              { backgroundColor: sharedColors.black },
-            ]}
+            style={sharedStyles.appButtonBottom}
             onPress={focusInput}
             title={t('pin_settings_open_keyboard_btn')}
-            textColor={sharedColors.white}
+            color={sharedColors.button.secondaryBackground}
+            textColor={sharedColors.button.secondaryText}
             backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
             accessibilityLabel={TestID.OpenKeyboardButton}
           />
@@ -467,12 +468,15 @@ const styles = StyleSheet.create({
     backgroundColor: sharedColors.primary,
   }),
   dotInactive: castStyle.view({
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
   }),
   androidInputWorkaround: castStyle.text({
     display: 'flex',
     position: 'absolute',
     bottom: -1000,
   }),
-  errorIcon: castStyle.text({ marginTop: 82, alignSelf: 'center' }),
+  errorIcon: castStyle.text({
+    marginTop: 82,
+    alignSelf: 'center',
+  }),
 })

@@ -162,16 +162,16 @@ export const PurchaseDomainScreen = ({ navigation }: Props) => {
               onPress={registerDomain}
               accessibilityLabel={TestID.PurchaseDomainButton}
               title={t('purchase_username_button')}
-              color={sharedColors.white}
-              textColor={sharedColors.black}
+              color={sharedColors.button.primaryBackground}
+              textColor={sharedColors.button.primaryText}
             />
             <AppButton
               style={rnsManagerStyles.button}
               onPress={onCancelDomainTap}
               accessibilityLabel={TestID.CancelRegistrationButton}
               title={t('cancel_username_button')}
-              color={sharedColors.white}
-              textColor={sharedColors.white}
+              color={sharedColors.button.primaryBackground}
+              textColor={sharedColors.button.secondaryText}
               backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
             />
           </>

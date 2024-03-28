@@ -19,13 +19,13 @@ interface QRGeneratorProps {
   value: string
   iconProps?: QRIconProps
   imageSource?: ImageSourcePropType
-  qrWidth?: number
-  qrBackgroundColor?: string
-  qrColor?: string
-  qrMargin?: number
-  logoBackgroundColor?: string
   containerViewStyle?: ViewStyle
   testID?: string
+  qrWidth?: number
+  qrMargin?: number
+  qrColor?: string
+  qrBackgroundColor?: string
+  logoBackgroundColor?: string
   accessibilityLabel?: string
 }
 
@@ -45,16 +45,16 @@ interface QRGeneratorProps {
  */
 export const QRGenerator = ({
   value,
-  qrWidth = 248,
   iconProps,
   imageSource,
-  qrBackgroundColor = sharedColors.black,
-  qrColor = sharedColors.white,
-  qrMargin = 10,
   containerViewStyle,
-  logoBackgroundColor,
   testID,
   accessibilityLabel,
+  qrWidth = 248,
+  qrMargin = 10,
+  qrColor = sharedColors.text.primary,
+  qrBackgroundColor = sharedColors.text.secondary,
+  logoBackgroundColor = sharedColors.text.primary,
 }: QRGeneratorProps) => {
   const [width, setWidth] = useState(qrWidth)
   const [iconSource, setIconSource] = useState(imageSource)

@@ -26,8 +26,6 @@ import { AppTouchable } from 'components/appTouchable'
 
 import { Typography } from '../typography'
 
-export { CustomInput } from './CustomInput'
-
 enum TestID {
   InputLabel = 'InputLabel',
 }
@@ -129,7 +127,7 @@ export const Input = ({
                   <Icon
                     name={leftIcon.name}
                     size={leftIcon.size || defaultIconSize}
-                    color={leftIcon.color || sharedColors.white}
+                    color={leftIcon.color || sharedColors.text.primary}
                   />
                 </AppTouchable>
               ) : (
@@ -187,7 +185,7 @@ export const Input = ({
                 style={styles.rightIcon}
                 name={'close'}
                 size={defaultIconSize}
-                color={sharedColors.white}
+                color={sharedColors.text.primary}
               />
             </AppTouchable>
           ) : rightIcon && 'name' in rightIcon ? (
@@ -196,7 +194,7 @@ export const Input = ({
                 style={styles.rightIcon}
                 name={rightIcon.name}
                 size={rightIcon.size || defaultIconSize}
-                color={rightIcon.color || sharedColors.white}
+                color={rightIcon.color || sharedColors.text.primary}
               />
             </Pressable>
           ) : (
@@ -213,7 +211,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     paddingLeft: 16,
     paddingRight: 16,
     marginTop: 12,
@@ -221,7 +219,7 @@ const styles = StyleSheet.create({
     minHeight: 80,
   }),
   containerActive: castStyle.view({
-    backgroundColor: sharedColors.inputActive,
+    backgroundColor: sharedColors.background.accent,
   }),
   contentPadding: castStyle.view({
     paddingBottom: 18,
@@ -229,7 +227,7 @@ const styles = StyleSheet.create({
   label: castStyle.text({
     marginTop: 10,
     marginBottom: 4,
-    color: sharedColors.inputLabelColor,
+    color: sharedColors.text.label,
   }),
   valueContainer: castStyle.view({
     flex: 1,
@@ -243,17 +241,17 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   }),
   subtitle: castStyle.text({
-    color: sharedColors.inputLabelColor,
+    color: sharedColors.text.label,
   }),
   rightIcon: castStyle.text({
     padding: defaultIconSize,
   }),
   placeholderText: castStyle.text({
     flex: 1,
-    color: sharedColors.inputLabelColor,
+    color: sharedColors.text.label,
   }),
   valueText: castStyle.text({
     marginTop: 14,
-    color: sharedColors.white,
+    color: sharedColors.text.primary,
   }),
 })

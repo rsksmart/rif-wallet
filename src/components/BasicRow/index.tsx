@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   container: castStyle.view({
     marginTop: 10,
     paddingVertical: 10,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
     height: 'auto',
     flexDirection: 'row',
   }),
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   usdText: {
     textAlign: 'right',
     flex: 1,
-    color: sharedColors.labelLight,
+    color: sharedColors.text.label,
   },
   horizontalPadding: {
     paddingRight: 1,

@@ -105,8 +105,8 @@ export const AppButton = ({
   disabledStyle,
   accessibilityLabel = '',
   onPress,
-  color = sharedColors.inputInactive,
-  textColor = sharedColors.white,
+  color = sharedColors.button.secondaryBackground,
+  textColor = sharedColors.button.secondaryText,
   textType = 'button1',
   backgroundVariety = AppButtonBackgroundVarietyEnum.DEFAULT,
   widthVariety = AppButtonWidthVarietyEnum.FULL,
@@ -153,7 +153,7 @@ export const AppButton = ({
         ) : (
           <AppSpinner
             size={buttonHeight - defaultPadding * 2}
-            color={sharedColors.black}
+            color={textColor as string}
           />
         )}
         {rightIcon ? (
@@ -186,6 +186,6 @@ const styles = StyleSheet.create({
     paddingTop: 2,
   }),
   disabledButton: castStyle.view({
-    backgroundColor: sharedColors.inputActive,
+    backgroundColor: sharedColors.background.accent,
   }),
 })

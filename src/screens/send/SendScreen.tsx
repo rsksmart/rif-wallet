@@ -214,8 +214,8 @@ export const SendScreen = ({
           {
             title: t('send_screen_return_to_home'),
             onPress: onGoToHome,
-            color: sharedColors.white,
-            textColor: sharedColors.black,
+            color: sharedColors.button.primaryBackground,
+            textColor: sharedColors.button.primaryText,
             accessibilityLabel: 'return',
           },
         ]}

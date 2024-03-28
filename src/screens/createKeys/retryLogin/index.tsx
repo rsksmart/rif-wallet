@@ -24,15 +24,16 @@ export const RetryLogin = () => {
       <AppButton
         onPress={retryLogin}
         title={t('initial_screen_button_retry_login')}
-        color={sharedColors.white}
-        textColor={sharedColors.black}
+        color={sharedColors.button.primaryBackground}
+        textColor={sharedColors.button.primaryText}
       />
       {__DEV__ && (
         <AppButton
           onPress={() => dispatch(resetApp())}
           title={t('initial_screen_button_reset_app')}
+          style={sharedStyles.marginTop10}
           color={sharedColors.danger}
-          textColor={sharedColors.white}
+          textColor={sharedColors.button.secondaryText}
         />
       )}
     </View>

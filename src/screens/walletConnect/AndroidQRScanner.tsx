@@ -67,14 +67,18 @@ export const AndroidQRScanner = ({
         width={30}
         onPress={onClose}
         style={[styles.closeAppTouchable, sharedStyles.marginLeft24]}>
-        <Icon name="chevron-left" size={30} color={sharedColors.white} />
+        <Icon name="chevron-left" size={30} color={sharedColors.text.primary} />
       </AppTouchable>
       <View style={styles.viewStyle}>
         {isProcessingImage ? (
           <AppSpinner size={60} thickness={4} />
         ) : (
           <AppTouchable width={60} onPress={onTakePicture}>
-            <Icon name="dot-circle" size={60} color={sharedColors.white} />
+            <Icon
+              name="dot-circle"
+              size={60}
+              color={sharedColors.text.primary}
+            />
           </AppTouchable>
         )}
       </View>

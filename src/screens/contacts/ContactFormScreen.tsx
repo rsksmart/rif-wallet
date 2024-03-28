@@ -200,9 +200,9 @@ export const ContactFormScreen = ({
       headerTitle: editMode
         ? t('contact_form_title_edit')
         : t('contact_form_title_create'),
-      headerTintColor: sharedColors.white,
+      headerTintColor: sharedColors.text.primary,
       headerStyle: {
-        backgroundColor: sharedColors.black,
+        backgroundColor: sharedColors.background.primary,
       },
       headerRightContainerStyle: {
         paddingTop: 0,
@@ -210,7 +210,7 @@ export const ContactFormScreen = ({
       headerLeftContainerStyle: {
         paddingTop: 0,
       },
-      headerLeftLabelVisible: editMode,
+      headerLeftLabelVisible: false,
       headerLeft: proposed
         ? () =>
             sharedHeaderLeftOptions(() => {
@@ -268,7 +268,8 @@ export const ContactFormScreen = ({
         title={t('contact_form_button_save')}
         onPress={handleSubmit(saveContact)}
         style={sharedStyles.appButtonBottom}
-        textColor={sharedColors.inputInactive}
+        color={sharedColors.button.primaryBackground}
+        textColor={sharedColors.button.primaryText}
         disabled={hasErrors || rnsLoading}
       />
     </KeyboardAvoidingView>

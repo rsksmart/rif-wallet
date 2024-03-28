@@ -19,7 +19,6 @@ import {
 } from 'navigation/profileNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle, formatTokenValues } from 'shared/utils'
-import { colors } from 'src/styles'
 import {
   recoverAlias,
   requestUsername,
@@ -250,9 +249,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
       // it exists for ios but shows error https://reactnative.dev/docs/scrollview#automaticallyadjustkeyboardinsets-ios
       automaticallyAdjustKeyboardInsets>
       <View style={rnsManagerStyles.container}>
-        <Typography
-          type="h2"
-          style={[rnsManagerStyles.subtitle, rnsManagerStyles.marginBottom]}>
+        <Typography type="h2" style={rnsManagerStyles.marginBottom}>
           {t('request_username_title')}
         </Typography>
         <AvatarIconBox text={(domain || '') + '.rsk'} />
@@ -296,14 +293,22 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
                       width={40}
                       accessibilityLabel="decrease"
                       onPress={() => handleYearsChange(years - 1)}>
-                      <Icon name="minus" size={16} color={colors.white} />
+                      <Icon
+                        name="minus"
+                        size={16}
+                        color={sharedColors.text.primary}
+                      />
                     </AppTouchable>
                   )}
                   <AppTouchable
                     width={40}
                     accessibilityLabel="increase"
                     onPress={() => handleYearsChange(years + 1)}>
-                    <Icon name="plus" size={16} color={colors.white} />
+                    <Icon
+                      name="plus"
+                      size={16}
+                      color={sharedColors.text.primary}
+                    />
                   </AppTouchable>
                 </View>
               }
@@ -342,17 +347,8 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
             onPress={handleSubmit(onSubmit)}
             accessibilityLabel={t('request_username_button')}
             title={t('request_username_button')}
-            color={
-              !isRequestButtonDisabled
-                ? sharedColors.white
-                : sharedColors.borderColor
-            }
-            textColor={
-              !isRequestButtonDisabled
-                ? sharedColors.black
-                : sharedColors.labelLight
-            }
-            disabledStyle={rnsManagerStyles.disabledButton}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
             loading={isCalculatingPrice}
           />
         ) : (
@@ -362,17 +358,8 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
             onPress={handleSetProfile}
             accessibilityLabel={t('save_username_button')}
             title={t('save_username_button')}
-            color={
-              !isSaveButtonDisabled
-                ? sharedColors.white
-                : sharedColors.borderColor
-            }
-            textColor={
-              !isSaveButtonDisabled
-                ? sharedColors.black
-                : sharedColors.labelLight
-            }
-            disabledStyle={rnsManagerStyles.disabledButton}
+            color={sharedColors.button.primaryBackground}
+            textColor={sharedColors.button.primaryText}
           />
         )}
       </View>

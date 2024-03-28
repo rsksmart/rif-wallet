@@ -5,7 +5,7 @@ import { Alert, Linking } from 'react-native'
 import { navigationContainerRef } from 'core/Core'
 
 const checkCameraPermissions = async (t: (text: string) => string) => {
-  const cameraPermission = await Camera.getCameraPermissionStatus()
+  const cameraPermission = Camera.getCameraPermissionStatus()
   if (cameraPermission === 'not-determined') {
     const cameraStatus = await Camera.requestCameraPermission()
     cameraStatus === 'denied' && navigationContainerRef.goBack()
