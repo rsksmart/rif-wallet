@@ -39,6 +39,7 @@ import {
 import { addressToUse, Wallet } from 'shared/wallet'
 import { createAppWallet, loadAppWallet } from 'shared/utils'
 import { MMKVStorage } from 'storage/MMKVStorage'
+import { deleteWCSessions } from 'screens/walletConnect/walletConnect2.utils'
 
 import {
   Bitcoin,
@@ -346,6 +347,7 @@ export const resetApp = createAsyncThunk(
       thunkAPI.dispatch(setKeysExist(false))
       resetMainStorage()
       resetReduxStorage()
+      deleteWCSessions()
       return 'deleted'
     } catch (err) {
       return thunkAPI.rejectWithValue(err)
