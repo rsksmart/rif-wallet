@@ -22,8 +22,7 @@ import {
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { addPendingTransaction } from 'store/slices/transactionsSlice'
-import { Wallet } from 'shared/wallet'
-import { addressToUse } from 'shared/wallet'
+import { Wallet, addressToUse } from 'shared/wallet'
 
 const onSessionApprove = async (
   web3wallet: Web3Wallet,
