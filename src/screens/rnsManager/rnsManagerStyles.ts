@@ -13,12 +13,8 @@ export const rnsManagerStyles = StyleSheet.create({
     padding: 20,
     paddingTop: 50,
   }),
-  profileHeader: castStyle.view({
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    backgroundColor: sharedColors.black,
+  subtitle: castStyle.text({
+    color: sharedColors.text.placeholder,
   }),
   profileImageContainer: castStyle.view({
     alignItems: 'center',

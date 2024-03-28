@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   }),
   tokenBackground: castStyle.view({
     borderRadius: 15,
-    backgroundColor: sharedColors.white,
+    backgroundColor: sharedColors.text.primary,
   }),
   tokenSubIcon: castStyle.view({
     borderRadius: 10,

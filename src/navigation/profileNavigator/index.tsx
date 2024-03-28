@@ -69,7 +69,7 @@ export const ProfileNavigator = ({
         options={screenOptionsWithHeader(
           top,
           t('profile_screen_title'),
-          undefined,
+          sharedColors.primary,
           [startColor, endColor],
         )}
       />

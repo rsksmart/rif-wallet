@@ -210,7 +210,7 @@ export const ContactFormScreen = ({
       headerLeftContainerStyle: {
         paddingTop: 0,
       },
-      headerLeftLabelVisible: editMode,
+      headerLeftLabelVisible: false,
       headerLeft: proposed
         ? () =>
             sharedHeaderLeftOptions(() => {

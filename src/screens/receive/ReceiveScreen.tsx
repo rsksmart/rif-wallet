@@ -197,7 +197,7 @@ export const ReceiveScreen = ({
               <Ionicons
                 name="share-outline"
                 size={20}
-                color={sharedColors.white}
+                color={sharedColors.text.primary}
                 onPress={onShareUsername}
                 testID={TestID.ShareUsernameButton}
                 disabled

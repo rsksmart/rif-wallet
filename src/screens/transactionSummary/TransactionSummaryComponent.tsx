@@ -348,16 +348,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   }),
-  summaryWrapper: castStyle.view({
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: sharedColors.white,
-    paddingBottom: 16,
-  }),
   separator: castStyle.view({
     marginTop: 16,
     height: 1,
     width: '100%',
-    backgroundColor: sharedColors.white,
+    backgroundColor: sharedColors.text.primary,
     opacity: 0.4,
   }),
   fullAddress: castStyle.view({

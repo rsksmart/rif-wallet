@@ -44,7 +44,11 @@ import { selectTransactions } from 'store/slices/transactionsSlice'
 import { getRnsResolver } from 'src/core/setup'
 import { WalletContext } from 'src/shared/wallet'
 
-const copyButtonConfig = { name: 'copy', size: 18, color: sharedColors.white }
+const copyButtonConfig = {
+  name: 'copy',
+  size: 18,
+  color: sharedColors.text.primary,
+}
 
 export const ContactDetails = ({
   navigation,
@@ -131,7 +135,7 @@ export const ContactDetails = ({
           <FontAwesome5Icon
             name={'trash-alt'}
             size={20}
-            color={sharedColors.white}
+            color={sharedColors.text.primary}
           />
         </AppTouchable>
       ),
@@ -189,7 +193,7 @@ export const ContactDetails = ({
         <View style={styles.contactDetailsView}>
           <Avatar name={contact.name} size={52} />
           <View style={styles.nameAddressView}>
-            <Typography type={'h2'} color={sharedColors.white}>
+            <Typography type={'h2'} color={sharedColors.text.primary}>
               {contact.name}
             </Typography>
             <Typography type={'h4'} color={sharedColors.text.label}>

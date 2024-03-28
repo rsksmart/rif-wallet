@@ -77,12 +77,28 @@ export const WalletConnectScreen = ({ route }: Props) => {
   const { watch, setValue } = methods
   const wcUri = watch('wcUri')
 
-  const wc2Sessions: WC2Session[] = sessions.map(session => ({
-    name: session.peer.metadata.name,
-    url: session.peer.metadata.url,
-    key: session.topic,
-    wc: session,
-  }))
+  // const wc2Sessions: WC2Session[] = sessions.map(session => ({
+  //   name: session.peer.metadata.name,
+  //   url: session.peer.metadata.url,
+  //   key: session.topic,
+  //   wc: session,
+  // }))
+  const wc2Sessions: WC2Session[] = [
+    {
+      name: 'test',
+      url: 'test',
+      key: 'test',
+      wc: {
+        peer: {
+          metadata: {
+            name: 'test',
+            url: 'test',
+          },
+        },
+        topic: 'test',
+      },
+    },
+  ]
 
   const handlePaste = async () => {
     const clipboardText = await Clipboard.getString()

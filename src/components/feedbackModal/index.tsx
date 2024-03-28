@@ -33,7 +33,7 @@ export const FeedbackModal = ({
   animationType,
   buttons,
   style,
-  backgroundColor = sharedColors.black,
+  backgroundColor = sharedColors.background.primary,
 }: Props) => {
   const { top } = useSafeAreaInsets()
   return (

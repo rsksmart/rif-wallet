@@ -32,7 +32,7 @@ export const ExampleScreen = ({
     navigation.setOptions({
       headerLeft: () => headerLeftOption(navigation.goBack),
       headerStyle: {
-        backgroundColor: sharedColors.black,
+        backgroundColor: sharedColors.background.primary,
       },
     })
   }, [navigation])

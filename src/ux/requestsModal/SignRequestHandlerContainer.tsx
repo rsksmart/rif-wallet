@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
     zIndex: 999,
     paddingHorizontal: 24,
   }),

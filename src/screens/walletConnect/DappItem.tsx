@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   dappIcon: castStyle.view({
     width: 30,
     height: 30,
-    backgroundColor: sharedColors.white,
+    backgroundColor: sharedColors.text.primary,
     borderRadius: 15,
   }),
   content: castStyle.view({
