@@ -4,9 +4,8 @@ import { useCallback, useState } from 'react'
 import { Typography } from 'components/typography'
 import { AppTouchable } from 'components/appTouchable'
 import { Avatar } from 'components/avatar'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { sharedStyles } from 'shared/styles'
 
 interface InfoBoxProps {
   avatar?: string

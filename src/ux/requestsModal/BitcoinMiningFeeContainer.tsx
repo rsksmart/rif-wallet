@@ -4,7 +4,7 @@ import { convertBtcToSatoshi } from '@rsksmart/rif-wallet-bitcoin'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBitcoin } from 'store/slices/settingsSlice'
 import { Typography } from 'src/components'
-import { sharedStyles } from 'shared/styles'
+import { sharedStyles } from 'shared/constants'
 
 export interface FeeRecord {
   feeName: string

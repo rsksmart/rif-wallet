@@ -24,8 +24,7 @@ import {
   ProfileStackScreenProps,
   ProfileStatus,
 } from 'navigation/profileNavigator/types'
-import { defaultIconSize, sharedColors } from 'shared/constants'
-import { sharedStyles } from 'shared/styles'
+import { defaultIconSize, sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import {
   commitment,

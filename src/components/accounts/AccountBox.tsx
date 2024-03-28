@@ -17,8 +17,7 @@ import {
   getAddressDisplayText,
 } from 'components/index'
 import { PublicKeyItemType } from 'screens/accounts/types'
-import { defaultIconSize, sharedColors } from 'shared/constants'
-import { sharedStyles } from 'shared/styles'
+import { defaultIconSize, sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { setAccount } from 'store/slices/accountsSlice'
 import { WalletIsDeployed } from 'store/slices/settingsSlice/types'

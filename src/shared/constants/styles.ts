@@ -39,6 +39,12 @@ export const sharedStyles = StyleSheet.create({
   marginLeft24: castStyle.view({
     marginLeft: 24,
   }),
+  marginBottom: castStyle.view({
+    marginBottom: 10,
+  }),
+  marginTop20: castStyle.view({
+    marginTop: 20,
+  }),
   marginTop10: castStyle.view({
     marginTop: 10,
   }),
@@ -77,6 +83,10 @@ export const sharedStyles = StyleSheet.create({
     left: 24,
     right: 24,
   }),
+  coverAllScreen: {
+    height: '100%',
+    backgroundColor: '#F5FCFF',
+  },
   /* GRID */
   column12: {
     display: 'flex',
