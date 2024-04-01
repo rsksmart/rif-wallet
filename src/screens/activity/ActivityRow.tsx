@@ -135,7 +135,6 @@ export const ActivityBasicRow = ({
 
   const handlePress = useCallback(() => {
     if (txSummary) {
-      console.log('txSummary.transaction.status', txSummary.transaction.status)
       navigation.navigate(rootTabsRouteNames.TransactionSummary, {
         ...txSummary,
         backScreen,
