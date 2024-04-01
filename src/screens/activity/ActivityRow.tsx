@@ -79,7 +79,9 @@ export const ActivityBasicRow = ({
   }
 
   const txSummary: TransactionSummaryScreenProps = useMemo(() => {
-    const totalUsd = usdValue + Number(fee.usdValue)
+    const totalUsd = isNaN(usdValue) ? '' : usdValue + Number(fee.usdValue)
+    const feeUsd = isNaN(+fee.usdValue) ? '' : fee.usdValue
+    const usdAmount = isNaN(usdValue) ? '' : usdValue
 
     const totalToken =
       symbol === fee.symbol
@@ -96,12 +98,12 @@ export const ActivityBasicRow = ({
         usdValue: {
           symbol: '$',
           symbolType: 'usd',
-          balance: usdValue,
+          balance: usdAmount,
         },
         fee: {
           symbol: fee.symbol || symbol,
           tokenValue: fee.tokenValue,
-          usdValue: fee.usdValue,
+          usdValue: feeUsd,
         },
         totalToken,
         totalUsd,
