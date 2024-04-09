@@ -4,7 +4,7 @@ import { sharedColors } from 'shared/constants'
 
 import { FooterIconInterface } from '.'
 
-const NetworkIcon = ({
+export const NetworkIcon = ({
   active = false,
   activeColor = sharedColors.primary,
   ...props
@@ -17,4 +17,3 @@ const NetworkIcon = ({
     />
   </Svg>
 )
-export default NetworkIcon

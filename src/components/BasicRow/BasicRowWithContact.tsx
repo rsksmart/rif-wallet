@@ -1,7 +1,6 @@
 import { BasicRow, BasicRowProps } from 'components/BasicRow/index'
 import { Contact } from 'shared/types'
-
-import UserIcon from '../icons/UserIcon'
+import { UserIcon } from 'components/icons/UserIcon'
 
 export interface BasicRowWithContact extends BasicRowProps {
   contact: Contact | undefined

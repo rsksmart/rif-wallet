@@ -1,4 +1,4 @@
-import { StyleProp, TextProps, TextStyle } from 'react-native'
+import { ColorValue, StyleProp, TextProps, TextStyle } from 'react-native'
 import { SvgProps } from 'react-native-svg'
 
 export interface SVGIconInterface {
@@ -15,7 +15,7 @@ export interface MaterialIconInterface extends TextProps {
 
 export interface FooterIconInterface extends SvgProps {
   active?: boolean
-  activeColor?: string
+  activeColor?: ColorValue
 }
 
 export { Arrow } from './Arrow'

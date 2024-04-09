@@ -2,7 +2,7 @@ import Svg, { ClipPath, Defs, G, Path, Rect, SvgProps } from 'react-native-svg'
 
 import { sharedColors } from 'src/shared/constants'
 
-const DeployWalletImage = ({
+export const DeployWalletImage = ({
   width = 232,
   height = 352,
   ...props
@@ -74,4 +74,3 @@ const DeployWalletImage = ({
     </Defs>
   </Svg>
 )
-export default DeployWalletImage

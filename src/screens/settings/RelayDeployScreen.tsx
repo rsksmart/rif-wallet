@@ -20,7 +20,7 @@ import { sharedHeaderLeftOptions } from 'navigation/index'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
 import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { useWholeWalletWithSetters } from 'shared/wallet'
-import DeployWalletImage from 'src/components/icons/DeployWalletImage'
+import { DeployWalletImage } from 'components/icons/DeployWalletImage'
 
 import { TokenSymbol } from '../home/TokenImage'
 

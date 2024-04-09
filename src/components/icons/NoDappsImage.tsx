@@ -2,7 +2,11 @@ import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg'
 
 import { sharedColors } from 'src/shared/constants'
 
-const NoDappsImage = ({ width = 268, height = 280, ...props }: SvgProps) => (
+export const NoDappsImage = ({
+  width = 268,
+  height = 280,
+  ...props
+}: SvgProps) => (
   <Svg width={width} height={height} fill="none" {...props}>
     <Path
       fill={sharedColors.primary}
@@ -46,4 +50,3 @@ const NoDappsImage = ({ width = 268, height = 280, ...props }: SvgProps) => (
     </Defs>
   </Svg>
 )
-export default NoDappsImage

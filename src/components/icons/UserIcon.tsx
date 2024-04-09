@@ -22,5 +22,3 @@ export const UserIcon = ({
     />
   </Svg>
 )
-
-export default UserIcon

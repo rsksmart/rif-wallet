@@ -24,7 +24,7 @@ import { castStyle } from 'shared/utils'
 import { changeTopColor } from 'store/slices/settingsSlice'
 import { useAppDispatch } from 'store/storeUtils'
 import { WalletContext } from 'shared/wallet'
-import NoDappsImage from 'components/icons/NoDappsImage'
+import { NoDappsImage } from 'components/icons/NoDappsImage'
 
 import { DappItem } from './DappItem'
 import {

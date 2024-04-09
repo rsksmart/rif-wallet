@@ -4,7 +4,7 @@ import { sharedColors } from 'shared/constants'
 
 import { FooterIconInterface } from '.'
 
-const HomeIcon = ({
+export const HomeIcon = ({
   active = false,
   activeColor = sharedColors.primary,
   ...props
@@ -17,4 +17,3 @@ const HomeIcon = ({
     />
   </Svg>
 )
-export default HomeIcon
