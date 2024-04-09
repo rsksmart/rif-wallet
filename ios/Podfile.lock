@@ -1171,7 +1171,7 @@ PODS:
     - React-Core
   - RNScreenshotPrevent (1.1.9):
     - React
-  - RNSVG (14.1.0):
+  - RNSVG (13.4.0):
     - React-Core
   - RNVectorIcons (10.0.3):
     - glog
@@ -1533,14 +1533,14 @@ SPEC CHECKSUMS:
   RNReanimated: beb07f7f900543928467da8107c175d1e57a1049
   RNScreens: b582cb834dc4133307562e930e8fa914b8c04ef2
   RNScreenshotPrevent: cdfbe213203774c7486c6a2f198af8a4ebe10c47
-  RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
+  RNSVG: 07dbd870b0dcdecc99b3a202fa37c8ca163caec2
   RNVectorIcons: 210f910e834e3485af40693ad4615c1ec22fc02b
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   TrustKit: 7858ea59d0e226b1457b2e9cc8b95d77ab21d471
   VisionCamera: 7a5c87805b13adaaa557132b44879ed1e1e39786
-  Yoga: 64cd2a583ead952b0315d5135bf39e053ae9be70
+  Yoga: 1b901a6d6eeba4e8a2e8f308f708691cdb5db312
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
 PODFILE CHECKSUM: 3c66251e2fb883f7575e84b4cdde922bccb42c88
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.13.0
