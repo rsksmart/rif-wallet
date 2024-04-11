@@ -1,6 +1,9 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import {
+  BottomTabBarProps,
+  createBottomTabNavigator,
+} from '@react-navigation/bottom-tabs'
 import JailMonkey from 'jail-monkey'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useTranslation } from 'react-i18next'
@@ -39,6 +42,9 @@ import {
 
 const RootTabs = createBottomTabNavigator<RootTabsParamsList>()
 
+const TabBar = (isShown: boolean) => (props: BottomTabBarProps) =>
+  !isShown ? null : <AppFooterMenu {...props} />
+
 export const RootNavigationComponent = () => {
   const { t } = useTranslation()
   const { top } = useSafeAreaInsets()
@@ -48,7 +54,7 @@ export const RootNavigationComponent = () => {
   const fullscreen = useAppSelector(selectFullscreen)
   const settingsLoading = useAppSelector(selectSettingsIsLoading)
 
-  const isShown = unlocked && !fullscreen
+  const isShown = useMemo(() => unlocked && !fullscreen, [unlocked, fullscreen])
 
   useEffect(() => {
     BootSplash.hide()
@@ -56,8 +62,7 @@ export const RootNavigationComponent = () => {
 
   return (
     <View style={sharedStyles.flex}>
-      <RootTabs.Navigator
-        tabBar={props => (!isShown ? null : <AppFooterMenu {...props} />)}>
+      <RootTabs.Navigator tabBar={TabBar(isShown)}>
         {!unlocked ? (
           <RootTabs.Screen
             name={rootTabsRouteNames.CreateKeysUX}
