@@ -10,8 +10,8 @@ import { castStyle } from 'shared/utils'
 import { HomeIcon } from 'components/icons/HomeIcon'
 import { NetworkIcon } from 'components/icons/NetworkIcon'
 import { ScanIcon } from 'components/icons/ScanIcon'
-import TransactionsIcon from 'components/icons/TransactionsIcon'
-import UsersIcon from 'components/icons/UsersIcon'
+import { TransactionsIcon } from 'components/icons/TransactionsIcon'
+import { UsersIcon } from 'components/icons/UsersIcon'
 
 const buttonWidth = 52
 

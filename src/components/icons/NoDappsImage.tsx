@@ -1,6 +1,6 @@
 import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg'
 
-import { sharedColors } from 'src/shared/constants'
+import { sharedColors } from 'shared/constants'
 
 export const NoDappsImage = ({
   width = 268,

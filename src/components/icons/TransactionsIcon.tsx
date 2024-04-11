@@ -4,7 +4,7 @@ import { sharedColors } from 'shared/constants'
 
 import { FooterIconInterface } from '.'
 
-const TransactionsIcon = ({
+export const TransactionsIcon = ({
   active = false,
   activeColor = sharedColors.primary,
   ...props
@@ -17,4 +17,3 @@ const TransactionsIcon = ({
     />
   </Svg>
 )
-export default TransactionsIcon
