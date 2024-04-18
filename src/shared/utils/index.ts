@@ -25,6 +25,114 @@ export const delay = (delayMs: number) => {
   )
 }
 
+// this needs to be here because of the failing tests
+enum TokenSymbol {
+  TRBTC = 'TRBTC',
+  RBTC = 'RBTC',
+}
+
+export const rbtcMap = new Map([
+  [TokenSymbol.TRBTC, true],
+  [TokenSymbol.RBTC, true],
+  [undefined, false],
+])
+
+interface FormatNumberOptions {
+  decimalPlaces?: number
+  useThousandSeparator?: boolean
+  isCurrency?: boolean
+  sign?: string
+}
+
+/**
+ * Formats a number or a numeric string with the given options.
+ * @param num The number or string to format.
+ * @param options The formatting options to use.
+ * @returns The formatted number as a string.
+ */
+const formatNumber = (
+  num: number | string,
+  options: FormatNumberOptions = {},
+): string => {
+  // Attempt to parse if num is a string
+  if (typeof num === 'string') {
+    const parsedNum = parseFloat(num)
+    if (isNaN(parsedNum)) {
+      return num
+    }
+    num = parsedNum
+  }
+
+  // Destructure with default values
+  const {
+    decimalPlaces = 8,
+    useThousandSeparator = true,
+    isCurrency = false,
+    sign = '',
+  } = options
+
+  // Calculate the minimum value that can be displayed given the number of decimal places
+  const minValue = 1 / Math.pow(10, decimalPlaces)
+
+  // Check for small positive amounts less than the minimum value
+  if (num > 0 && num < minValue) {
+    return `<${sign}0.${'0'.repeat(decimalPlaces - 1)}1`
+  }
+
+  // Format the number with fixed decimal places
+  let result = num.toFixed(isCurrency ? 2 : decimalPlaces)
+
+  // For non-currency numbers, remove unnecessary trailing zeros
+  if (!isCurrency) {
+    result = result.replace(/(\.\d*?[1-9])0+$|\.0*$/, '$1')
+  }
+
+  // Add thousand separators if enabled
+  if (useThousandSeparator) {
+    const parts = result.split('.')
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    result = parts.join('.')
+  }
+
+  // Check if the number is negative; if so, format accordingly
+  if (num < 0) {
+    return `-${sign}${result.substring(1)}`
+  }
+
+  return `${sign}${result}`
+}
+
+/**
+ * Formats a number or a numeric string as a USD value with a dollar sign.
+ * Should be used only at the end when showing values.
+ * @param value The number or string to format.
+ * @param sign The currency sign to use.
+ * @returns The formatted USD value with a dollar sign as a string.
+ */
+export const formatFiatValue = (value: number | string, sign = '$'): string =>
+  formatNumber(value, {
+    decimalPlaces: 2,
+    useThousandSeparator: true,
+    isCurrency: true,
+    sign,
+  })
+
+/**
+ * Formats a number or a numeric string as a token value.
+ * Should be used only at the end when showing values.
+ * @param value The number or string to format.
+ * @returns The formatted token value as a string.
+ */
+export const formatTokenValue = (
+  value: number | string,
+  precision = 8,
+): string =>
+  formatNumber(value, {
+    decimalPlaces: precision,
+    useThousandSeparator: true,
+    isCurrency: false,
+  })
+
 export const errorHandler = (error: unknown) => {
   if (typeof error === 'object' && Object.hasOwn(error as object, 'message')) {
     const err = error as ErrorWithMessage

@@ -26,6 +26,7 @@ export interface QRCodeScannerProps {
 }
 
 export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
+  const [barcode, setBarcode] = useState<Code | null>(null)
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: codes => {
@@ -34,10 +35,9 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
     },
   })
   const { t } = useTranslation()
-  const device = useCameraDevice('back')
-  const [barcode, setBarcode] = useState<Code | null>(null)
-  const dispatch = useAppDispatch()
   const isFocused = useIsFocused()
+  const dispatch = useAppDispatch()
+  const device = useCameraDevice('back')
 
   useCheckCameraPermissions({ t, isFocused })
 
@@ -63,10 +63,12 @@ export const QRCodeScanner = ({ onClose, onCodeRead }: QRCodeScannerProps) => {
         </View>
       ) : (
         <Camera
-          isActive={isFocused}
-          device={device}
           style={StyleSheet.absoluteFill}
-          torch="off"
+          device={device}
+          isActive={true}
+          photo={false}
+          video={false}
+          audio={false}
           codeScanner={codeScanner}
         />
       )}

@@ -155,10 +155,10 @@ export const onSocketChangeEmitted =
           const deserializedTransactions = combinedTransactions.map(tx =>
             activityDeserializer(tx, prices, chainId),
           )
+          dispatch(setUsdPrices(prices))
           dispatch(fetchBitcoinTransactions({}))
           dispatch(addNewTransactions(deserializedTransactions))
           dispatch(addOrUpdateBalances(tokens))
-          dispatch(setUsdPrices(prices))
           break
         default:
           throw new Error(`${type} not implemented`)

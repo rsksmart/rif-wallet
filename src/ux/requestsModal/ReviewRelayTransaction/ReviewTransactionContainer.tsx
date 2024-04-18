@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers'
+import { BigNumber, BigNumberish } from 'ethers'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert, StyleSheet, View } from 'react-native'
@@ -19,6 +19,7 @@ import { sharedColors } from 'shared/constants'
 import {
   castStyle,
   errorHandler,
+  formatTokenValue,
   getDefaultTokenContract,
   getFee,
   rbtcMap,
@@ -187,7 +188,7 @@ export const ReviewTransactionContainer = ({
     const feeValue = txCost ? balanceToDisplay(txCost, 18) : '0'
     const rbtcFeeValue =
       txCost && rbtcMap.get(fee.symbol as TokenSymbol)
-        ? txCost.toString()
+        ? formatTokenValue(txCost.toString())
         : undefined
     let insufficientFunds = false
 
@@ -207,15 +208,18 @@ export const ReviewTransactionContainer = ({
       Alert.alert(t('transaction_summary_insufficient_funds'))
     }
 
-    // get usd values
-    const tokenUsd = convertTokenToUSD(Number(value), tokenQuote)
-    const feeUsd = convertTokenToUSD(Number(feeValue), feeQuote)
-    const isAmountSmall = !Number(tokenUsd) && !!Number(value)
+    const convertToUSD = (
+      amount: string | BigNumberish,
+      quote: number,
+    ): number => convertTokenToUSD(Number(amount), quote)
+
+    // usd values
+    const tokenUsd = convertToUSD(value, tokenQuote)
+    const feeUsd = convertToUSD(feeValue, feeQuote)
+    const totalUsd = tokenUsd + feeUsd
 
     const totalToken =
       symbol === fee.symbol ? Number(value) + Number(feeValue) : Number(value)
-
-    const totalUsd = (Number(tokenUsd) + Number(feeUsd)).toFixed(2)
 
     return {
       transaction: {
@@ -225,14 +229,14 @@ export const ReviewTransactionContainer = ({
           balance: value.toString(),
         },
         usdValue: {
-          symbol: isAmountSmall ? '<' : '$',
+          symbol: '$',
           symbolType: 'usd',
-          balance: isAmountSmall ? '0.01' : tokenUsd,
+          balance: tokenUsd,
         },
         fee: {
+          symbol: fee.symbol,
           tokenValue: rbtcFeeValue ?? feeValue,
           usdValue: feeUsd,
-          symbol: fee.symbol,
         },
         totalToken,
         totalUsd,

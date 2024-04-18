@@ -1,11 +1,9 @@
 import { ChainID } from 'lib/eoaWallet'
 
-import { MMKVStorage } from 'storage/MMKVStorage'
-
-const ChainStorage = new MMKVStorage('chainStorage')
+import { MainStorage } from './MainStorage'
 
 export const getCurrentChainId: () => ChainID = () =>
-  ChainStorage.get('chainId') || 31
+  MainStorage.get('chainId') || 31
 
 export const setCurrentChainId = (chainId: ChainID) =>
-  ChainStorage.set('chainId', chainId)
+  MainStorage.set('chainId', chainId)

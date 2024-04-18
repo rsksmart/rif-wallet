@@ -35,7 +35,7 @@ export interface IBitcoinTransaction {
 
 export interface TokenFeeValueObject {
   tokenValue: string
-  usdValue: string
+  usdValue: number | string
   symbol?: TokenSymbol | string
 }
 
