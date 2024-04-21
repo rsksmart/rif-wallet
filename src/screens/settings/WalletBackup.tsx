@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ScrollView, StyleSheet, View } from 'react-native'
 
-import { sharedColors } from 'shared/constants'
 import { MnemonicComponent, Typography } from 'components/index'
 import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
+import { sharedStyles } from 'shared/constants'
 import { castStyle, usePreventScreenshot } from 'shared/utils'
 import { getKeys } from 'storage/SecureStorage'
 
@@ -31,7 +31,7 @@ export const WalletBackup = (_: Props) => {
   }, [])
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={sharedStyles.screen}>
       <View style={styles.content}>
         <Typography type="h2" style={styles.title}>
           {t('wallet_backup_subtitle')}
@@ -43,10 +43,6 @@ export const WalletBackup = (_: Props) => {
 }
 
 const styles = StyleSheet.create({
-  container: castStyle.view({
-    backgroundColor: sharedColors.black,
-    paddingHorizontal: 24,
-  }),
   content: castStyle.view({
     marginTop: 24,
   }),

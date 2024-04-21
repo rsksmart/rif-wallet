@@ -44,7 +44,11 @@ import { selectTransactions } from 'store/slices/transactionsSlice'
 import { getRnsResolver } from 'src/core/setup'
 import { WalletContext } from 'src/shared/wallet'
 
-const copyButtonConfig = { name: 'copy', size: 18, color: sharedColors.white }
+const copyButtonConfig = {
+  name: 'copy',
+  size: 18,
+  color: sharedColors.text.primary,
+}
 
 export const ContactDetails = ({
   navigation,
@@ -117,7 +121,7 @@ export const ContactDetails = ({
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(sharedColors.inputInactive))
+      dispatch(changeTopColor(sharedColors.background.secondary))
     }
   }, [dispatch, isFocused])
 
@@ -131,12 +135,12 @@ export const ContactDetails = ({
           <FontAwesome5Icon
             name={'trash-alt'}
             size={20}
-            color={sharedColors.white}
+            color={sharedColors.text.primary}
           />
         </AppTouchable>
       ),
       headerStyle: {
-        backgroundColor: sharedColors.inputActive,
+        backgroundColor: sharedColors.background.accent,
       },
       headerRightContainerStyle: {
         paddingTop: 0,
@@ -189,15 +193,16 @@ export const ContactDetails = ({
         <View style={styles.contactDetailsView}>
           <Avatar name={contact.name} size={52} />
           <View style={styles.nameAddressView}>
-            <Typography type={'h2'} color={sharedColors.white}>
+            <Typography type={'h2'} color={sharedColors.text.primary}>
               {contact.name}
             </Typography>
-            <Typography type={'h4'} color={sharedColors.labelLight}>
+            <Typography type={'h4'} color={sharedColors.text.label}>
               {contact.displayAddress || contact.address}
             </Typography>
           </View>
         </View>
-        <BarButtonGroupContainer backgroundColor={sharedColors.inputActive}>
+        <BarButtonGroupContainer
+          backgroundColor={sharedColors.background.accent}>
           <BarButtonGroupIcon
             onPress={onSendToContact}
             iconName={'north-east'}
@@ -230,7 +235,7 @@ export const ContactDetails = ({
           </FormProvider>
           <Typography
             type={'h3'}
-            color={sharedColors.labelLight}
+            color={sharedColors.text.label}
             style={styles.transactionsLabel}>
             {t('contacts_details_transactions')}
           </Typography>
@@ -261,8 +266,8 @@ export const ContactDetails = ({
             proposed: false,
           })
         }
-        color={sharedColors.white}
-        textColor={sharedColors.black}
+        color={sharedColors.button.primaryBackground}
+        textColor={sharedColors.button.primaryText}
       />
     </View>
   )
@@ -271,13 +276,13 @@ export const ContactDetails = ({
 const styles = StyleSheet.create({
   screen: castStyle.view({
     flex: 1,
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
   }),
   scrollviewContainer: castStyle.view({
     paddingBottom: 144,
   }),
   contactDetailsView: castStyle.view({
-    backgroundColor: sharedColors.inputActive,
+    backgroundColor: sharedColors.background.accent,
     justifyContent: 'center',
     alignItems: 'center',
     height: 167,

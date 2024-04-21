@@ -164,7 +164,7 @@ export const ConfirmNewMasterKeyScreen = ({ route }: ConfirmNewMasterKey) => {
   }, [hasFormSuccess, dispatch, mnemonic, initializeWallet])
 
   return (
-    <View style={styles.screen}>
+    <View style={sharedStyles.screen}>
       <StepperComponent
         width={40}
         colors={[sharedColors.primary, sharedColors.primary]}
@@ -197,16 +197,16 @@ export const ConfirmNewMasterKeyScreen = ({ route }: ConfirmNewMasterKey) => {
         style={styles.button}
         title={t('confirm_key_button')}
         onPress={handleSubmit(onSubmitEditing)}
-        color={sharedColors.white}
-        textColor={sharedColors.black}
+        color={sharedColors.button.primaryBackground}
+        textColor={sharedColors.button.primaryText}
       />
       {!formIsValid || hasFormSuccess ? (
-        <View style={StyleSheet.absoluteFill}>
+        <View style={[StyleSheet.absoluteFill, styles.center]}>
           <View style={[StyleSheet.absoluteFill, styles.backgroundOverlay]} />
           <Typography
             style={styles.feedbackText}
             type={'h2'}
-            color={sharedColors.white}>
+            color={sharedColors.text.primary}>
             {hasFormSuccess ? t('confirm_key_success') : t('confirm_key_error')}
           </Typography>
           <Icon
@@ -225,22 +225,31 @@ export const ConfirmNewMasterKeyScreen = ({ route }: ConfirmNewMasterKey) => {
 }
 
 const styles = StyleSheet.create({
-  screen: castStyle.view({
-    flex: 1,
-    backgroundColor: sharedColors.black,
-    paddingHorizontal: 24,
+  titleText: castStyle.text({
+    marginTop: 58,
+    letterSpacing: -0.3,
   }),
-  titleText: castStyle.text({ marginTop: 58, letterSpacing: -0.3 }),
+  center: castStyle.view({
+    alignItems: 'center',
+  }),
   backgroundOverlay: castStyle.view({
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
   }),
-  firstInputContainer: castStyle.view({ marginTop: 32 }),
+  firstInputContainer: castStyle.view({
+    marginTop: 32,
+  }),
   button: castStyle.view({
     position: 'absolute',
     bottom: 30,
     left: 24,
     right: 24,
   }),
-  feedbackText: castStyle.text({ marginTop: 58, marginLeft: 24 }),
-  feedbackIcon: castStyle.text({ alignSelf: 'center', marginTop: 58 }),
+  feedbackText: castStyle.text({
+    marginTop: 58,
+    marginLeft: 24,
+  }),
+  feedbackIcon: castStyle.text({
+    alignSelf: 'center',
+    marginTop: 58,
+  }),
 })

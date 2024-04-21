@@ -52,7 +52,7 @@ enum TestID {
 export const TokenBalance = ({
   firstValue,
   secondValue,
-  color = sharedColors.black,
+  color = sharedColors.background.primary,
   hide = false,
   editable = false,
   error,
@@ -102,7 +102,7 @@ export const TokenBalance = ({
             </View>
           )}
           {firstValue.symbolType === 'usd' && (
-            <DollarIcon size={30} color={sharedColors.white} />
+            <DollarIcon size={30} color={sharedColors.text.primary} />
           )}
           <TextInput
             onChangeText={handleAmountChange}
@@ -110,7 +110,7 @@ export const TokenBalance = ({
             keyboardType="numeric"
             accessibilityLabel={'Amount.Input'}
             placeholder="0"
-            placeholderTextColor={sharedColors.inputLabelColor}
+            placeholderTextColor={sharedColors.text.label}
             style={[styles.input, sharedStyles.flex]}
             editable={editable}
             multiline={false}
@@ -124,7 +124,7 @@ export const TokenBalance = ({
             </View>
           )}
           {secondValue && (
-            <Typography type="body1" style={styles.subTitle}>
+            <Typography type="body1" style={styles.secondValue}>
               {hide
                 ? '\u002A\u002A\u002A\u002A\u002A'
                 : secondValue.symbolType === 'usd'
@@ -171,7 +171,7 @@ export const TokenBalance = ({
             onPress={onHide}
             accessibilityLabel={testIDs.hide}>
             <View style={styles.badge}>
-              <EyeIcon color={sharedColors.white} size={25} isHidden={hide} />
+              <EyeIcon size={25} isHidden={hide} />
             </View>
           </AppTouchable>
         )}
@@ -182,8 +182,8 @@ export const TokenBalance = ({
             accessibilityLabel={testIDs.swap}>
             <View style={styles.badge}>
               <Icon
-                name="ios-swap-vertical"
-                color={sharedColors.white}
+                name="swap-vertical-outline"
+                color={sharedColors.text.primary}
                 size={25}
               />
             </View>
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   }),
   tokenBackground: castStyle.view({
     borderRadius: 15,
-    backgroundColor: sharedColors.white,
+    backgroundColor: sharedColors.text.primary,
   }),
   tokenSubIcon: castStyle.view({
     borderRadius: 10,
@@ -227,9 +227,8 @@ const styles = StyleSheet.create({
     height: 20,
     marginRight: 4,
   }),
-  subTitle: castStyle.text({
-    color: sharedColors.subTitle,
-    opacity: 0.7,
+  secondValue: castStyle.text({
+    color: sharedColors.text.label,
   }),
   error: castStyle.text({
     color: sharedColors.dangerLight,
@@ -241,7 +240,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   }),
   input: castStyle.text({
-    color: sharedColors.white,
+    color: sharedColors.text.primary,
     fontWeight: '500',
     fontSize: 36,
     padding: 0,
@@ -260,10 +259,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   }),
   nameContent: castStyle.text({
-    color: sharedColors.primary,
+    color: sharedColors.text.link,
   }),
   addressContent: castStyle.text({
-    color: sharedColors.primary,
+    color: sharedColors.text.link,
     paddingTop: 6,
   }),
 })

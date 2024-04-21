@@ -8,7 +8,7 @@ export const Search = (props: InputProps) => {
       leftIcon={{
         name: 'search',
         size: 16,
-        color: sharedColors.inputLabelColor,
+        color: sharedColors.text.label,
       }}
       {...props}
     />

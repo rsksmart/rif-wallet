@@ -9,12 +9,12 @@ export const useProfileStatusColors = () => {
     case ProfileStatus.REQUESTING:
       return {
         startColor: sharedColors.warning,
-        endColor: sharedColors.inputActive,
+        endColor: sharedColors.background.accent,
       }
     case ProfileStatus.READY_TO_PURCHASE:
       return {
         startColor: sharedColors.successLight,
-        endColor: sharedColors.inputActive,
+        endColor: sharedColors.background.accent,
       }
     case ProfileStatus.PURCHASING:
       return {
@@ -24,11 +24,11 @@ export const useProfileStatusColors = () => {
     case ProfileStatus.REQUESTING_ERROR:
       return {
         startColor: sharedColors.danger,
-        endColor: sharedColors.inputActive,
+        endColor: sharedColors.background.accent,
       }
   }
   return {
-    startColor: sharedColors.inputActive,
-    endColor: sharedColors.inputActive,
+    startColor: sharedColors.background.accent,
+    endColor: sharedColors.background.accent,
   }
 }

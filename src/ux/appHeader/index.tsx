@@ -54,7 +54,7 @@ export const AppHeader = ({ navigation, route }: HeaderProps) => {
           width={16}
           onPress={openMenu}
           accessibilityLabel="settings">
-          <OIcon name="gear" size={16} color={sharedColors.white} />
+          <OIcon name="gear" size={16} color={sharedColors.text.primary} />
         </AppTouchable>
       </View>
     </View>

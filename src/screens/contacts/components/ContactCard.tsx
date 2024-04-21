@@ -40,7 +40,7 @@ export const ContactCard = ({ name, style, onPress }: Props) => {
 
 const styles = StyleSheet.create({
   contactCard: castStyle.view({
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     paddingVertical: 13.5,
     borderRadius: 10,
     marginHorizontal: 5,

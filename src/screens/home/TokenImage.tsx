@@ -24,7 +24,7 @@ export const TokenImage = ({
   symbol,
   size = 18,
   transparent = false,
-  color = sharedColors.black,
+  color = sharedColors.background.primary,
   white,
 }: Props) => {
   let finalSymbol = symbol

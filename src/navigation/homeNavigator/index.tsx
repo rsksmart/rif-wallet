@@ -26,7 +26,7 @@ export const HomeNavigator = ({
       <HomeStack.Screen
         name={homeStackRouteNames.Main}
         component={HomeScreen}
-        options={screenOptionsWithAppHeader}
+        options={screenOptionsWithAppHeader()}
       />
       <HomeStack.Screen
         name={homeStackRouteNames.Send}

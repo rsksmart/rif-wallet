@@ -57,7 +57,7 @@ interface StatusObject {
 const typeColorMap = new Map([
   [Status.ERROR, sharedColors.danger],
   [Status.SUCCESS, sharedColors.success],
-  [Status.INFO, sharedColors.inputLabelColor],
+  [Status.INFO, sharedColors.text.label],
 ])
 
 const defaultStatus = { type: Status.READY, value: '' }
@@ -333,7 +333,7 @@ export const AddressInput = ({
         autoCorrect={false}
         autoCapitalize={'none'}
         placeholder={placeholder}
-        placeholderTextColor={sharedColors.inputLabelColor}
+        placeholderTextColor={sharedColors.text.label}
         rightIcon={
           !(value.address || value.displayAddress)
             ? {

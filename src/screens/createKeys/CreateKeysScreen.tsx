@@ -33,7 +33,10 @@ export const CreateKeysScreen = ({
           {t('initial_screen_title')}
         </Typography>
       </View>
-      <Typography type={'body3'} style={styles.footerText}>
+      <Typography
+        type={'body3'}
+        style={styles.footerText}
+        color={sharedColors.white}>
         {t('initial_screen_welcome_footer')}
       </Typography>
       <View style={[styles.buttonContainer]}>
@@ -59,6 +62,8 @@ export const CreateKeysScreen = ({
           title={t('initial_screen_button_import')}
           style={styles.importWalletButton}
           backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+          color={sharedColors.white}
+          textColor={sharedColors.white}
         />
       </View>
     </View>
@@ -82,7 +87,7 @@ const styles = StyleSheet.create({
   rifLogoText: castStyle.text({
     fontWeight: '300',
     fontSize: 28,
-    color: sharedColors.black,
+    color: sharedColors.text.secondary,
   }),
   buttonContainer: castStyle.view({
     position: 'absolute',

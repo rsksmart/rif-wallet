@@ -15,11 +15,12 @@ import { showMessage } from 'react-native-flash-message'
 import { shortAddress } from 'lib/utils'
 
 import { getAddressDisplayText, Input, Typography } from 'components/index'
-import { sharedColors } from 'shared/constants'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { QRGenerator } from 'components/QRGenerator/QRGenerator'
 import { PortfolioCard } from 'components/Porfolio/PortfolioCard'
 import { useAppSelector } from 'store/storeUtils'
 import { selectBalances } from 'store/slices/balancesSlice/selectors'
+import { TokenBalanceObject } from 'store/slices/balancesSlice/types'
 import { MixedTokenAndNetworkType } from 'screens/send/types'
 import { selectBitcoin, selectChainId } from 'store/slices/settingsSlice'
 import {
@@ -90,11 +91,6 @@ export const ReceiveScreen = ({
     })
   }, [address])
 
-  const onChevronAssetShowTap = useCallback(
-    () => setShouldShowAssets(curr => !curr),
-    [],
-  )
-
   // Function to get the address
   const onGetAddress = useCallback(
     (asset: MixedTokenAndNetworkType) => {
@@ -114,10 +110,8 @@ export const ReceiveScreen = ({
     [rskAddress?.checksumAddress],
   )
 
-  const onChangeSelectedAsset = useCallback(
-    asset => () => setSelectedAsset(asset),
-    [],
-  )
+  const onChangeSelectedAsset = (asset: TokenBalanceObject) => () =>
+    setSelectedAsset(asset)
 
   useEffect(() => {
     if (selectedAsset) {
@@ -136,7 +130,7 @@ export const ReceiveScreen = ({
   }, [username, t, navigation])
 
   return (
-    <ScrollView style={styles.parent}>
+    <ScrollView style={sharedStyles.screen}>
       <FormProvider {...methods}>
         {/* Change Asset Component */}
         <View style={styles.flexRow}>
@@ -144,13 +138,13 @@ export const ReceiveScreen = ({
           <FontAwesome5Icon
             name={shouldShowAssets ? 'chevron-up' : 'chevron-down'}
             size={14}
-            color="white"
-            onPress={onChevronAssetShowTap}
+            color={sharedColors.text.primary}
+            onPress={() => setShouldShowAssets(curr => !curr)}
             style={styles.assetsChevronText}
           />
         </View>
         {shouldShowAssets && (
-          <ScrollView horizontal>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {Object.values(tokenBalances).map(asset => {
               const isSelected =
                 selectedAsset !== undefined &&
@@ -158,7 +152,7 @@ export const ReceiveScreen = ({
 
               const color = isSelected
                 ? getTokenColor(asset.symbol)
-                : sharedColors.inputInactive
+                : sharedColors.background.secondary
 
               return (
                 <PortfolioCard
@@ -203,7 +197,7 @@ export const ReceiveScreen = ({
               <Ionicons
                 name="share-outline"
                 size={20}
-                color={sharedColors.white}
+                color={sharedColors.text.primary}
                 onPress={onShareUsername}
                 testID={TestID.ShareUsernameButton}
                 disabled
@@ -232,7 +226,7 @@ export const ReceiveScreen = ({
               <Ionicons
                 name="share-outline"
                 size={20}
-                color="white"
+                color={sharedColors.text.primary}
                 onPress={onShareAddress}
                 testID={TestID.ShareAddressButton}
               />
@@ -249,28 +243,11 @@ export const ReceiveScreen = ({
 }
 
 const styles = StyleSheet.create({
-  parent: castStyle.view({
-    backgroundColor: sharedColors.black,
-    flex: 1,
-    paddingHorizontal: 24,
-  }),
-  qrView: castStyle.view({
-    paddingHorizontal: 35,
-    paddingVertical: 84,
-    borderRadius: 20,
-    marginTop: 5,
-  }),
-  headerStyle: castStyle.view({
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginVertical: 22.5,
-  }),
   emptyPadding: castStyle.view({
     paddingVertical: 15,
   }),
   flexRow: castStyle.view({
-    paddingTop: 18,
+    paddingTop: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingBottom: 10,
@@ -285,18 +262,11 @@ const styles = StyleSheet.create({
   marginTopView: castStyle.view({
     marginTop: 20,
   }),
-  flexView: castStyle.view({
-    flex: 1,
-  }),
-  flexCenter: castStyle.view({
-    alignItems: 'center',
-  }),
-  width50View: castStyle.view({
-    width: '50%',
-  }),
   assetsChevronText: castStyle.text({
     width: '25%',
     textAlign: 'right',
   }),
-  usernameInput: castStyle.view({ marginTop: 30 }),
+  usernameInput: castStyle.view({
+    marginTop: 30,
+  }),
 })

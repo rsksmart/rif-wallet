@@ -1,18 +1,18 @@
-import { useCallback, useState } from 'react'
-import { Linking, StyleSheet, View } from 'react-native'
-import { useTranslation } from 'react-i18next'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import config from 'config.json'
+import { useCallback, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Linking, StyleSheet, View } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { Checkbox } from 'components/checkbox'
+import { AppButton, AppTouchable, Typography } from 'components/index'
 import {
   createKeysRouteNames,
   CreateKeysScreenProps,
 } from 'navigation/createKeysNavigator/types'
 import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
-import { AppButton, AppTouchable, Typography } from 'components/index'
-import { Checkbox } from 'components/checkbox'
 import { SETTINGS } from 'src/core/types'
 
 enum TestID {
@@ -90,8 +90,8 @@ export const SecurityInformation = ({
           style={styles.button}
           title={t('security_info_btn')}
           disabled={!isCheckboxActive}
-          color={sharedColors.white}
-          textColor={sharedColors.black}
+          color={sharedColors.button.primaryBackground}
+          textColor={sharedColors.button.primaryText}
           accessibilityLabel={TestID.ContinueButton}
         />
       </View>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   }),
   userAgreementBox: castStyle.view({
     marginTop: 29,
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     paddingVertical: 48,
     paddingHorizontal: 40,
   }),
@@ -120,14 +120,14 @@ const styles = StyleSheet.create({
     marginTop: 22,
     textAlign: 'center',
     lineHeight: 18,
-    color: sharedColors.labelLight,
+    color: sharedColors.text.label,
   }),
   termsAndConditionsView: castStyle.view({
     alignSelf: 'center',
     marginBottom: 22,
   }),
   termsAndConditionsText: castStyle.text({
-    color: 'blue',
+    color: sharedColors.text.link,
     textDecorationLine: 'underline',
   }),
   agreementView: castStyle.view({ flexDirection: 'row', alignSelf: 'center' }),

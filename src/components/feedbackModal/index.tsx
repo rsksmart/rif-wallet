@@ -33,7 +33,7 @@ export const FeedbackModal = ({
   animationType,
   buttons,
   style,
-  backgroundColor = sharedColors.black,
+  backgroundColor = sharedColors.background.primary,
 }: Props) => {
   const { top } = useSafeAreaInsets()
   return (
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   }),
   subtitle: castStyle.text({
     marginTop: 5,
-    color: sharedColors.labelLight,
+    color: sharedColors.text.label,
   }),
   button: castStyle.view({
     marginTop: 8,

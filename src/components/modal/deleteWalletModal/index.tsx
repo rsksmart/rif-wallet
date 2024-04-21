@@ -25,7 +25,7 @@ export const DeleteWalletModal = ({ isVisible, setVisible }: Props) => {
       createDeleteConfirmationConfigFn: () => ConfirmationModalConfig,
     ): ConfirmationModalConfig => {
       return {
-        color: sharedColors.dangerLight,
+        backgroundColor: sharedColors.dangerLight,
         title: t(
           'wallet_backup_definitive_delete_confirmation_title',
         ) as string,
@@ -54,7 +54,7 @@ export const DeleteWalletModal = ({ isVisible, setVisible }: Props) => {
   const createDeleteConfirmationConfig =
     useCallback((): ConfirmationModalConfig => {
       return {
-        color: sharedColors.dangerLight,
+        backgroundColor: sharedColors.dangerLight,
         title: t('wallet_backup_delete_confirmation_title') as string,
         titleColor: sharedColors.black,
         description: t(
@@ -86,7 +86,7 @@ export const DeleteWalletModal = ({ isVisible, setVisible }: Props) => {
   return (
     <ConfirmationModal
       isVisible={isVisible}
-      color={confirmationModalConfig.color}
+      backgroundColor={confirmationModalConfig.backgroundColor}
       title={confirmationModalConfig.title}
       titleColor={confirmationModalConfig.titleColor}
       description={confirmationModalConfig.description}

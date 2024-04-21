@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 5,
     padding: 12,
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
   },
 })
 
@@ -152,7 +152,7 @@ const selectedCardStyles = StyleSheet.create({
     width: 20,
   }),
   primaryText: castStyle.text({
-    color: sharedColors.white,
+    color: sharedColors.text.primary,
     fontSize: 22,
     paddingTop: 3,
   }),
@@ -179,11 +179,11 @@ const nonSelectedCardStyles = StyleSheet.create({
     marginRight: 3,
   }),
   primaryText: castStyle.text({
-    color: sharedColors.white,
+    color: sharedColors.text.primary,
     fontSize: 16,
   }),
   secondaryText: castStyle.text({
-    color: sharedColors.white,
+    color: sharedColors.text.primary,
     fontSize: 16,
     right: 0,
   }),

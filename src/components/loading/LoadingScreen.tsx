@@ -17,7 +17,7 @@ export const LoadingScreen = ({ isVisible }: Props) => {
           sharedStyles.contentCenter,
           styles.activityIndicatorViewStyle,
         ]}>
-        <AppSpinner color="white" size={150} />
+        <AppSpinner size={150} />
       </View>
     </Modal>
   )
@@ -25,6 +25,6 @@ export const LoadingScreen = ({ isVisible }: Props) => {
 
 const styles = StyleSheet.create({
   activityIndicatorViewStyle: castStyle.view({
-    backgroundColor: sharedColors.black,
+    backgroundColor: sharedColors.background.primary,
   }),
 })

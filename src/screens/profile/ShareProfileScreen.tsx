@@ -39,6 +39,9 @@ export const ShareProfileScreen = ({
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => headerLeftOption(navigation.goBack),
+      headerStyle: {
+        backgroundColor: sharedColors.background.primary,
+      },
     })
   }, [navigation])
 

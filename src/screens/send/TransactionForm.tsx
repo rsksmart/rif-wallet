@@ -137,7 +137,6 @@ export const TransactionForm = ({
       return getDefaultFeeRelay(chainId)
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return tokenList.find(
       tok =>
         tok.contractAddress.toLowerCase() === contractAddress.toLowerCase(),
@@ -411,7 +410,6 @@ export const TransactionForm = ({
             style={styles.marginTop10}
             firstValue={firstBalance}
             secondValue={secondBalance}
-            color={sharedColors.black}
             error={hasEnoughBalance ? t('transaction_form_error_balance') : ''}
             onSwap={onSwapBalance}
             editable
@@ -441,7 +439,7 @@ export const TransactionForm = ({
               <Icon
                 name={showTxSelector ? 'chevron-up' : 'chevron-down'}
                 size={20}
-                color={sharedColors.white}
+                color={sharedColors.text.primary}
               />
             </>
           </AppTouchable>
@@ -513,8 +511,8 @@ export const TransactionForm = ({
             amount === 0 ||
             hasEnoughBalance
           }
-          color={sharedColors.white}
-          textColor={sharedColors.black}
+          color={sharedColors.button.primaryBackground}
+          textColor={sharedColors.button.primaryText}
         />
         <AppButton
           style={styles.buttonCancel}
@@ -522,6 +520,7 @@ export const TransactionForm = ({
           onPress={onCancel}
           accessibilityLabel={'Cancel'}
           backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
+          color={sharedColors.button.primaryBackground}
         />
       </View>
     </>
@@ -534,18 +533,23 @@ const styles = StyleSheet.create({
   }),
   buttonCancel: castStyle.view({
     marginTop: 10,
-    backgroundColor: sharedColors.black,
   }),
   assetToggleRow: castStyle.view({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 16,
   }),
-  txSelector: castStyle.view({ marginTop: 22 }),
+  txSelector: castStyle.view({
+    marginTop: 22,
+  }),
   statusText: castStyle.text({
     marginBottom: 10,
     textAlign: 'center',
   }),
-  proposedContact: castStyle.view({ marginTop: 6 }),
-  infoIcon: castStyle.text({ color: sharedColors.inputLabelColor }),
+  proposedContact: castStyle.view({
+    marginTop: 6,
+  }),
+  infoIcon: castStyle.text({
+    color: sharedColors.text.label,
+  }),
 })

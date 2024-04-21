@@ -41,7 +41,7 @@ export const AppTouchable = ({ children, style, width, ...props }: Props) => {
       android_ripple={{
         borderless: false,
         foreground: true,
-        color: sharedColors.inputActive,
+        color: sharedColors.background.accent,
       }}
       {...props}>
       {children}

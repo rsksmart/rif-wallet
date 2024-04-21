@@ -88,7 +88,7 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(changeTopColor(sharedColors.black))
+      dispatch(changeTopColor(sharedColors.background.primary))
     }
   }, [dispatch, isFocused])
 
@@ -150,13 +150,11 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
                   onPress={() =>
                     navigation.navigate(
                       contactsStackRouteNames.ContactDetails,
-                      {
-                        contact,
-                      },
+                      { contact },
                     )
                   }>
                   <BasicRow
-                    style={{ backgroundColor: sharedColors.black }}
+                    style={{ backgroundColor: sharedColors.background.primary }}
                     avatar={{ name: contact.name }}
                     label={contact.name}
                     secondaryLabel={
@@ -176,7 +174,8 @@ export const ContactsScreen = ({ navigation }: ContactsListScreenProps) => {
         accessibilityLabel={testIDs.newContact}
         onPress={() => navigation.navigate(contactsStackRouteNames.ContactForm)}
         style={styles.newContactButton}
-        textColor={sharedColors.black}
+        color={sharedColors.button.primaryBackground}
+        textColor={sharedColors.button.primaryText}
       />
     </View>
   )
@@ -209,7 +208,6 @@ const styles = StyleSheet.create({
     bottom: 30,
     left: 24,
     right: 24,
-    backgroundColor: sharedColors.white,
   }),
   recentContacts: castStyle.view({
     height: 100,

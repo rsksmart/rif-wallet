@@ -247,8 +247,8 @@ export const ReviewTransactionContainer = ({
         {
           title: t('transaction_summary_title_confirm_button_title'),
           onPress: confirmTransaction,
-          color: sharedColors.white,
-          textColor: sharedColors.black,
+          color: sharedColors.button.primaryBackground,
+          textColor: sharedColors.button.primaryText,
           accessibilityLabel: 'Confirm',
           disabled: insufficientFunds,
         },
@@ -257,6 +257,7 @@ export const ReviewTransactionContainer = ({
           title: t('transaction_summary_title_cancel_button_title'),
           onPress: cancelTransaction,
           backgroundVariety: AppButtonBackgroundVarietyEnum.OUTLINED,
+          color: sharedColors.button.primaryBackground,
           accessibilityLabel: 'Cancel',
         },
       ],

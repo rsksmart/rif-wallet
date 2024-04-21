@@ -19,7 +19,7 @@ export const sharedHeaderLeftOptions = (goBack?: () => void) => (
     onPress={goBack}
     style={sharedStyles.marginLeft24}
     accessibilityLabel="backButton">
-    <Icon name={'chevron-left'} size={20} color={sharedColors.white} />
+    <Icon name={'chevron-left'} size={20} color={sharedColors.text.primary} />
   </AppTouchable>
 )
 
@@ -55,17 +55,19 @@ export const screenOptionsWithHeader = (
     ),
     headerStyle: {
       height: 64 + topInset,
-      backgroundColor: color ?? sharedColors.black,
+      backgroundColor: color || sharedColors.background.primary,
     },
     headerShadowVisible: false,
   }
 }
 
-export const screenOptionsWithAppHeader: HeaderProps = {
-  headerShown: true,
+export const screenOptionsWithAppHeader = (
+  headerShown = true,
+): HeaderProps => ({
+  headerShown,
   header: props => <AppHeader {...props} />,
   tabBarHideOnKeyboard: true,
-}
+})
 
 export const headerStyles = StyleSheet.create({
   headerStyle: castStyle.view({

@@ -31,7 +31,7 @@ export const AvatarIconBox = ({
 
 const styles = StyleSheet.create({
   avatarBoxViewStyle: castStyle.view({
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     alignItems: 'center',
     paddingVertical: 30,
     borderRadius: 20,

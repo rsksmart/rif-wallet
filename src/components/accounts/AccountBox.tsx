@@ -17,8 +17,7 @@ import {
   getAddressDisplayText,
 } from 'components/index'
 import { PublicKeyItemType } from 'screens/accounts/types'
-import { defaultIconSize, sharedColors } from 'shared/constants'
-import { sharedStyles } from 'shared/styles'
+import { defaultIconSize, sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { setAccount } from 'store/slices/accountsSlice'
 import { WalletIsDeployed } from 'store/slices/settingsSlice/types'
@@ -108,7 +107,7 @@ export const AccountBox = ({
             />
             <TouchableOpacity onPress={onSubmit}>
               <CheckIcon
-                color={sharedColors.labelLight}
+                color={sharedColors.text.label}
                 width={35}
                 height={35}
               />
@@ -151,7 +150,7 @@ export const AccountBox = ({
           <Icon
             name={'copy'}
             style={styles.copyIcon}
-            color={sharedColors.white}
+            color={sharedColors.text.primary}
             size={defaultIconSize}
             onPress={() =>
               Clipboard.setString(eoaAddressObject.checksumAddress || '')
@@ -171,7 +170,7 @@ export const AccountBox = ({
             <Icon
               name={'copy'}
               style={styles.copyIcon}
-              color={sharedColors.white}
+              color={sharedColors.text.primary}
               size={defaultIconSize}
               onPress={() =>
                 Clipboard.setString(
@@ -200,7 +199,7 @@ export const AccountBox = ({
             <Icon
               name={'copy'}
               style={styles.copyIcon}
-              color={sharedColors.white}
+              color={sharedColors.text.primary}
               size={defaultIconSize}
               onPress={() => Clipboard.setString(publicKey.publicKey || '')}
             />
@@ -215,7 +214,7 @@ export const AccountBox = ({
         title={t('wallet_backup_delete_button')}
         onPress={() => setIsDeleteConfirmationVisible(true)}
         backgroundVariety={AppButtonBackgroundVarietyEnum.OUTLINED}
-        color={sharedColors.white}
+        color={sharedColors.button.primaryBackground}
         style={styles.deleteButton}
       />
       <DeleteWalletModal
@@ -231,7 +230,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: sharedColors.inputInactive,
+    backgroundColor: sharedColors.background.secondary,
     paddingLeft: 16,
     paddingRight: 24,
     marginTop: 12,
@@ -259,10 +258,10 @@ const styles = StyleSheet.create({
   }),
 
   accountInput: castStyle.text({
-    color: sharedColors.labelLight,
+    color: sharedColors.text.label,
     fontSize: 22,
     borderWidth: 1,
-    borderColor: sharedColors.labelLight,
+    borderColor: sharedColors.text.label,
     borderRadius: 5,
     paddingHorizontal: 5,
     paddingTop: 0,

@@ -10,8 +10,7 @@ import { StepperComponent } from 'components/profile'
 import { Typography } from 'components/typography'
 import { ProfileStatus } from 'navigation/profileNavigator/types'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { sharedColors } from 'shared/constants'
-import { sharedStyles } from 'shared/styles'
+import { sharedColors, sharedStyles } from 'shared/constants'
 import { castStyle } from 'shared/utils'
 import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
@@ -37,7 +36,7 @@ export const ProfileHandler = ({ navigation }: Props) => {
           <Icon
             name="person-circle-sharp"
             size={20}
-            color={sharedColors.white}
+            color={sharedColors.text.primary}
           />
 
           <View style={styles.textAlignment}>
@@ -133,7 +132,7 @@ const styles = StyleSheet.create({
     paddingLeft: 6,
   }),
   underline: castStyle.text({
-    textDecorationColor: sharedColors.white,
+    textDecorationColor: sharedColors.text.primary,
     textDecorationLine: 'underline',
     paddingLeft: 6,
   }),

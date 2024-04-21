@@ -34,7 +34,11 @@ export const ContactsNavigation = ({
       <Stack.Screen
         name={contactsStackRouteNames.ContactForm}
         component={ContactFormScreen}
-        options={screenOptionsWithHeader(top, undefined, sharedColors.black)}
+        options={screenOptionsWithHeader(
+          top,
+          undefined,
+          sharedColors.background.primary,
+        )}
       />
       <Stack.Screen
         name={contactsStackRouteNames.ContactDetails}
@@ -42,7 +46,7 @@ export const ContactsNavigation = ({
         options={screenOptionsWithHeader(
           top,
           undefined,
-          sharedColors.inputInactive,
+          sharedColors.background.secondary,
         )}
       />
     </Stack.Navigator>
