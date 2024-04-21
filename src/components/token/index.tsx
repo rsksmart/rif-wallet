@@ -182,7 +182,7 @@ export const TokenBalance = ({
             accessibilityLabel={testIDs.swap}>
             <View style={styles.badge}>
               <Icon
-                name="ios-swap-vertical"
+                name="swap-vertical-outline"
                 color={sharedColors.text.primary}
                 size={25}
               />
