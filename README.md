@@ -67,6 +67,14 @@ yarn android:build
 
 Open the project up in xCode and select the signing profiles that you wish to use. You may need to signup with appstoreconnect and setup the provisioning profile and certificates. [See Apple's documentation for more information](https://developer.apple.com/help/account/). Once the app and profiles are loaded in xCode, create an "archive" of the project by navigating to [Product/Archive]. After it has completed, you can distribute it locally or to the AppStore using the "Organizer" window.
 
+## Archiving for iOS:
+
+To create an archive to send to the App Store, before opening xCode, install the pod dependecies with the following command:
+
+```
+NO_FLIPPER=1 npx pod-install
+```
+
 ## Interacting with the Smart Wallet
 
 At a high level, the RIF Wallet uses the RIF Relay Server to send transactions on behalf of the user. The user creates a transaction in the app, signs it, and then passes it to the RIF Relay Server to get a cost estimation. That estimation is returned to the user, and the user signs an updated transaction with that cost and passes it to the Relay Server.
