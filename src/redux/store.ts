@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit'
-import createDebugger from 'redux-flipper'
 import {
   persistStore,
   // FLUSH,
@@ -9,6 +8,7 @@ import {
   // PURGE,
   // REGISTER,
 } from 'redux-persist'
+import Config from 'react-native-config'
 
 import { createRootReducer } from './rootReducer'
 
@@ -22,9 +22,20 @@ export const createStore = (preloadedState = {}) =>
       const middlewares = getDefaultMiddlewares({
         serializableCheck: false,
       })
-      if (__DEV__) {
-        return middlewares.concat(createDebugger())
+
+      if (__DEV__ && Config.NO_FLIPPER !== '1') {
+        try {
+          // we need this to import this middleware syncronously
+          // because createStore expects an immediate return
+          /* eslint-disable @typescript-eslint/no-var-requires */
+          const createDebugger = require('redux-flipper').default
+          /* eslint-enable @typescript-eslint/no-var-requires */
+          middlewares.push(createDebugger())
+        } catch (e) {
+          console.warn('Redux Flipper not available, skipping.')
+        }
       }
+
       return middlewares
     },
   })

@@ -1,3 +1,4 @@
+import Config from 'react-native-config'
 import { MMKV } from 'react-native-mmkv'
 import { initializeMMKVFlipper } from 'react-native-mmkv-flipper-plugin'
 
@@ -14,7 +15,7 @@ export class MMKVStorage {
       encryptionKey,
     })
 
-    if (__DEV__) {
+    if (__DEV__ && Config.NO_FLIPPER !== '1') {
       initializeMMKVFlipper({ default: this.storage })
     }
   }

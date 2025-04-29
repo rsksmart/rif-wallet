@@ -66,3 +66,6 @@ yarn-error.log
 
 coverage
 /vendor/bundle/
+
+# ENV
+.env

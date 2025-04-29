@@ -8,6 +8,7 @@ declare module 'react-native-config' {
     WALLETCONNECT2_PROJECT_ID: string
     USE_RELAY: string
     TRACE_ID: string
+    NO_FLIPPER: string
   }
 
   export const Config: NativeConfig
