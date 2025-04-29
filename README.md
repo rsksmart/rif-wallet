@@ -17,24 +17,30 @@ The main use case of the RIF Wallet using account abstraction is to pay the gas 
 
 ## Install and setup
 
-- [Setup your enviornment using the official instructions](https://reactnative.dev/docs/environment-setup)
+- [Set up your environment using the official instructions](https://reactnative.dev/docs/environment-setup)
   - Use the 'React Native CLI Quickstart' tabs not the 'Expo' tabs.
   - Follow the instructions explicitly as a small deviation can cause it to fail.
-- Install the dependecies using yarn. This will also run the postinstall script that shims the missing packages: `yarn`
+- Install the dependencies using yarn. This will also run the postinstall script that shims the missing packages: `yarn`
   - The postinstall script runs the `rn-nodeify` package which adds packages that are native to the browser but not to react native.
-  - For **iOS** you need to run the additional installation steps: `cd ios` and then `pod install`
+  - For **iOS**, install CocoaPods using the following command:
+    ```
+    yarn pod:install
+    ```
+    ⚠️ Do not run `pod install` or `npx pod-install` directly — always use `yarn pod:install` to ensure the correct CocoaPods version through Bundler.
 - Set the environment variable `TRACE_ID` in `.env` file to connect with backend server with an identifier, i.e. your company name.
 - Run the app using the desired platform:
   - `yarn ios`
   - `yarn android`
 
+**Note:** Always use `yarn pod:install` to install iOS pods. Running `pod install` or `npx pod-install` directly will break environment consistency.
+
 ## Troubleshooting
 
-When you encounter errors running the app, please run `yarn clean:ios` or `yarn clean:android` first. This will clear the cache and reinstall the native dependecies. When running the iOS command, if you get the error `Could not delete [...]/build' because it was not created by the build system.` delete the build folder manually.
+When you encounter errors running the app, please run `yarn clean:ios` or `yarn clean:android` first. This will clear the cache and reinstall the native dependencies. When running the iOS command, if you get the error `Could not delete [...]/build' because it was not created by the build system.` delete the build folder manually.
 
 ## Run with local services
 
-The RIF Wallet App uses a [backend server](https://github.com/rsksmart/rif-wallet-services) to connect to the Rootstock indexer and to collect USD prices. You can run this server yourself locally and connect to it durning development. However, this is not necessary as we have an instance that you can connect to and use.
+The RIF Wallet App uses a [backend server](https://github.com/rsksmart/rif-wallet-services) to connect to the Rootstock indexer and to collect USD prices. You can run this server yourself locally and connect to it during development. However, this is not necessary as we have an instance that you can connect to and use.
 
 ```
 yarn ios:local
@@ -51,7 +57,7 @@ You do not need to run the server to run the RIF Wallet app.
 
 ## Mainnet
 
-The app runs in both Rootstock mainnet and testnet with the default chain set to Testnet. You can configure this by changig the environment variable `DEFAULT_CHAIN_TYPE` to MAINNET [in the .env file](https://github.com/rsksmart/rif-wallet/blob/develop/.env).
+The app runs in both Rootstock mainnet and testnet with the default chain set to Testnet. You can configure this by changing the environment variable `DEFAULT_CHAIN_TYPE` to MAINNET [in the .env file](https://github.com/rsksmart/rif-wallet/blob/develop/.env).
 
 ## Build:
 
@@ -69,11 +75,13 @@ Open the project up in xCode and select the signing profiles that you wish to us
 
 ## Archiving for iOS:
 
-To create an archive to send to the App Store, before opening xCode, install the pod dependecies with the following command:
+Before opening Xcode and creating an archive, install the pod dependencies using Bundler:
 
 ```
-NO_FLIPPER=1 npx pod-install
+NO_FLIPPER=1 yarn pod:install
 ```
+
+⚠️ This ensures consistent pod versions. Direct `npx pod-install` is not supported anymore.
 
 ## Interacting with the Smart Wallet
 
