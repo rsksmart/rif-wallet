@@ -100,7 +100,7 @@
     "@babel/core": "^7.20.0",
     "@babel/plugin-transform-react-jsx": "^7.19.0",
     "@babel/preset-env": "^7.20.0",
-    "@babel/runtime": "^7.20.0",
+    "@babel/runtime": "^7.27.0",
     "@react-native-community/eslint-config": "^2.0.0",
     "@react-native/babel-preset": "0.73.21",
     "@react-native/eslint-config": "0.73.2",
