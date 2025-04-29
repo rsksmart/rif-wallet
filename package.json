@@ -3,6 +3,8 @@
   "version": "0.0.6",
   "license": "MIT",
   "scripts": {
+    "pod:install": "cd ios && (bundle check || bundle install && bundle exec pod install)",
+    "pod:update": "cd ios && (bundle check || bundle install) && bundle exec pod update",
     "android": "ENVFILE=.env react-native run-android",
     "android:local": "ENVFILE=.env.local.android react-native run-android",
     "android:build": "ENVFILE=.env npx react-native-clean-project && cd android && ./gradlew app:assembleRelease",

@@ -1,3 +1,20 @@
+# ❗ Enforce running CocoaPods via Bundler (vendor/bundle) and NOT global pods
+# 
+# Why: We rely on Bundler to install and manage the correct CocoaPods version (`vendor/bundle`)
+#      instead of using the globally installed CocoaPods, which may be outdated or incompatible.
+#      Running 'pod install' directly without 'bundle exec' could break builds due to version mismatches.
+# 
+# How: If 'vendor/bundle' is missing, we abort early with a clear error message.
+# 
+# See also: https://bundler.io/
+unless defined?(Bundler)
+  abort <<~MSG
+  ❌ CocoaPods must be run through Bundler (vendor/bundle).
+  ➡️  Please use: 'yarn pod:install'
+  (instead of running 'pod install' manually or through npx)
+MSG
+end
+
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
