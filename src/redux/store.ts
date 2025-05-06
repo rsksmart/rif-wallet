@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit'
-import createDebugger from 'redux-flipper'
 import {
   persistStore,
   // FLUSH,
@@ -12,20 +11,14 @@ import {
 
 import { createRootReducer } from './rootReducer'
 
-// Must use redux-debugger plugin in flipper for the redux debugger to work
-
 export const createStore = (preloadedState = {}) =>
   configureStore({
     reducer: createRootReducer(),
     preloadedState,
     middleware: getDefaultMiddlewares => {
-      const middlewares = getDefaultMiddlewares({
+      return getDefaultMiddlewares({
         serializableCheck: false,
       })
-      if (__DEV__) {
-        return middlewares.concat(createDebugger())
-      }
-      return middlewares
     },
   })
 
