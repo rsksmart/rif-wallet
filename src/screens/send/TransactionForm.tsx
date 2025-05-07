@@ -137,7 +137,6 @@ export const TransactionForm = ({
       return getDefaultFeeRelay(chainId)
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return tokenList.find(
       tok =>
         tok.contractAddress.toLowerCase() === contractAddress.toLowerCase(),

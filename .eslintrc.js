@@ -1,20 +1,11 @@
+require('@rushstack/eslint-patch/modern-module-resolution')
 module.exports = {
   root: true,
-  extends: [
-    '@react-native',
-    'plugin:react/jsx-runtime',
-    'plugin:@typescript-eslint/recommended',
-  ],
+  extends: ['@react-native', 'plugin:@typescript-eslint/recommended'],
   parser: '@typescript-eslint/parser',
-  plugins: [
-    'react',
-    '@typescript-eslint',
-    'eslint-plugin-react',
-    'eslint-plugin-import',
-    'react-hooks',
-    'react-native',
-  ],
+  plugins: ['prettier', 'eslint-plugin-import', 'react-hooks'],
   rules: {
+    'react/react-in-jsx-scope': 'off',
     semi: 'off',
     'eslint-comments/no-unlimited-disable': 'off',
     'react-hooks/exhaustive-deps': 'error',
