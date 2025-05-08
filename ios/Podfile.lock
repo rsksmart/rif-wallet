@@ -7,7 +7,7 @@ PODS:
   - hermes-engine (0.75.1):
     - hermes-engine/Pre-built (= 0.75.1)
   - hermes-engine/Pre-built (0.75.1)
-  - jail-monkey (2.8.0):
+  - jail-monkey (2.8.3):
     - React-Core
   - MMKV (2.2.1):
     - MMKVCore (~> 2.2.1)
@@ -1244,25 +1244,65 @@ PODS:
     - Yoga
   - react-native-background-timer (2.4.1):
     - React-Core
-  - react-native-config (1.5.1):
-    - react-native-config/App (= 1.5.1)
-  - react-native-config/App (1.5.1):
+  - react-native-compat (2.20.2):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
-  - react-native-get-random-values (1.9.0):
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - react-native-config (1.5.5):
+    - react-native-config/App (= 1.5.5)
+  - react-native-config/App (1.5.5):
+    - React-Core
+  - react-native-get-random-values (1.11.0):
     - React-Core
   - react-native-mmkv (2.12.1):
     - MMKV (>= 1.3.3)
     - React-Core
-  - react-native-netinfo (9.4.1):
+  - react-native-netinfo (9.5.0):
     - React-Core
   - react-native-randombytes (3.6.1):
     - React-Core
   - react-native-safe-area-context (4.14.1):
     - React-Core
-  - react-native-ssl-public-key-pinning (1.1.3):
+  - react-native-ssl-public-key-pinning (1.2.5):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
     - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
     - React-RCTNetwork
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
     - TrustKit
+    - Yoga
   - React-nativeconfig (0.75.1)
   - React-NativeModulesApple (0.75.1):
     - glog
@@ -1523,13 +1563,13 @@ PODS:
     - React-logger (= 0.75.1)
     - React-perflogger (= 0.75.1)
     - React-utils (= 0.75.1)
-  - RNBootSplash (5.4.1):
+  - RNBootSplash (5.5.3):
     - React-Core
-  - RNCAsyncStorage (1.19.0):
+  - RNCAsyncStorage (1.24.0):
     - React-Core
   - RNCClipboard (1.16.2):
     - React-Core
-  - RNDeviceInfo (10.13.1):
+  - RNDeviceInfo (10.14.0):
     - React-Core
   - RNGestureHandler (2.25.0):
     - DoubleConversion
@@ -1552,9 +1592,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNKeychain (8.1.3):
+  - RNKeychain (8.2.0):
     - React-Core
-  - RNQrGenerator (1.3.1):
+  - RNQrGenerator (1.4.3):
     - React
     - ZXingObjC
   - RNReanimated (3.17.5):
@@ -1698,11 +1738,11 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreenshotPrevent (1.1.9):
+  - RNScreenshotPrevent (1.2.1):
     - React
-  - RNSVG (14.1.0):
+  - RNSVG (14.2.0):
     - React-Core
-  - RNVectorIcons (10.0.3):
+  - RNVectorIcons (10.2.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1776,6 +1816,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
+  - "react-native-compat (from `../node_modules/@walletconnect/react-native-compat`)"
   - react-native-config (from `../node_modules/react-native-config`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
@@ -1908,6 +1949,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
   react-native-background-timer:
     :path: "../node_modules/react-native-background-timer"
+  react-native-compat:
+    :path: "../node_modules/@walletconnect/react-native-compat"
   react-native-config:
     :path: "../node_modules/react-native-config"
   react-native-get-random-values:
@@ -2010,7 +2053,7 @@ SPEC CHECKSUMS:
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: 69ef571f3de08433d766d614c73a9838a06bf7eb
   hermes-engine: e949b1da40409c52aa7bd79ff32cec045f5b4650
-  jail-monkey: a71b35d482a70ecba844a90f002994012cf12a5d
+  jail-monkey: 066e0af74e67cbf432fbb4d214b046ef6dccf910
   MMKV: 383ccfa10ae23ff2a9c0f6130b7136b37b55ac10
   MMKVCore: b0e4c420da85636d7adaa535a53dfade59a22f5c
   RCT-Folly: 4464f4d875961fce86008d45f4ecf6cef6de0740
@@ -2043,13 +2086,14 @@ SPEC CHECKSUMS:
   React-Mapbuffer: b758bec0d9994c10a2841dfd5ec70673665fd3e2
   React-microtasksnativemodule: f25dba9c8c3f8be0b3368d52b99abd6e381dee1d
   react-native-background-timer: 17ea5e06803401a379ebf1f20505b793ac44d0fe
-  react-native-config: 86038147314e2e6d10ea9972022aa171e6b1d4d8
-  react-native-get-random-values: dee677497c6a740b71e5612e8dbd83e7539ed5bb
+  react-native-compat: 04ac62890848a3453069e88e0885d852816af70a
+  react-native-config: 3367df9c1f25bb96197007ec531c7087ed4554c3
+  react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-mmkv: 124b22209aacdcd172b6ac39071b9647080f0411
-  react-native-netinfo: fefd4e98d75cbdd6e85fc530f7111a8afdf2b0c5
+  react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
   react-native-randombytes: 421f1c7d48c0af8dbcd471b0324393ebf8fe7846
   react-native-safe-area-context: 141eca0fd4e4191288dfc8b96a7c7e1c2983447a
-  react-native-ssl-public-key-pinning: 7b5272efa81144da691d0a27bcd853e2df3d8cef
+  react-native-ssl-public-key-pinning: 774924c01e82e64457eea0e3939cc6ec9ae882de
   React-nativeconfig: 7af2ccce165f86b233a9f9d63295f6207e62640e
   React-NativeModulesApple: db1c1ee9dda26c9e58d824b4100fed83add82ae9
   React-perflogger: 7c4e97b47d8bc58c03fad1a6b97d96181b59aa41
@@ -2076,18 +2120,18 @@ SPEC CHECKSUMS:
   React-utils: 0ae17a2fe87b43a939826410d2fcbb28d44f1bfc
   ReactCodegen: e9156d86a166f3e10dc8fb6160764048df3528bc
   ReactCommon: 3ae48fa4cfa7052a270c2150ececfc94e541fb8a
-  RNBootSplash: eff8239c4f795ce42a0604873aef3733aac0dedd
-  RNCAsyncStorage: 4b98ac3c64efa4e35c1197cb0c5ca5e9f5d4c666
+  RNBootSplash: e025d4ee98d942ee6c8b495a6fe66339a6b5f6dd
+  RNCAsyncStorage: ec53e44dc3e75b44aa2a9f37618a49c3bc080a7a
   RNCClipboard: 4411a880506f11fbcbdc03b5093eb8ffb246d900
-  RNDeviceInfo: 4f9c7cfd6b9db1b05eb919620a001cf35b536423
+  RNDeviceInfo: 59344c19152c4b2b32283005f9737c5c64b42fba
   RNGestureHandler: d11cebb14e1e0e9fb857ded703fa018258989206
-  RNKeychain: f1b48665a4646f61191eb048c4c05c58d9a7596f
-  RNQrGenerator: 90461ba3ca88c1d38ef73da50fade35d9648215d
+  RNKeychain: bfe3d12bf4620fe488771c414530bf16e88f3678
+  RNQrGenerator: ac6a6c766e80dd3625038929ed2b13e2f3edcafb
   RNReanimated: 09865a6f5b7612d2361264b0151e243fbe577941
   RNScreens: 6649de620b77a84d4bf7c7c8ff8830cc96f11cac
-  RNScreenshotPrevent: cdfbe213203774c7486c6a2f198af8a4ebe10c47
-  RNSVG: ba3e7232f45e34b7b47e74472386cf4e1a676d0a
-  RNVectorIcons: 2f598cd7d540ba02572867eda117665912d0de0b
+  RNScreenshotPrevent: 105cddf74799cbd81aac76e56a4025a345db8967
+  RNSVG: 963a95f1f5d512a13d11ffd50d351c87fb5c6890
+  RNVectorIcons: 6382277afab3c54658e9d555ee0faa7a37827136
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   TrustKit: 403e8d2cfbff2abfc37cd41acc558dab8ec78e59
   VisionCamera: b5c2b3c45e641102902a5194af11dc532805221e
