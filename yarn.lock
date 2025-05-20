@@ -305,7 +305,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.13.16, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.0, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.9, @babel/parser@npm:^7.25.3, @babel/parser@npm:^7.27.1, @babel/parser@npm:^7.27.2, @babel/parser@npm:^7.7.0":
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.13.16, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.0, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.9, @babel/parser@npm:^7.25.3, @babel/parser@npm:^7.27.1, @babel/parser@npm:^7.27.2":
   version: 7.27.2
   resolution: "@babel/parser@npm:7.27.2"
   dependencies:
@@ -1506,7 +1506,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse--for-generate-function-map@npm:@babel/traverse@^7.25.3, @babel/traverse@npm:^7.20.0, @babel/traverse@npm:^7.25.3, @babel/traverse@npm:^7.27.1, @babel/traverse@npm:^7.7.0, @babel/traverse@npm:^7.7.4":
+"@babel/traverse--for-generate-function-map@npm:@babel/traverse@^7.25.3, @babel/traverse@npm:^7.20.0, @babel/traverse@npm:^7.25.3, @babel/traverse@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/traverse@npm:7.27.1"
   dependencies:
@@ -1521,7 +1521,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.25.2, @babel/types@npm:^7.27.1, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.7.0":
+"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.25.2, @babel/types@npm:^7.27.1, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4":
   version: 7.27.1
   resolution: "@babel/types@npm:7.27.1"
   dependencies:
@@ -3358,36 +3358,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-community/eslint-config@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@react-native-community/eslint-config@npm:2.0.0"
-  dependencies:
-    "@react-native-community/eslint-plugin": "npm:^1.1.0"
-    "@typescript-eslint/eslint-plugin": "npm:^3.1.0"
-    "@typescript-eslint/parser": "npm:^3.1.0"
-    babel-eslint: "npm:^10.1.0"
-    eslint-config-prettier: "npm:^6.10.1"
-    eslint-plugin-eslint-comments: "npm:^3.1.2"
-    eslint-plugin-flowtype: "npm:2.50.3"
-    eslint-plugin-jest: "npm:22.4.1"
-    eslint-plugin-prettier: "npm:3.1.2"
-    eslint-plugin-react: "npm:^7.20.0"
-    eslint-plugin-react-hooks: "npm:^4.0.4"
-    eslint-plugin-react-native: "npm:^3.8.1"
-    prettier: "npm:^2.0.2"
-  peerDependencies:
-    eslint: ">=6"
-  checksum: 10c0/2a3b6a6e0e7e001672b57c2a1ffb1ec91e96ac467ce0a3f58022dbdbc3cf48810c41a924096cfb11f0429d5d6ceb0d091f4f181bb2164581408373b36f7ab756
-  languageName: node
-  linkType: hard
-
-"@react-native-community/eslint-plugin@npm:^1.1.0":
-  version: 1.3.0
-  resolution: "@react-native-community/eslint-plugin@npm:1.3.0"
-  checksum: 10c0/f08f662d45e4a001bb04f1534fcb3f3c4a9c7b043f60ecf159b4aa0040b388103e034af3de3d1c64d6aa18a3af5ddbfbd5312a67f619aaec41ed3a677efa5abf
-  languageName: node
-  linkType: hard
-
 "@react-native-community/netinfo@npm:^9.4.1":
   version: 9.5.0
   resolution: "@react-native-community/netinfo@npm:9.5.0"
@@ -4779,7 +4749,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^7.18.0":
+"@typescript-eslint/eslint-plugin@npm:^7.1.0, @typescript-eslint/eslint-plugin@npm:^7.1.1":
   version: 7.18.0
   resolution: "@typescript-eslint/eslint-plugin@npm:7.18.0"
   dependencies:
@@ -4802,7 +4772,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^7.18.0":
+"@typescript-eslint/parser@npm:^7.1.0, @typescript-eslint/parser@npm:^7.1.1":
   version: 7.18.0
   resolution: "@typescript-eslint/parser@npm:7.18.0"
   dependencies:
@@ -5913,22 +5883,6 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 10c0/f57576e30267be4607d163b7288031d332cf9200ea35efe9fb33c97f834e304376774c28c1f9d6928d6733fcde7041e4010f1248a0519e7730c590d4b07b9608
-  languageName: node
-  linkType: hard
-
-"babel-eslint@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "babel-eslint@npm:10.1.0"
-  dependencies:
-    "@babel/code-frame": "npm:^7.0.0"
-    "@babel/parser": "npm:^7.7.0"
-    "@babel/traverse": "npm:^7.7.0"
-    "@babel/types": "npm:^7.7.0"
-    eslint-visitor-keys: "npm:^1.0.0"
-    resolve: "npm:^1.12.0"
-  peerDependencies:
-    eslint: ">= 4.12.1"
-  checksum: 10c0/a1596111871ce3615410a2ffb87ab8383b35a8c8e1942b47130cb12bca2578c8eb9d8e56c3c84f44d7abe716684f6794f2e6c1e5b4e6d09f171ae51670be44b9
   languageName: node
   linkType: hard
 
@@ -8017,19 +7971,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^6.10.1":
-  version: 6.15.0
-  resolution: "eslint-config-prettier@npm:6.15.0"
-  dependencies:
-    get-stdin: "npm:^6.0.0"
-  peerDependencies:
-    eslint: ">=3.14.1"
-  bin:
-    eslint-config-prettier-check: bin/cli.js
-  checksum: 10c0/28fff0bd0cda1af62645955f916f4d5bc6922d6ec6a7c8c9dd207d3aab7a241ca1feb1ec787acea09a95956c7e5080a6310ed391b0ff218055378e1af24e2ff9
-  languageName: node
-  linkType: hard
-
 "eslint-config-prettier@npm:^8.5.0":
   version: 8.10.0
   resolution: "eslint-config-prettier@npm:8.10.0"
@@ -8101,7 +8042,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-eslint-comments@npm:^3.1.2, eslint-plugin-eslint-comments@npm:^3.2.0":
+"eslint-plugin-eslint-comments@npm:^3.2.0":
   version: 3.2.0
   resolution: "eslint-plugin-eslint-comments@npm:3.2.0"
   dependencies:
@@ -8110,17 +8051,6 @@ __metadata:
   peerDependencies:
     eslint: ">=4.19.1"
   checksum: 10c0/c71db824592dc8ea498021572a0bd33d763ef26126bdb3b84a027ca75a1adbe0894ec95024f7de39ef12308560e62cbf8af0d06ffe472be5ba8bd9169c928e96
-  languageName: node
-  linkType: hard
-
-"eslint-plugin-flowtype@npm:2.50.3":
-  version: 2.50.3
-  resolution: "eslint-plugin-flowtype@npm:2.50.3"
-  dependencies:
-    lodash: "npm:^4.17.10"
-  peerDependencies:
-    eslint: ">=2.0.0"
-  checksum: 10c0/3510944a01db36a0940137a417012fea9eb1d2303807043b90ee28d3e0f095f266ea0cbb8858d40b770e4ab6002170261a88787198cfc5747767a20d6056840e
   languageName: node
   linkType: hard
 
@@ -8166,15 +8096,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:22.4.1":
-  version: 22.4.1
-  resolution: "eslint-plugin-jest@npm:22.4.1"
-  peerDependencies:
-    eslint: ">=5"
-  checksum: 10c0/5acce6d2114be8d152b333fce6ebb929111c7e9efc8d2db4b91d5023f718918f88fa06ae93fce60204a9c41570b90ef3235ab87541bea7b020a4db1757b68bdb
-  languageName: node
-  linkType: hard
-
 "eslint-plugin-jest@npm:^27.9.0":
   version: 27.9.0
   resolution: "eslint-plugin-jest@npm:27.9.0"
@@ -8190,18 +8111,6 @@ __metadata:
     jest:
       optional: true
   checksum: 10c0/b8b09f7d8ba3d84a8779a6e95702a6e4dce45ab034e4edf5ddb631e77cd38dcdf791dfd9228e0a0d1d80d1eb2d278deb62ad2ec39f10fb8fd43cec07304e0c38
-  languageName: node
-  linkType: hard
-
-"eslint-plugin-prettier@npm:3.1.2":
-  version: 3.1.2
-  resolution: "eslint-plugin-prettier@npm:3.1.2"
-  dependencies:
-    prettier-linter-helpers: "npm:^1.0.0"
-  peerDependencies:
-    eslint: ">= 5.0.0"
-    prettier: ">= 1.13.0"
-  checksum: 10c0/387e6093fc1e59cf116aec131e7d0ca9f9726599a32b98d46f5051ada84b6d2622a6dc78e10daec5cf5cd15b9b08eac466eb817254ed0621b7a4e192792af4f8
   languageName: node
   linkType: hard
 
@@ -8225,7 +8134,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-hooks@npm:^4.0.4, eslint-plugin-react-hooks@npm:^4.6.0":
+"eslint-plugin-react-hooks@npm:^4.6.0":
   version: 4.6.2
   resolution: "eslint-plugin-react-hooks@npm:4.6.2"
   peerDependencies:
@@ -8241,18 +8150,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-native@npm:^3.8.1":
-  version: 3.11.0
-  resolution: "eslint-plugin-react-native@npm:3.11.0"
-  dependencies:
-    "@babel/traverse": "npm:^7.7.4"
-    eslint-plugin-react-native-globals: "npm:^0.1.1"
-  peerDependencies:
-    eslint: ^3.17.0 || ^4 || ^5 || ^6 || ^7
-  checksum: 10c0/868aed726f716227104d4716f4f5e42a04b8b0673622e54e6442fbee84f48b6979b319e3c0f3941d4afe3931b4b729898a5201a444b1a252f16598b9997848e4
-  languageName: node
-  linkType: hard
-
 "eslint-plugin-react-native@npm:^4.0.0":
   version: 4.1.0
   resolution: "eslint-plugin-react-native@npm:4.1.0"
@@ -8264,7 +8161,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:^7.20.0, eslint-plugin-react@npm:^7.30.1":
+"eslint-plugin-react@npm:^7.30.1":
   version: 7.37.5
   resolution: "eslint-plugin-react@npm:7.37.5"
   dependencies:
@@ -8309,13 +8206,6 @@ __metadata:
     esrecurse: "npm:^4.3.0"
     estraverse: "npm:^5.2.0"
   checksum: 10c0/613c267aea34b5a6d6c00514e8545ef1f1433108097e857225fed40d397dd6b1809dffd11c2fde23b37ca53d7bf935fe04d2a18e6fc932b31837b6ad67e1c116
-  languageName: node
-  linkType: hard
-
-"eslint-visitor-keys@npm:^1.0.0":
-  version: 1.3.0
-  resolution: "eslint-visitor-keys@npm:1.3.0"
-  checksum: 10c0/10c91fdbbe36810dd4308e57f9a8bc7177188b2a70247e54e3af1fa05ebc66414ae6fd4ce3c6c6821591f43a556e9037bc6b071122e099b5f8b7d2f76df553e3
   languageName: node
   linkType: hard
 
@@ -9182,13 +9072,6 @@ __metadata:
     dunder-proto: "npm:^1.0.1"
     es-object-atoms: "npm:^1.0.0"
   checksum: 10c0/9224acb44603c5526955e83510b9da41baf6ae73f7398875fba50edc5e944223a89c4a72b070fcd78beb5f7bdda58ecb6294adc28f7acfc0da05f76a2399643c
-  languageName: node
-  linkType: hard
-
-"get-stdin@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "get-stdin@npm:6.0.0"
-  checksum: 10c0/c8971d27ffb72e4aae0f18ba792d2bfec872f662e98e13b182d8611a36f38396b79f43563884f597e667c7bb9ab98f337ee958ae278af5fa7c310ca62845e56b
   languageName: node
   linkType: hard
 
@@ -11168,7 +11051,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.10, lodash@npm:^4.17.15, lodash@npm:^4.17.21":
+"lodash@npm:^4.17.15, lodash@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
@@ -13048,7 +12931,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:2.8.8, prettier@npm:^2.0.2":
+"prettier@npm:2.8.8":
   version: 2.8.8
   resolution: "prettier@npm:2.8.8"
   bin:
@@ -14251,7 +14134,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.12.0, resolve@npm:^1.14.2, resolve@npm:^1.20.0, resolve@npm:^1.22.4, resolve@npm:^1.22.8":
+"resolve@npm:^1.14.2, resolve@npm:^1.20.0, resolve@npm:^1.22.4, resolve@npm:^1.22.8":
   version: 1.22.10
   resolution: "resolve@npm:1.22.10"
   dependencies:
@@ -14277,7 +14160,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@npm%3A^1.12.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.4#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.8#optional!builtin<compat/resolve>":
+"resolve@patch:resolve@npm%3A^1.14.2#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.4#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.8#optional!builtin<compat/resolve>":
   version: 1.22.10
   resolution: "resolve@patch:resolve@npm%3A1.22.10#optional!builtin<compat/resolve>::version=1.22.10&hash=c3c19d"
   dependencies:
@@ -14340,7 +14223,6 @@ __metadata:
     "@json-rpc-tools/utils": "npm:^1.7.6"
     "@react-native-async-storage/async-storage": "npm:^1.19.0"
     "@react-native-clipboard/clipboard": "npm:^1.13.2"
-    "@react-native-community/eslint-config": "npm:^2.0.0"
     "@react-native-community/netinfo": "npm:^9.4.1"
     "@react-native/babel-preset": "npm:0.75.1"
     "@react-native/eslint-config": "npm:0.75.1"
