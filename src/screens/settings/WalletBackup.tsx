@@ -8,14 +8,14 @@ import {
   SettingsScreenProps,
   settingsStackRouteNames,
 } from 'navigation/settingsNavigator/types'
-import { castStyle, usePreventScreenshot } from 'shared/utils'
+import { castStyle } from 'shared/utils'
 import { getKeys } from 'storage/SecureStorage'
 
 type Props = SettingsScreenProps<settingsStackRouteNames.WalletBackup>
 
 export const WalletBackup = (_: Props) => {
   const { t } = useTranslation()
-  usePreventScreenshot(t)
+  // usePreventScreenshot(t)
 
   const [mnemonic, setMnemonic] = useState<string | null>()
   const mnemonicArray = mnemonic ? mnemonic.split(' ') : []

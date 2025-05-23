@@ -1899,8 +1899,6 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreenshotPrevent (1.2.1):
-    - React
   - RNSVG (14.2.0):
     - DoubleConversion
     - glog
@@ -2065,7 +2063,6 @@ DEPENDENCIES:
   - RNQrGenerator (from `../node_modules/rn-qr-generator`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
-  - RNScreenshotPrevent (from `../node_modules/react-native-screenshot-prevent`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - VisionCamera (from `../node_modules/react-native-vision-camera`)
@@ -2247,8 +2244,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
-  RNScreenshotPrevent:
-    :path: "../node_modules/react-native-screenshot-prevent"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   RNVectorIcons:
@@ -2343,7 +2338,6 @@ SPEC CHECKSUMS:
   RNQrGenerator: afacf12b55dfba0e3aaca963eec23691e8426431
   RNReanimated: 4ab125a1b0451725bb07b2ef9d567e03b2a85b3f
   RNScreens: d694115e022f03c2dd669acd9c5085905e6b4435
-  RNScreenshotPrevent: 5f8473abaa2db2476561ef8f3704b66491ce7b01
   RNSVG: bc3f480705f2b1346f002889d4cfb0c69b22004a
   RNVectorIcons: bd818296a51dc2bb8c3bd97a3ca399df1afe216d
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
