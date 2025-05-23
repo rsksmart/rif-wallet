@@ -10,6 +10,8 @@ require react_native_pods_path
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
+ ENV['RCT_NEW_ARCH_ENABLED'] = '1'
+
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
@@ -22,13 +24,10 @@ target 'rifWallet' do
   use_react_native!(
     :path => config[:reactNativePath],
     # An absolute path to your application root.
-    :app_path => "#{Pod::Config.instance.installation_root}/.."
+    :app_path => "#{Pod::Config.instance.installation_root}/..",
+    :fabric_enabled => true,
+    :hermes_enabled => true
   )
-
-  target 'rifWalletTests' do
-    inherit! :complete
-    # Pods for testing
-  end
 
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202

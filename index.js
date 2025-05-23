@@ -5,6 +5,5 @@ import App from './src/App'
 import { name as appName } from './app.json'
 import './src/lib/i18n'
 
-console.log('TRACE ID', Config.TRACE_ID)
 
 AppRegistry.registerComponent(appName, () => App)
