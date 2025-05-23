@@ -12776,7 +12776,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-modal@npm:^13.0.1":
+"react-native-modal@npm:13.0.1":
   version: 13.0.1
   resolution: "react-native-modal@npm:13.0.1"
   dependencies:
@@ -12786,6 +12786,19 @@ __metadata:
     react: "*"
     react-native: ">=0.65.0"
   checksum: 10c0/8ec5728c2a27eb31c97451968b4ecefdf005afda51fab2fc864fc442122573c70f7bf3fa0c6e3bd1d6aab3565c684104d1d30df916c3f9a6c7c3223e4d3b9249
+  languageName: node
+  linkType: hard
+
+"react-native-modal@patch:react-native-modal@npm%3A13.0.1#~/.yarn/patches/react-native-modal-npm-13.0.1-f1a75332f0.patch":
+  version: 13.0.1
+  resolution: "react-native-modal@patch:react-native-modal@npm%3A13.0.1#~/.yarn/patches/react-native-modal-npm-13.0.1-f1a75332f0.patch::version=13.0.1&hash=c1c7cc"
+  dependencies:
+    prop-types: "npm:^15.6.2"
+    react-native-animatable: "npm:1.3.3"
+  peerDependencies:
+    react: "*"
+    react-native: ">=0.65.0"
+  checksum: 10c0/4d143040ae3e531bc01040e52a9b06580aa61415019dccdac656d7ab1df664e632c0113b0e864353ed5b6ade8cb83979ddb7fd75f754a72a3c04a349cbbf19e2
   languageName: node
   linkType: hard
 
@@ -12881,16 +12894,6 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/a8de8dc21f522567de1600ae79a5ec472ffe3db8bc90d4ca8b58deae6e732e35d090a52f26cbc7591d635385f83b2784382d543dbb8d2b5fe40ed1f7bffe940b
-  languageName: node
-  linkType: hard
-
-"react-native-screenshot-prevent@npm:^1.1.9":
-  version: 1.2.1
-  resolution: "react-native-screenshot-prevent@npm:1.2.1"
-  peerDependencies:
-    react: "*"
-    react-native: "*"
-  checksum: 10c0/7b65b567fb1ebcad0ab64ab653a47aba86f75d6802f2cc1a06df9867108a376f9c1067538d8ba464e949fb2bda3357afa043e1a09831a031abe3ef7b418921a9
   languageName: node
   linkType: hard
 
@@ -13530,7 +13533,7 @@ __metadata:
     react-native-jdenticon: "npm:^0.0.3"
     react-native-keychain: "npm:^8.1.3"
     react-native-mmkv: "npm:^3.2.0"
-    react-native-modal: "npm:^13.0.1"
+    react-native-modal: "patch:react-native-modal@npm%3A13.0.1#~/.yarn/patches/react-native-modal-npm-13.0.1-f1a75332f0.patch"
     react-native-progress: "npm:^5.0.0"
     react-native-qrcode-svg: "npm:^6.2.0"
     react-native-randombytes: "npm:^3.0.0"
@@ -13538,7 +13541,6 @@ __metadata:
     react-native-reanimated-carousel: "npm:^3.5.1"
     react-native-safe-area-context: "npm:^4.8.0"
     react-native-screens: "npm:^3.30.0"
-    react-native-screenshot-prevent: "npm:^1.1.9"
     react-native-ssl-public-key-pinning: "npm:^1.2.5"
     react-native-svg: "npm:^14.1.0"
     react-native-vector-icons: "npm:^10.0.3"

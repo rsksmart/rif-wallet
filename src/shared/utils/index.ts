@@ -166,34 +166,38 @@ export const getRandomNumber = (max: number, min: number) => {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export const usePreventScreenshot = (
-  t: ReturnType<typeof useTranslation>['t'],
-) => {
-  const isFocused = useIsFocused()
+// removing this because of lack of support, last update June 2024
+// it's not working properly with New Architectures which is required
+// by more important libs such as react-native-mmkv
+// TODO: figure out which package to use instead
+// export const usePreventScreenshot = (
+//   t: ReturnType<typeof useTranslation>['t'],
+// ) => {
+//   const isFocused = useIsFocused()
 
-  useEffect(() => {
-    const subs = addListener(() => {
-      Alert.alert(t('wallet_backup_title'), t('wallet_backup_message'), [
-        { text: t('ok') },
-      ])
-    })
+//   useEffect(() => {
+//     const subs = addListener(() => {
+//       Alert.alert(t('wallet_backup_title'), t('wallet_backup_message'), [
+//         { text: t('ok') },
+//       ])
+//     })
 
-    return () => {
-      subs.remove()
-    }
-  }, [t])
+//     return () => {
+//       subs.remove()
+//     }
+//   }, [t])
 
-  useEffect(() => {
-    if (isFocused) {
-      enabled(true)
-      enableSecureView()
-      return
-    }
+//   useEffect(() => {
+//     if (isFocused) {
+//       enabled(true)
+//       enableSecureView()
+//       return
+//     }
 
-    enabled(false)
-    disableSecureView()
-  }, [isFocused])
-}
+//     enabled(false)
+//     disableSecureView()
+//   }, [isFocused])
+// }
 
 export * from './tokenValues'
 export * from './wallet'
