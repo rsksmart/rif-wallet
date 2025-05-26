@@ -12907,16 +12907,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-svg@npm:^14.1.0":
-  version: 14.2.0
-  resolution: "react-native-svg@npm:14.2.0"
+"react-native-svg@npm:^15.12.0":
+  version: 15.12.0
+  resolution: "react-native-svg@npm:15.12.0"
   dependencies:
     css-select: "npm:^5.1.0"
     css-tree: "npm:^1.1.3"
+    warn-once: "npm:0.1.1"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/db7734609f2a8cb7540ca245e6101476ae06315cea7835eec842fb63e53b3f9946a0f3d64ae3f6e131df058a48f9e37b1da4428003a77120a3684c1b507653f4
+  checksum: 10c0/80ad7ed06fc095767a8f786416fa0f4258a644ffc80a27a9425ad753abe0feab523f3e8817758411f7bead38449ab8c2f1272a9f124d185ffcf69afaf57eba31
   languageName: node
   linkType: hard
 
@@ -13542,7 +13543,7 @@ __metadata:
     react-native-safe-area-context: "npm:^4.8.0"
     react-native-screens: "npm:^3.30.0"
     react-native-ssl-public-key-pinning: "npm:^1.2.5"
-    react-native-svg: "npm:^14.1.0"
+    react-native-svg: "npm:^15.12.0"
     react-native-vector-icons: "npm:^10.0.3"
     react-native-vision-camera: "npm:^4.6.4"
     react-redux: "npm:^8.0.5"
@@ -15424,7 +15425,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"warn-once@npm:^0.1.0":
+"warn-once@npm:0.1.1, warn-once@npm:^0.1.0":
   version: 0.1.1
   resolution: "warn-once@npm:0.1.1"
   checksum: 10c0/f531e7b2382124f51e6d8f97b8c865246db8ab6ff4e53257a2d274e0f02b97d7201eb35db481843dc155815e154ad7afb53b01c4d4db15fb5aa073562496aff7
