@@ -2,6 +2,7 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import { AppState, AppStateStatus } from 'react-native'
 
 import { createReduxWrapper } from 'testLib/ReduxWrapper'
+
 import { useStateSubscription } from './useStateSubscription'
 
 // Mock react-native-background-timer if needed
@@ -15,12 +16,14 @@ describe('hook: useStateSubscription', () => {
 
   beforeEach(() => {
     // Mock AppState event handling
-    jest.spyOn(AppState, 'addEventListener').mockImplementation((event, callback) => {
-      if (event === 'change') {
-        appStateCallback = callback
-      }
-      return { remove: jest.fn() }
-    })
+    jest
+      .spyOn(AppState, 'addEventListener')
+      .mockImplementation((event, callback) => {
+        if (event === 'change') {
+          appStateCallback = callback
+        }
+        return { remove: jest.fn() }
+      })
 
     // clear mocks before each test
     jest.clearAllMocks()
