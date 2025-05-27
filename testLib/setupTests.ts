@@ -40,9 +40,11 @@ jest.mock('react-native-bootsplash', () => ({
   hide: jest.fn(),
 }))
 
-jest.mock('react-native-screenshot-prevent', () => ({
-  addListener: jest.fn(),
-  enabled: jest.fn(),
-  enableSecureView: jest.fn(),
-  disableSecureView: jest.fn(),
-}))
+// TODO: setup a mock or test after we figure out the lib
+// which works with JSI
+// jest.mock('react-native-screenshot-prevent', () => ({
+//   addListener: jest.fn(),
+//   enabled: jest.fn(),
+//   enableSecureView: jest.fn(),
+//   disableSecureView: jest.fn(),
+// }))
