@@ -1,19 +1,5 @@
-import { createRef, useEffect } from 'react'
-import {
-  Alert,
-  ImageStyle,
-  TextInput,
-  TextStyle,
-  ViewStyle,
-} from 'react-native'
-import {
-  addListener,
-  enabled,
-  enableSecureView,
-  disableSecureView,
-} from 'react-native-screenshot-prevent'
-import { useTranslation } from 'react-i18next'
-import { useIsFocused } from '@react-navigation/native'
+import { createRef } from 'react'
+import { ImageStyle, TextInput, TextStyle, ViewStyle } from 'react-native'
 
 import { ErrorWithMessage } from '../types'
 

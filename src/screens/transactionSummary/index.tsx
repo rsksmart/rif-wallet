@@ -65,7 +65,10 @@ export const TransactionSummaryScreen = ({
         return true
       }
 
-      const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackPress)
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        onBackPress,
+      )
       return () => backHandler.remove()
     }, [goBack]),
   )
