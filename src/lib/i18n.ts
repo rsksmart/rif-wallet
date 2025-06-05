@@ -427,9 +427,10 @@ export default i18n
   .init({
     lng: 'en',
     debug: true,
-    compatibilityJSON: 'v3',
+    compatibilityJSON: 'v4',
     resources,
     interpolation: {
       escapeValue: false, // react already safes from xss
     },
+    returnNull: false,
   })
