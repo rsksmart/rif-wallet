@@ -1,5 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { act } from '@testing-library/react-hooks'
+import { act } from '@testing-library/react-native'
 import { BigNumber, Wallet, providers } from 'ethers'
 import { useSelector } from 'react-redux'
 
