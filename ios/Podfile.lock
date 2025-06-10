@@ -1336,7 +1336,7 @@ PODS:
     - ReactCommon/turbomodule/core
   - react-native-background-timer (2.4.1):
     - React-Core
-  - react-native-compat (2.21.0):
+  - react-native-compat (2.21.1):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2169,7 +2169,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - Yoga
   - SocketRocket (0.7.1)
-  - TrustKit (3.0.4)
+  - TrustKit (3.0.7)
   - VisionCamera (4.6.4):
     - VisionCamera/Core (= 4.6.4)
     - VisionCamera/React (= 4.6.4)
@@ -2511,7 +2511,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: c3f4b608e4a59dd2f6a416ef4d47a14400194468
   React-microtasksnativemodule: 054f34e9b82f02bd40f09cebd4083828b5b2beb6
   react-native-background-timer: 4638ae3bee00320753647900b21260b10587b6f7
-  react-native-compat: 83b4779c4ce36c3eca1f9a7641e367a867908e70
+  react-native-compat: 434aa5b65474be63335fdc9b3ae68ccdec77a785
   react-native-config: 644074ab88db883fcfaa584f03520ec29589d7df
   react-native-get-random-values: d16467cf726c618e9c7a8c3c39c31faa2244bbba
   react-native-mmkv: d3cc73d2554fafa20dc5b86386359034d1faf8ff
@@ -2562,7 +2562,7 @@ SPEC CHECKSUMS:
   RNSVG: 8a1054afe490b5d63b9792d7ae3c1fde8c05cdd0
   RNVectorIcons: 941a39b5d3b9d8cf8ac2e2fc09b07bfafbcf9796
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  TrustKit: 403e8d2cfbff2abfc37cd41acc558dab8ec78e59
+  TrustKit: 1050f3ce0595f8ed775f1237b7f590e3a4f93e91
   VisionCamera: f56eaedde0d3fa095143b78374d29e89e71735f9
   Yoga: 9f110fc4b7aa538663cba3c14cbb1c335f43c13f
   ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
