@@ -61,7 +61,7 @@
     "react": "19.0.0",
     "react-hook-form": "^7.50.1",
     "react-i18next": "^15.5.2",
-    "react-native": "0.79.2",
+    "react-native": "0.80.2",
     "react-native-background-timer": "^2.4.1",
     "react-native-barcode-mask": "^1.2.4",
     "react-native-bootsplash": "^5.4.1",
