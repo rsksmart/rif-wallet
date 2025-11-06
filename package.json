@@ -99,7 +99,7 @@
     "@babel/plugin-transform-react-jsx": "^7.19.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.27.0",
-    "@react-native-community/cli": "^18.0.0",
+    "@react-native-community/cli": "^20.0.0",
     "@react-native-community/cli-platform-android": "^18.0.0",
     "@react-native-community/cli-platform-ios": "^18.0.0",
     "@react-native/babel-preset": "0.79.2",
