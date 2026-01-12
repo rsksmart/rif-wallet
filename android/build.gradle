@@ -1,11 +1,14 @@
 buildscript {
     ext {
-        buildToolsVersion = "35.0.0"
+        buildToolsVersion = "36.0.0"
         minSdkVersion = 24
-        compileSdkVersion = 35
-        targetSdkVersion = 35
+        compileSdkVersion = 36
+        targetSdkVersion = 36
         ndkVersion = "27.1.12297006"
         kotlinVersion = "2.0.21"
+        // Paths for RN libraries so they don't need to call node
+        REACT_NATIVE_NODE_MODULES_DIR = "$rootDir/../node_modules/react-native"
+        REACT_NATIVE_WORKLETS_NODE_MODULES_DIR = "$rootDir/../node_modules/react-native-worklets"
     }
     repositories {
         google()
@@ -15,6 +18,14 @@ buildscript {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+    }
+}
+
+allprojects {
+    configurations.all {
+        resolutionStrategy.dependencySubstitution {
+            substitute module("com.facebook.react:hermes-android") using module("com.facebook.hermes:hermes-android:0.14.0")
+        }
     }
 }
 
