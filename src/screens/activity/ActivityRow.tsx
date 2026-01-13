@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleProp, ViewStyle } from 'react-native'
 import { ZERO_ADDRESS } from '@rsksmart/rif-relay-light-sdk'
+import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 import { shortAddress } from 'lib/utils'
 
@@ -11,7 +12,6 @@ import { BasicRowWithContact } from 'components/BasicRow/BasicRowWithContact'
 import { AppTouchable } from 'components/appTouchable'
 import { rootTabsRouteNames } from 'navigation/rootNavigator/types'
 import { TransactionSummaryScreenProps } from 'screens/transactionSummary'
-import { ActivityMainScreenProps } from 'shared/types'
 import { useAppSelector } from 'store/storeUtils'
 import { getContactByAddress } from 'store/slices/contactsSlice'
 import { ActivityRowPresentationObject } from 'store/slices/transactionsSlice'
@@ -31,10 +31,10 @@ const getStatus = (status: string) => {
 }
 
 interface Props {
-  index?: number
   wallet: Wallet
   activityDetails: ActivityRowPresentationObject
-  navigation: ActivityMainScreenProps['navigation']
+  navigation: NavigationProp<ParamListBase>
+  index?: number
   backScreen?: rootTabsRouteNames
   style?: StyleProp<ViewStyle>
 }

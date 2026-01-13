@@ -1,4 +1,5 @@
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
+import { StackHeaderProps } from '@react-navigation/stack'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -17,7 +18,9 @@ import { selectProfile } from 'store/slices/profileSlice/selector'
 import { useAppSelector } from 'store/storeUtils'
 
 interface Props {
-  navigation: BottomTabHeaderProps['navigation']
+  navigation:
+    | BottomTabHeaderProps['navigation']
+    | StackHeaderProps['navigation']
 }
 
 export const ProfileHandler = ({ navigation }: Props) => {
