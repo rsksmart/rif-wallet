@@ -18,7 +18,7 @@ import {
 import { AppButton } from 'components/button'
 import { AddressInput } from 'components/address'
 import { Input } from 'components/index'
-import { Contact } from 'shared/types'
+import { Contact, ContactWithAddressRequired } from 'shared/types'
 import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import {
   addContact,
@@ -35,15 +35,20 @@ export type ContactFormScreenProps = CompositeScreenProps<
   RootTabsScreenProps<rootTabsRouteNames.Contacts>
 >
 
-interface FormValues {
-  name: string
-  address: {
-    address: string
-    displayAddress: string
-  }
-  displayAddress: string
-  addressIsValid: boolean
-}
+// Schema for type inference (translations added at runtime in useMemo)
+const contactFormSchema = yup.object({
+  name: yup.string().required().min(3).max(50).trim(),
+  address: yup.object({
+    address: yup.string().required(),
+    displayAddress: yup.string().notRequired(),
+  }),
+  addressIsValid: yup
+    .boolean()
+    .required()
+    .test('is-true', 'Address must be valid', v => v === true),
+})
+
+type FormValues = yup.InferType<typeof contactFormSchema>
 
 export const checkIfContactExists = (
   address: string,
@@ -88,7 +93,10 @@ export const ContactFormScreen = ({
           address: yup.string().required(),
           displayAddress: yup.string().notRequired(),
         }),
-        addressIsValid: yup.boolean().isTrue(),
+        addressIsValid: yup
+          .boolean()
+          .required()
+          .test('is-true', 'Address must be valid', v => v === true),
       }),
     [t],
   )
@@ -164,10 +172,10 @@ export const ContactFormScreen = ({
       const contact: Contact = {
         name: trimmedName,
         address: lAddress,
-        displayAddress,
+        displayAddress: displayAddress ?? '',
       }
       const contactExists = checkIfContactExists(
-        displayAddress && lAddress,
+        (displayAddress && lAddress) as string,
         trimmedName,
         contactsToEvaluate,
       )
@@ -240,7 +248,7 @@ export const ContactFormScreen = ({
             inputName={'address'}
             testID={testIDs.addressInput}
             accessibilityLabel={testIDs.addressInput}
-            value={addressObj}
+            value={addressObj as ContactWithAddressRequired}
             resetValue={() =>
               setValue('address', { address: '', displayAddress: '' })
             }
