@@ -105,21 +105,26 @@ export const RelayDeployScreen = ({
 
   useEffect(() => {
     if (backScreen) {
-      const { child, parent } = backScreen
-      // TODO: fix this typescript error
-      // if wallet is not deployed go Home
       navigation.setOptions({
         headerLeft: () =>
-          sharedHeaderLeftOptions(() =>
-            !isDeployed
-              ? navigation.navigate(rootTabsRouteNames.Home, {
-                  screen: homeStackRouteNames.Main,
-                })
-              : navigation.navigate(parent, {
-                  screen: child,
-                  params: {},
-                }),
-          ),
+          sharedHeaderLeftOptions(() => {
+            // Reset Settings stack before navigating away
+            navigation.popToTop()
+
+            const rootNav = navigation.getParent()
+            if (!isDeployed) {
+              rootNav?.navigate(rootTabsRouteNames.Home)
+            } else if (backScreen.parent === rootTabsRouteNames.Home) {
+              rootNav?.navigate(rootTabsRouteNames.Home, {
+                screen: backScreen.child,
+                params: {},
+              })
+            } else {
+              rootNav?.navigate(rootTabsRouteNames.Profile, {
+                screen: backScreen.child,
+              })
+            }
+          }),
       })
     }
   }, [backScreen, navigation, isDeployed])

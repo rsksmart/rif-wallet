@@ -220,16 +220,20 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
 
   useEffect(() => {
     if (!isDeployed && !loading) {
-      navigation.goBack()
-      navigation.navigate(rootTabsRouteNames.Settings, {
-        screen: settingsStackRouteNames.RelayDeployScreen,
-        params: {
-          goBackScreen: {
-            parent: rootTabsRouteNames.Profile,
-            child: profileStackRouteNames.ProfileCreateScreen,
+      // Use getParent to access root tab navigator
+      const rootNav = navigation.getParent()
+      if (rootNav) {
+        navigation.goBack()
+        rootNav.navigate(rootTabsRouteNames.Settings, {
+          screen: settingsStackRouteNames.RelayDeployScreen,
+          params: {
+            goBackScreen: {
+              parent: rootTabsRouteNames.Profile,
+              child: profileStackRouteNames.ProfileCreateScreen,
+            },
           },
-        },
-      })
+        })
+      }
     }
   }, [isDeployed, loading, navigation])
 

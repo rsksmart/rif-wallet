@@ -39,11 +39,6 @@ export const ProfileNavigator = ({
 }: RootTabsScreenProps<rootTabsRouteNames.Profile>) => {
   const { top } = useSafeAreaInsets()
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    })
-  }, [navigation])
   const { t } = useTranslation()
   const status = useAppSelector(selectProfileStatus)
   const { startColor, endColor } = useProfileStatusColors()
