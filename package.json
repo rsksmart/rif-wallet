@@ -141,6 +141,7 @@
   "packageManager": "yarn@4.9.1",
   "resolutions": {
     "elliptic": "6.6.1",
+    "secp256k1": "4.0.4",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0"
   },
