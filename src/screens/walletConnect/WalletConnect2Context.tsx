@@ -3,6 +3,7 @@ import {
   ReactElement,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import { getSdkError, parseUri } from '@walletconnect/utils'
@@ -202,6 +203,7 @@ export const WalletConnect2Provider = ({
   const dispatch = useAppDispatch()
   const chainId = useAppSelector(selectChainId)
   const [sessions, setSessions] = useState<SessionStruct[]>([])
+  const hasInitializedRef = useRef(false)
   const [pendingSession, setPendingSession] = useState<
     PendingSession | undefined
   >(undefined)
@@ -222,7 +224,7 @@ export const WalletConnect2Provider = ({
   const createSecureAdapter = useCallback(
     (_wallet: Wallet) => {
       // Cast wallet for resolver constructors - safe because our wallet implements required methods
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       const walletForResolvers = _wallet as any
 
       // Create domain validator for protecting Smart Wallet address
@@ -583,7 +585,8 @@ export const WalletConnect2Provider = ({
    * useEffect On first load, fetch previous saved sessions
    */
   useEffect(() => {
-    if (wallet) {
+    if (wallet && !hasInitializedRef.current) {
+      hasInitializedRef.current = true
       onContextFirstLoad(wallet).catch(console.log)
     }
   }, [wallet, onContextFirstLoad])
