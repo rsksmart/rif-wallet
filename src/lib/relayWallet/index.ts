@@ -1,9 +1,9 @@
 import {
+  BlockTag,
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider'
 import { BigNumber, BigNumberish, Wallet, providers } from 'ethers'
-import { BlockchainAuthenticatorConfig } from '@json-rpc-tools/utils'
 import { defineReadOnly } from 'ethers/lib/utils'
 import { RIFRelaySDK } from '@rsksmart/rif-relay-light-sdk'
 
@@ -104,7 +104,7 @@ export class RelayWallet extends EOAWallet {
   // calls via smart wallet
   call(
     transactionRequest: TransactionRequest,
-    blockTag?: BlockchainAuthenticatorConfig,
+    blockTag?: BlockTag,
   ): Promise<any> {
     return this.rifRelaySdk.smartWallet.callStaticDirectExecute(
       transactionRequest.to!,
