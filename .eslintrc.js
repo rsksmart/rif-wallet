@@ -5,6 +5,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['prettier', 'eslint-plugin-import', 'react-hooks'],
   rules: {
+    '@react-native/no-deep-imports': 'off',
     'react/react-in-jsx-scope': 'off',
     semi: 'off',
     'eslint-comments/no-unlimited-disable': 'off',

@@ -18,7 +18,6 @@ import {
 } from 'navigation/settingsNavigator/types'
 import { sharedHeaderLeftOptions } from 'navigation/index'
 import { rootTabsRouteNames } from 'navigation/rootNavigator'
-import { homeStackRouteNames } from 'navigation/homeNavigator/types'
 import { useWholeWalletWithSetters } from 'shared/wallet'
 
 import { TokenSymbol } from '../home/TokenImage'
