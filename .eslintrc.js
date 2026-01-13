@@ -1,7 +1,7 @@
 require('@rushstack/eslint-patch/modern-module-resolution')
 module.exports = {
   root: true,
-  extends: ['@react-native', 'plugin:@typescript-eslint/recommended'],
+  extends: ['@react-native'],
   parser: '@typescript-eslint/parser',
   plugins: ['prettier', 'eslint-plugin-import', 'react-hooks'],
   rules: {
