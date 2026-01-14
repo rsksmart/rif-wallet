@@ -166,7 +166,7 @@ export const Input = ({
                     type={!value ? (isReadOnly ? 'body2' : 'body3') : 'body2'}>
                     {placeholder && !focused && !value
                       ? placeholder
-                      : propValue ?? value}
+                      : (propValue ?? value)}
                   </Typography>
                 </TextInput>
                 {subtitle && (!!value || isReadOnly || forceShowSubtitle) ? (

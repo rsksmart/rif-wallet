@@ -6,9 +6,11 @@ module.exports = {
   plugins: ['prettier', 'eslint-plugin-import', 'react-hooks'],
   rules: {
     '@react-native/no-deep-imports': 'off',
+    'react/no-unstable-nested-components': 'off',
     'react/react-in-jsx-scope': 'off',
     semi: 'off',
     'eslint-comments/no-unlimited-disable': 'off',
+    'eslint-comments/no-unused-disable': 'off',
     'react-hooks/exhaustive-deps': 'error',
     'no-undef': 'off',
     'no-shadow': 'off',
