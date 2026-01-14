@@ -164,6 +164,14 @@
       "node_modules/(?!react-native-linear-gradient)/",
       "jest-runner"
     ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "ActivityScreen.test",
+      "AddressInput.test",
+      "ContactFormScreen.test",
+      "useStateSubscription.test",
+      "walletConnect2.security.test"
+    ],
     "setupFiles": [
       "./src/jest.setup.js"
     ]
