@@ -28,7 +28,7 @@ import { ActivityBasicRow } from './ActivityRow'
 export const ActivityScreen = ({ navigation }: ActivityMainScreenProps) => {
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
-  const wallet = useWallet()
+  const { wallet } = useWallet()
   const transactions = useAppSelector(selectTransactions)
   const loading = useAppSelector(selectTransactionsLoading)
   const isFocused = useIsFocused()

@@ -71,27 +71,23 @@ interface Props {
   contactList?: Contact[]
 }
 
-interface FormValues {
-  amount: number
-  to: {
-    address: string
-    displayAddress: string
-  }
-  isToValid: boolean
-  name: string | null
-}
-
 export type ProposedContact = Omit<Contact, 'name'>
 
-const transactionSchema = yup.object().shape({
-  amount: yup.number().min(0.000000001),
+const transactionSchema = yup.object({
+  amount: yup.number().required().min(0.000000001),
   to: yup.object({
     address: yup.string().required(),
     displayAddress: yup.string().notRequired(),
   }),
   balance: yup.string(),
-  isToValid: yup.boolean().isTrue(),
+  isToValid: yup
+    .boolean()
+    .required()
+    .test('is-true', 'Recipient must be valid', v => v === true),
+  name: yup.string().nullable(),
 })
+
+type FormValues = yup.InferType<typeof transactionSchema>
 
 const maxAmount = 99999999
 
@@ -154,7 +150,7 @@ export const TransactionForm = ({
     ? tokenPrices.BTC.price
     : tokenPrices[selectedToken.contractAddress]?.price
 
-  const methods = useForm<FormValues>({
+  const methods = useForm({
     mode: 'onSubmit',
     defaultValues: {
       amount: initialAmount || 0,
@@ -381,7 +377,7 @@ export const TransactionForm = ({
               label={t('transaction_form_recepient_label')}
               placeholder={t('transaction_form_recepient_label')}
               inputName={'to'}
-              value={to}
+              value={to as ContactWithAddressRequired}
               onChangeAddress={handleTargetAddressChange}
               resetValue={() => {
                 resetField('to')

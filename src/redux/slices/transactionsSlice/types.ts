@@ -8,8 +8,7 @@ import { TokenSymbol } from 'screens/home/TokenImage'
 import { TransactionStatus } from 'screens/transactionSummary/transactionSummaryUtils'
 import { IEvent } from 'src/subscriptions/types'
 
-export interface TransactionsServerResponseWithActivityTransactions
-  extends TransactionsServerResponse {
+export interface TransactionsServerResponseWithActivityTransactions extends TransactionsServerResponse {
   activityTransactions?: IActivityTransaction[]
 }
 

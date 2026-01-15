@@ -108,10 +108,7 @@ export const ProfileCreateScreen = ({
 
   useEffect(() => {
     if (status === ProfileStatus.READY_TO_PURCHASE) {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: profileStackRouteNames.PurchaseDomain }],
-      })
+      navigation.replace(profileStackRouteNames.PurchaseDomain)
     }
   }, [navigation, status])
 

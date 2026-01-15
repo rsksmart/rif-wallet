@@ -41,10 +41,13 @@ export const minDomainLength = 5
 
 type Props = ProfileStackScreenProps<profileStackRouteNames.SearchDomain>
 
-interface FormValues {
-  domain: string
-  years: number
-}
+// Schema for type inference (translations added at runtime in useMemo)
+const searchDomainSchema = yup.object({
+  domain: yup.string().required().min(minDomainLength),
+  years: yup.number().required(),
+})
+
+type FormValues = yup.InferType<typeof searchDomainSchema>
 
 export const SearchDomainScreen = ({ navigation }: Props) => {
   const getRnsProcessor = useGetRnsProcessor()
@@ -68,7 +71,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
   const { t } = useTranslation()
   const schema = useMemo(
     () =>
-      yup.object<FormValues>({
+      yup.object({
         domain: yup
           .string()
           .required()
@@ -78,7 +81,7 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
       }),
     [t],
   )
-  const methods = useForm({
+  const methods = useForm<FormValues>({
     mode: 'onChange',
     defaultValues: {
       domain: '',
@@ -220,16 +223,20 @@ export const SearchDomainScreen = ({ navigation }: Props) => {
 
   useEffect(() => {
     if (!isDeployed && !loading) {
-      navigation.goBack()
-      navigation.navigate(rootTabsRouteNames.Settings, {
-        screen: settingsStackRouteNames.RelayDeployScreen,
-        params: {
-          goBackScreen: {
-            parent: rootTabsRouteNames.Profile,
-            child: profileStackRouteNames.ProfileCreateScreen,
+      // Use getParent to access root tab navigator
+      const rootNav = navigation.getParent()
+      if (rootNav) {
+        navigation.goBack()
+        rootNav.navigate(rootTabsRouteNames.Settings, {
+          screen: settingsStackRouteNames.RelayDeployScreen,
+          params: {
+            goBackScreen: {
+              parent: rootTabsRouteNames.Profile,
+              child: profileStackRouteNames.ProfileCreateScreen,
+            },
           },
-        },
-      })
+        })
+      }
     }
   }, [isDeployed, loading, navigation])
 

@@ -95,11 +95,17 @@ export const createWeb3Wallet = async () => {
   })
 }
 
+/**
+ * Methods supported for WalletConnect session approval.
+ * SECURITY NOTE: This list MUST match rskWalletConnectNamespace.eip155.methods
+ * and the resolvers configured in WalletConnect2Context.createSecureAdapter()
+ */
 const WALLETCONNECT_SUPPORTED_METHODS = [
   'eth_sendTransaction',
   'personal_sign',
   'eth_signTransaction',
   'eth_signTypedData',
+  'eth_signTypedData_v4', // Added to match namespace - requires validation in context
 ]
 
 const WALLETCONNECT_BUILD_SUPPORTED_CHAINS = (chainId: ChainID) => [
@@ -140,6 +146,14 @@ export const buildRskAllowedNamespaces = ({
     },
   })
 
+/**
+ * RSK WalletConnect namespace configuration.
+ * SECURITY NOTES:
+ * - All methods listed here MUST have proper validation in WalletConnect2Context
+ * - eth_signTypedData and eth_signTypedData_v4 require domain validation to prevent
+ *   ForwardRequest signature harvesting attacks on the Smart Wallet
+ * - Signing methods require user consent UI before execution
+ */
 export const rskWalletConnectNamespace = {
   eip155: {
     chains: ['eip155:31', 'eip155:30'],

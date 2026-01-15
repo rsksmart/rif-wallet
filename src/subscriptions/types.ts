@@ -82,8 +82,7 @@ export interface TransactionsServerResponse {
   data: IApiTransaction[]
 }
 
-export interface TransactionsServerResponseWithActivityTransactions
-  extends TransactionsServerResponse {
+export interface TransactionsServerResponseWithActivityTransactions extends TransactionsServerResponse {
   activityTransactions: IActivityTransaction[]
 }
 

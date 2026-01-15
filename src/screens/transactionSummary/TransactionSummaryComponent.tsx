@@ -200,8 +200,8 @@ export const TransactionSummaryComponent = ({
                   ? t('transaction_summary_i_received_text')
                   : t('transaction_summary_i_receive_text')
                 : status === TransactionStatus.SUCCESS
-                ? t('transaction_summary_total_sent')
-                : t('transaction_summary_total_send')}
+                  ? t('transaction_summary_total_sent')
+                  : t('transaction_summary_total_send')}
             </Typography>
 
             <View style={sharedStyles.row}>

@@ -1,4 +1,11 @@
-import { ColorValue, StyleSheet, Text, TextProps } from 'react-native'
+import {
+  Animated,
+  ColorValue,
+  StyleProp,
+  StyleSheet,
+  TextProps,
+  TextStyle,
+} from 'react-native'
 
 import { sharedColors } from 'shared/constants'
 import { castStyle } from 'shared/utils'
@@ -92,9 +99,10 @@ export type TypographyType =
   | 'button2'
   | 'labelLight'
 
-interface Props extends TextProps {
+interface Props extends Omit<TextProps, 'style'> {
   type: TypographyType
   color?: ColorValue
+  style?: Animated.WithAnimatedValue<StyleProp<TextStyle>>
 }
 
 const typeStyleMap = new Map([
@@ -120,11 +128,11 @@ export const Typography = ({
   ...props
 }: Props) => {
   return (
-    <Text
+    <Animated.Text
       style={[typeStyleMap.get(type), color ? { color } : null, style]}
       {...props}>
       {children}
-    </Text>
+    </Animated.Text>
   )
 }
 

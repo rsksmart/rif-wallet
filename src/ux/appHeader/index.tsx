@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react'
+import { useCallback } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { BottomTabHeaderProps } from '@react-navigation/bottom-tabs'
 import { StackHeaderProps } from '@react-navigation/stack'
@@ -12,7 +12,6 @@ import { sharedColors } from 'shared/constants'
 import { AppTouchable } from 'components/appTouchable'
 import { castStyle } from 'shared/utils'
 import { Typography } from 'src/components'
-import { WalletContext } from 'shared/wallet'
 
 import { ProfileHandler } from './ProfileHandler'
 
@@ -21,17 +20,13 @@ type HeaderProps = BottomTabHeaderProps | StackHeaderProps
 export const AppHeader = ({ navigation, route }: HeaderProps) => {
   const insets = useSafeAreaInsets()
   const topColor = useAppSelector(selectTopColor)
-  const { wallet } = useContext(WalletContext)
   const chainId = useAppSelector(selectChainId)
 
   const openMenu = useCallback(() => {
     if (route?.name === rootTabsRouteNames.Settings) {
       navigation.navigate(rootTabsRouteNames.Home)
     } else {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: rootTabsRouteNames.Settings }],
-      })
+      navigation.navigate(rootTabsRouteNames.Settings)
     }
   }, [navigation, route])
 
@@ -42,7 +37,7 @@ export const AppHeader = ({ navigation, route }: HeaderProps) => {
         { backgroundColor: topColor, paddingTop: insets.top + 5 },
       ]}>
       <View style={[styles.column, styles.walletInfo]}>
-        {wallet && <ProfileHandler wallet={wallet} navigation={navigation} />}
+        <ProfileHandler navigation={navigation} />
       </View>
       {chainId === 31 && (
         <View>

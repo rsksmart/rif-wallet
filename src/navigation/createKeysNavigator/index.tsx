@@ -27,7 +27,12 @@ export const CreateKeysNavigation = () => {
   const { t } = useTranslation()
 
   return (
-    <Stack.Navigator initialRouteName={createKeysRouteNames.CreateKeys}>
+    <Stack.Navigator
+      initialRouteName={
+        keysExist
+          ? createKeysRouteNames.RetryLogin
+          : createKeysRouteNames.CreateKeys
+      }>
       {!keysExist ? (
         <Stack.Screen
           name={createKeysRouteNames.CreateKeys}

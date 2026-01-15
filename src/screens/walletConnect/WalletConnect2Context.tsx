@@ -3,12 +3,18 @@ import {
   ReactElement,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 import { getSdkError, parseUri } from '@walletconnect/utils'
 import Web3Wallet, { Web3WalletTypes } from '@walletconnect/web3wallet'
 import { IWeb3Wallet } from '@walletconnect/web3wallet'
 import { WalletConnectAdapter } from '@rsksmart/rif-wallet-adapters'
+import {
+  SignTypedDataResolver,
+  SendTransactionResolver,
+  PersonalSignResolver,
+} from '@rsksmart/rif-wallet-adapters/dist/resolvers'
 
 import { ChainID } from 'lib/eoaWallet'
 import { createPendingTxFromTxResponse } from 'lib/utils'
@@ -23,6 +29,77 @@ import { useAppDispatch, useAppSelector } from 'store/storeUtils'
 import { selectChainId } from 'store/slices/settingsSlice'
 import { addPendingTransaction } from 'store/slices/transactionsSlice'
 import { Wallet, addressToUse } from 'shared/wallet'
+
+import { WalletConnectSigningModal } from './WalletConnectSigningModal'
+import {
+  DomainValidationParams,
+  WalletConnectSigningRequest,
+  SecureSignTypedDataV4Resolver,
+} from './types'
+
+// Methods that require user consent before signing
+export const SIGNING_METHODS = [
+  'eth_signTypedData',
+  'eth_signTypedData_v4',
+  'personal_sign',
+  'eth_sign',
+]
+
+// Methods that are allowed for WalletConnect sessions
+export const ALLOWED_SESSION_METHODS = [
+  'eth_sendTransaction',
+  'personal_sign',
+  'eth_signTransaction',
+  'eth_signTypedData',
+  'eth_signTypedData_v4',
+]
+
+/**
+ * Validates that the requested method is allowed for the session
+ * @param sessionMethods - Methods approved in the WalletConnect session
+ * @param method - The method being requested
+ * @returns true if the method is allowed, false otherwise
+ */
+export const isMethodAllowedForSession = (
+  sessionMethods: string[] | undefined,
+  method: string,
+): boolean => {
+  if (!sessionMethods) {
+    return false
+  }
+
+  // Check if method is in our allowed list
+  if (!ALLOWED_SESSION_METHODS.includes(method)) {
+    return false
+  }
+
+  // Check if method was approved in the session namespaces
+  return sessionMethods.includes(method)
+}
+
+/**
+ * Creates a domain validator function that blocks signing for protected addresses
+ * This prevents attackers from harvesting ForwardRequest signatures for the Smart Wallet
+ */
+export const createDomainValidator = (protectedAddress: string | null) => {
+  return ({ domain }: DomainValidationParams) => {
+    if (!protectedAddress) {
+      return
+    }
+
+    const { verifyingContract } = domain
+    if (!verifyingContract) {
+      return
+    }
+
+    // Block if the verifying contract matches the protected address (Smart Wallet)
+    if (verifyingContract.toLowerCase() === protectedAddress.toLowerCase()) {
+      throw new Error(
+        'Error: Unauthorized Contract Address - Signing not permitted. This address is exclusive to the relay contract.',
+      )
+    }
+  }
+}
 
 const onSessionApprove = async (
   web3wallet: Web3Wallet,
@@ -77,6 +154,15 @@ interface PendingSession {
   web3wallet: Web3Wallet
   proposal: Web3WalletTypes.SessionProposal
 }
+
+interface PendingSignRequest {
+  event: Web3WalletTypes.SessionRequest
+  adapter: WalletConnectAdapter
+  request: WalletConnectSigningRequest
+  resolve: (value: unknown) => void
+  reject: (reason?: unknown) => void
+}
+
 // Do note that both title and message must exist in i18n.ts
 interface ErrorForAlertUsingTranslation {
   title: string
@@ -117,11 +203,73 @@ export const WalletConnect2Provider = ({
   const dispatch = useAppDispatch()
   const chainId = useAppSelector(selectChainId)
   const [sessions, setSessions] = useState<SessionStruct[]>([])
+  const hasInitializedRef = useRef(false)
   const [pendingSession, setPendingSession] = useState<
     PendingSession | undefined
   >(undefined)
+  const [pendingSignRequest, setPendingSignRequest] = useState<
+    PendingSignRequest | undefined
+  >(undefined)
   const [error, setError] = useState<WalletConnect2ContextArguments['error']>()
   const [web3wallet, setWeb3Wallet] = useState<Web3Wallet | null>(null)
+
+  /**
+   * Creates a WalletConnectAdapter with proper security configurations:
+   * 1. Includes both SignTypedDataResolver and SecureSignTypedDataV4Resolver
+   * 2. Applies domain validation to BOTH resolvers to prevent ForwardRequest attacks
+   *
+   * Note: We use a custom SecureSignTypedDataV4Resolver because the library's
+   * SignTypedDataV4Resolver doesn't call validate() in its resolve method.
+   */
+  const createSecureAdapter = useCallback(
+    (_wallet: Wallet) => {
+      // Cast wallet for resolver constructors - safe because our wallet implements required methods
+
+      const walletForResolvers = _wallet as any
+
+      // Create domain validator for protecting Smart Wallet address
+      const domainValidator = createDomainValidator(address)
+
+      // Create SignTypedDataResolver with validation
+      const signTypedDataResolver = new SignTypedDataResolver(
+        walletForResolvers,
+      )
+      signTypedDataResolver.validate = domainValidator
+
+      // Create custom V4 resolver with validation
+      // (Library's SignTypedDataV4Resolver doesn't call validate() - this is the security fix)
+      const signTypedDataV4Resolver = new SecureSignTypedDataV4Resolver(
+        walletForResolvers,
+      )
+      signTypedDataV4Resolver.validate = domainValidator
+
+      // Create adapter with all resolvers including secure V4
+      const resolvers = [
+        new SendTransactionResolver(walletForResolvers),
+        new PersonalSignResolver(walletForResolvers),
+        signTypedDataResolver,
+        signTypedDataV4Resolver,
+      ]
+
+      return new WalletConnectAdapter(walletForResolvers, resolvers)
+    },
+    [address],
+  )
+
+  /**
+   * Validates that the requested method is allowed for the session
+   * Wrapper that extracts methods from SessionStruct and uses the exported validator
+   */
+  const checkMethodAllowedForSession = useCallback(
+    (session: SessionStruct | undefined, method: string): boolean => {
+      if (!session) {
+        return false
+      }
+      const sessionMethods = session.namespaces?.eip155?.methods || []
+      return isMethodAllowedForSession(sessionMethods, method)
+    },
+    [],
+  )
 
   const onSessionProposal = async (
     proposal: Web3WalletTypes.SessionProposal,
@@ -147,34 +295,52 @@ export const WalletConnect2Provider = ({
     }
   }
 
+  /**
+   * Handles user confirmation of a signing request
+   */
+  const onUserConfirmSign = useCallback(async () => {
+    if (!pendingSignRequest) {
+      return
+    }
+
+    const { event, adapter, resolve, reject } = pendingSignRequest
+    const {
+      params: {
+        request: { method, params },
+      },
+    } = event
+
+    try {
+      const result = await adapter.handleCall(method, params)
+      resolve(result)
+    } catch (err) {
+      reject(err)
+    } finally {
+      setPendingSignRequest(undefined)
+    }
+  }, [pendingSignRequest])
+
+  /**
+   * Handles user rejection of a signing request
+   */
+  const onUserRejectSign = useCallback(() => {
+    if (!pendingSignRequest) {
+      return
+    }
+
+    pendingSignRequest.reject(new Error('User rejected'))
+    setPendingSignRequest(undefined)
+  }, [pendingSignRequest])
+
   const subscribeToEvents = useCallback(
     (usersWallet: Web3Wallet, _wallet: Wallet) => {
       usersWallet.on('session_proposal', async proposal =>
         onSessionProposal(proposal, usersWallet),
       )
+
       usersWallet.on('session_request', async event => {
         if (!_wallet) {
           return
-        }
-        const adapter = new WalletConnectAdapter(_wallet)
-        const eth_signTypedDataResolver = adapter
-          .getResolvers()
-          .find(
-            (resolver: { methodName: string }) =>
-              resolver.methodName === 'eth_signTypedData',
-          )
-        if (eth_signTypedDataResolver) {
-          eth_signTypedDataResolver.validate = ({ domain }) => {
-            // if address = relay address - throw error
-            const { verifyingContract } = domain
-            if (
-              [address?.toLowerCase()].includes(verifyingContract.toLowerCase())
-            ) {
-              throw new Error(
-                'Error: Unauthorized Contract Address - Signing not permitted. This address is exclusive to the relay contract.',
-              )
-            }
-          }
         }
 
         const {
@@ -185,6 +351,28 @@ export const WalletConnect2Provider = ({
           topic,
         } = event
 
+        // Get the session for this request
+        const session = sessions.find(s => s.topic === topic)
+
+        // Validate method is allowed for this session
+        if (!checkMethodAllowedForSession(session, method)) {
+          console.warn(
+            `WalletConnect: Unauthorized method ${method} for session`,
+          )
+          await usersWallet.respondSessionRequest({
+            topic,
+            response: {
+              id,
+              jsonrpc: '2.0',
+              error: getSdkError('UNAUTHORIZED_METHOD'),
+            },
+          })
+          return
+        }
+
+        // Create secure adapter with validated resolvers
+        const adapter = createSecureAdapter(_wallet)
+
         const rpcResponse = {
           topic,
           response: {
@@ -192,6 +380,54 @@ export const WalletConnect2Provider = ({
             jsonrpc: '2.0',
           },
         }
+
+        // For signing methods, show confirmation UI and wait for user consent
+        if (SIGNING_METHODS.includes(method)) {
+          // Get dApp info from session
+          const dappName = session?.peer?.metadata?.name
+          const dappUrl = session?.peer?.metadata?.url
+
+          // Create a promise that will be resolved when user confirms/rejects
+          const signPromise = new Promise((resolve, reject) => {
+            setPendingSignRequest({
+              event,
+              adapter,
+              request: {
+                method,
+                params: params as unknown[],
+                dappName,
+                dappUrl,
+              },
+              resolve,
+              reject,
+            })
+          })
+
+          signPromise
+            .then(async signedMessage => {
+              await usersWallet.respondSessionRequest({
+                ...rpcResponse,
+                response: {
+                  ...rpcResponse.response,
+                  result: signedMessage,
+                },
+              })
+            })
+            .catch(async err => {
+              console.log('WalletConnect signing rejected:', err)
+              await usersWallet.respondSessionRequest({
+                ...rpcResponse,
+                response: {
+                  ...rpcResponse.response,
+                  error: getSdkError('USER_REJECTED'),
+                },
+              })
+            })
+
+          return
+        }
+
+        // For non-signing methods, proceed directly
         adapter
           .handleCall(method, params)
           .then(async signedMessage => {
@@ -201,7 +437,7 @@ export const WalletConnect2Provider = ({
                 {
                   chainId,
                   from: address,
-                  to: params[0].to,
+                  to: (params as Array<{ to: string }>)[0].to,
                 },
               )
               if (pendingTx) {
@@ -226,13 +462,21 @@ export const WalletConnect2Provider = ({
             })
           })
       })
+
       usersWallet.on('session_delete', async event => {
         setSessions(prevSessions =>
           prevSessions.filter(prevSession => prevSession.topic !== event.topic),
         )
       })
     },
-    [chainId, dispatch, address],
+    [
+      chainId,
+      dispatch,
+      address,
+      sessions,
+      createSecureAdapter,
+      checkMethodAllowedForSession,
+    ],
   )
 
   const onCreateNewSession = useCallback(
@@ -258,23 +502,6 @@ export const WalletConnect2Provider = ({
                 title: 'dapps_error_pairing_title',
                 message: 'dapps_error_pairing_message',
               })
-              // NOTE: Left this logic here in case we need it in the future
-              // User tried to use an OLD QR - try to connect
-              // const proposals = web3wallet.getPendingSessionProposals()
-              // If there are pending proposals, use the last one to connect
-              // if (Array.isArray(proposals) && proposals.length > 0) {
-              //   const lastProposal = proposals.pop()//
-              //   onSessionProposal(
-              //     {
-              //       ...lastProposal,
-              //       params: { requiredNamespaces: lastProposal.requiredNamespaces },
-              //     },
-              //     web3wallet,
-              //   )
-              // } else {
-              //   // else disconnect the current pairing
-              //   web3wallet.core.pairing.disconnect(parseUri(uri))
-              // }
             }
           }
         }
@@ -348,7 +575,7 @@ export const WalletConnect2Provider = ({
         subscribeToEvents(newWeb3Wallet, _wallet)
         setSessions(Object.values(newWeb3Wallet.getActiveSessions()))
       } catch (err) {
-        throw new Error(err)
+        throw new Error(err as string)
       }
     },
     [subscribeToEvents],
@@ -358,7 +585,8 @@ export const WalletConnect2Provider = ({
    * useEffect On first load, fetch previous saved sessions
    */
   useEffect(() => {
-    if (wallet) {
+    if (wallet && !hasInitializedRef.current) {
+      hasInitializedRef.current = true
       onContextFirstLoad(wallet).catch(console.log)
     }
   }, [wallet, onContextFirstLoad])
@@ -376,6 +604,14 @@ export const WalletConnect2Provider = ({
         onDisconnectSession,
       }}>
       {children}
+      {/* Signing Confirmation Modal - Shows for WalletConnect signing requests */}
+      {pendingSignRequest && (
+        <WalletConnectSigningModal
+          request={pendingSignRequest.request}
+          onConfirm={onUserConfirmSign}
+          onReject={onUserRejectSign}
+        />
+      )}
     </WalletConnect2Context.Provider>
   )
 }

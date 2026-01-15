@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { ethers, Contract, BigNumber } = require('../../node_modules/ethers')
 const SmartWalletFactoryABI = require('./abi/smartWalletFactory.json')
 const smartWalletABI = require('./abi/smartWalletABI.json')

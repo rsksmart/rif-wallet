@@ -39,10 +39,10 @@ export const screenOptionsWithHeader = (
         : sharedHeaderLeftOptions(
             goBack ?? ('onPress' in props ? props.onPress : undefined),
           ),
-    headerTitle: props => (
+    headerTitle: ({ children, style }) => (
       <View style={sharedStyles.contentCenter}>
-        <Typography type={'h3'} style={props.style}>
-          {title ?? props.children}
+        <Typography type={'h3'} style={style}>
+          {title ?? children}
         </Typography>
         {stepper && (
           <StepperComponent

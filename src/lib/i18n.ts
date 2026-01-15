@@ -390,6 +390,25 @@ const resources = {
       dapps_uri_not_valid_title: 'Invalid URI',
       dapps_uri_not_valid_message:
         'URI is not valid. Please try with a new URI.',
+      // WalletConnect Signing Modal
+      wallet_connect_signing_request_title: 'Signature Request',
+      wallet_connect_signing_warning:
+        'Review this request carefully. Only sign if you trust the requesting application.',
+      wallet_connect_signing_requested_by: 'Requested by',
+      wallet_connect_signing_method: 'Method',
+      wallet_connect_signing_domain: 'Domain',
+      wallet_connect_signing_name: 'Name',
+      wallet_connect_signing_contract: 'Contract',
+      wallet_connect_signing_chain_id: 'Chain ID',
+      wallet_connect_signing_message: 'Message',
+      wallet_connect_signing_parse_error:
+        'Unable to parse signing data. Proceed with caution.',
+      wallet_connect_signing_sign: 'Sign',
+      wallet_connect_signing_reject: 'Reject',
+      wallet_connect_signing_unauthorized_contract:
+        'Unauthorized Contract Address - Signing not permitted. This address is exclusive to the relay contract.',
+      wallet_connect_signing_unauthorized_method:
+        'This method is not authorized for this session.',
       popup_message_rns:
         'Register your username to allow others to send you funds without worrying about mistyping or inputting wrong address',
       popup_not_possible_to_register_rns:

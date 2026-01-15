@@ -128,8 +128,8 @@ export const TokenBalance = ({
               {hide
                 ? '\u002A\u002A\u002A\u002A\u002A'
                 : secondValue.symbolType === 'usd'
-                ? formatFiatValue(secondValue.balance)
-                : formatTokenValue(secondValue.balance)}
+                  ? formatFiatValue(secondValue.balance)
+                  : formatTokenValue(secondValue.balance)}
             </Typography>
           )}
           {error && (
