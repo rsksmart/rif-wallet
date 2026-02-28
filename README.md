@@ -17,13 +17,13 @@ The main use case of the RIF Wallet using account abstraction is to pay the gas 
 
 ## Install and setup
 
-- [Setup your enviornment using the official instructions](https://reactnative.dev/docs/environment-setup)
+- [Setup your environment using the official instructions](https://reactnative.dev/docs/environment-setup)
   - Use the 'React Native CLI Quickstart' tabs not the 'Expo' tabs.
   - Follow the instructions explicitly as a small deviation can cause it to fail.
-- Install the dependecies using yarn. This will also run the postinstall script that shims the missing packages: `yarn`
+- Install the dependencies using yarn. This will also run the postinstall script that shims the missing packages: `yarn`
   - The postinstall script runs the `rn-nodeify` package which adds packages that are native to the browser but not to react native.
   - For **iOS** you need to run the additional installation steps: `cd ios` and then `pod install`
-- Set the environment variable `TRACE_ID` in `.env` file to connect with backend server with an identifier, i.e. your company name.
+- Set the environment variable `TRACE_ID` in `.env` file to connect with the backend server with an identifier, i.e. your company name.
 - Run the app using the desired platform:
   - `yarn ios`
   - `yarn android`
